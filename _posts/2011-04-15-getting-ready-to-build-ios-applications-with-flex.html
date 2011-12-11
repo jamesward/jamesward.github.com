@@ -1,0 +1,40 @@
+--- 
+layout: post
+title: Getting Ready to Build iOS Applications with Flex
+published: false
+meta: 
+  _edit_last: "1"
+tags: 
+- Other
+type: post
+status: draft
+---
+openssl genrsa -out ios.key 2048
+openssl req -new -key ios.key -out ios.csr
+
+* Common Name is YOUR name
+* Specify a password
+
+Upload CSR to Apple
+
+Wait for Apple to approve the CSR
+
+Download the developer_identity.cer
+
+Convert the developer_identity.cer to a p12 file
+openssl x509 -in developer_identity.cer -inform DER -out developer_identity.pem -outform PEM
+openssl pkcs12 -export -in developer_identity.pem -inkey ios.key -certfile ios.csr -name "James Ward" -out ios.p12
+
+Add devices
+
+Create an App ID
+
+Create a Provisioning Profile
+
+Wait for it to be activated
+
+Download it
+
+
+
+http://developer.apple.com/ios/manage/certificates/team/index.action

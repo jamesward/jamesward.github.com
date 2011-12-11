@@ -1,0 +1,32 @@
+--- 
+layout: post
+title: Flex TreeGrid
+published: true
+meta: 
+  twittercomments: a:0:{}
+  shorturls: a:7:{s:9:"permalink";s:43:"http://www.jamesward.com/blog/2005/02/26/5/";s:7:"tinyurl";s:25:"http://tinyurl.com/kneqvb";s:4:"isgd";s:18:"http://is.gd/26QNS";s:5:"bitly";s:19:"http://bit.ly/kBv6N";s:5:"snipr";s:22:"http://snipr.com/pc6b6";s:5:"snurl";s:22:"http://snurl.com/pc6b6";s:7:"snipurl";s:24:"http://snipurl.com/pc6b6";}
+  tweetbackscheck: "1249679991"
+  tweetcount: "0"
+tags: 
+- RIA
+type: post
+status: publish
+---
+For a while I have been wanting to create a TreeGrid component for Flex.  The
+basic idea is to allow a user to navigate a Tree like object within a
+DataGrid.  Well, I just finished a very hacky version 1:
+Here are some problems with the current implementation:
+<ul>
+	<li>I get strange flicker when mousing over the cells.  Don't know why.</li>
+	<li>If I resize the right column to cover part of the Title, the title doesn't get clipped.  Don't know why.</li>
+	<li>The code looks only for children named "product".  I don't know of a way to make this generic / configurable.</li>
+	<li>Only supports 3 levels because I can't figure out how to do recursion in the disclosurePress function.  When I tried to call another function to do recursion the recursive method never got called.  Don't know why.</li>
+</ul>
+Other than all that, it works decently.  :)  Any ActionScript experts out there, please help me out.  :)
+
+<a target="_blank" href="http://www.cayambe.com/TreeGrid/TreeGrid.mxml">Here is the mxml code</a>
+<a target="_blank" href="http://www.cayambe.com/TreeGrid/TreeGridCellRenderer.as">Here is the cellRenderer code</a>
+
+Enjoy!
+
+-James

@@ -1,0 +1,67 @@
+<strong><font color="red">This tutorial has been updated to Flex 3 Beta 2.  The new version is now on the Adobe Developer Connection:
+<a href="http://www.adobe.com/devnet/flex/articles/flex_air_salesforce.html"><font color="red"><u>Building a standalone Adobe AIR application on salesforce.com with Flex 3</u></font></a></font></strong>
+
+
+The excitement around using Flex & AIR to build amazing front-ends for Salesforce applications continues to grow.  Nitobi has posted <a href="http://blogs.nitobi.com/andre/index.php/2007/07/20/offline-salesforcecom-with-air-and-ajax/">a cool AIR application</a> that uses the Salesforce Ajax library.  Also Dave Carroll of Salesforce has posted <a href="http://blog.sforce.com/sforce/2007/07/why-flexair-dev.html">a great blog</a> about why Flex & AIR developers should care about the Apex platform.  Back in April I posted <a href="http://www.jamesward.org/wordpress/2007/04/17/the-open-source-flex-and-apollo-toolkit-for-salesforcecom/">the first version</a> of a tutorial about how to use the Flex Toolkit for Apex to build AIR (was Apollo) applications.  Since the Flex 3 and AIR betas were released recently it's time to update that tutorial.  So if you want to start building some sexy interfaces on top of salesforce.com follow along...
+
+1. Download and unzip the Flex Toolkit for Apex:
+<a href="http://wiki.apexdevnet.com/index.php/Flex_Toolkit">http://wiki.apexdevnet.com/index.php/Flex_Toolkit</a>
+
+2. Download and install the Flex 3 Beta:
+<a href="http://labs.adobe.com/technologies/flex/flexbuilder3/">http://labs.adobe.com/technologies/flex/flexbuilder3/</a>
+
+3. Create a new AIR Project:
+<img src='http://www.jamesward.org/wordpress/wp-content/uploads/2007/07/step1.jpg'/>
+<img src='http://www.jamesward.org/wordpress/wp-content/uploads/2007/07/step2.jpg'/>
+
+4. Add the Salesforce SWC to the Library Build Path:
+<img src='http://www.jamesward.org/wordpress/wp-content/uploads/2007/07/step3.jpg'/>
+
+5. Write your AIR application:
+<div width="100%" style="padding: 6px; background: rgb(204, 204, 204) none repeat scroll 0%; overflow: auto;"><pre>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:salesforce="http://www.salesforce.com/"
+  creationComplete="conn.loginWithCredentials('dev@mavericks.demo', '123456', new AsyncResponder(loginResult, loginFault));"&gt;
+
+  &lt;mx:Script&gt;
+  &lt;![CDATA[
+  import mx.controls.Alert;
+  import com.salesforce.results.QueryResult;
+  import com.salesforce.AsyncResponder;
+
+  private function loginResult(result:Object):void
+  {
+    conn.query("SELECT Id, Contact.Firstname, Contact.Lastname FROM Contact",
+      new AsyncResponder(queryResult));
+  }
+
+  private function loginFault(fault:Object):void
+  {
+    Alert.show("Login error!");
+  }
+
+  private function queryResult(qr:QueryResult):void
+  {
+    dg.dataProvider = qr.records;
+  }
+
+  ]]&gt;
+  &lt;/mx:Script&gt;
+
+  &lt;salesforce:Connection id="conn"/&gt;
+
+  &lt;mx:DataGrid id="dg" width="100%" height="100%"/&gt;
+
+&lt;/mx:WindowedApplication&gt;</pre></div>
+
+6. Save it (which automatically compiles it)
+
+7. Run it:
+<img src='http://www.jamesward.org/wordpress/wp-content/uploads/2007/07/step4.jpg'/>
+
+8. Export it as an installable AIR file so you can share it with others
+
+9. Say "That's Hot!"
+
+Now go ahead and build some amazing Flex and AIR applications on top of salesforce.com!  Just let me know what you create so that I can use it in my demos.  :)
+
+<a href="/downloads/sf_air.air">Download the AIR file for this tutorial</a>

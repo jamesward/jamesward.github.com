@@ -1,0 +1,86 @@
+Over the past year I've been gradually learning Scala and I think it's fantastic!  So I'm incredibly excited that <a href="http://blog.heroku.com/archives/2011/10/3/scala/">Scala now runs on Heroku</a>!  Of course you can use the standard <a href="http://www.jamesward.com/2011/08/25/heroku-adds-java-support">Java on Heroku</a> / Maven method of running Scala on Heroku.  But as of today you can also use <a href="https://github.com/harrah/xsbt">sbt</a> (the Scala Build Tool) to run Scala apps on Heroku.  If you are new to Heroku, it is a Polyglot Cloud Application Platform.  Put very simply:
+
+<strong>Heroku = Polyglot + Platform as a Service (PaaS) + Cloud Components</strong>
+
+If you want to try out Scala on Heroku, here are a few quick steps to get you started:
+<ol>
+<li><a href="http://heroku.com/signup">Create a Heroku account</a></li>
+<li>Install the Heroku command line client on <a href="http://toolbelt.herokuapp.com/linux/readme">Linux</a>, <a href="http://toolbelt.herokuapp.com/osx/download">Mac</a>, or <a href="http://toolbelt.herokuapp.com/windows/download">Windows</a>.</li>
+<li>Install <a href="http://git-scm.com/">git</a> and setup your SSH key</li>
+<li>Install <a href="https://github.com/harrah/xsbt/wiki/Setup">sbt</a> 0.11.0</li>
+<li>
+Login to Heroku from the command line:
+<pre lang="bash">heroku auth:login</pre>
+</li>
+<li>Create a file named <em>build.sbt</em> containing:
+<pre lang="scala">
+scalaVersion := "2.9.1"
+
+{
+  val stage = TaskKey[Unit]("stage", "Prepares the project to be run, in environments that deploy source trees rather than packages.")
+  stage in Compile := {}
+}
+</pre>
+This adds the "stage" task which is used for the build on Heroku.
+</li>
+<li>Create a <em>project/build.properties</em> file containing:
+<pre lang="something">
+sbt.version=0.11.0
+</pre>
+This tells sbt which version of sbt to use.
+</li>
+<li>Create a very simple Scala app in <em>src/main/scala/Hello.scala</em> containing:
+<pre lang="scala">
+object Hello extends App {
+  println("hello, world")
+}
+</pre>
+</li>
+<li>Test the app locally by running:
+<pre lang="bash">
+sbt run
+</pre>
+You should see something like:
+<pre lang="bash">
+[info] Set current project to default-0c17d0 (in build file:/home/jamesw/projects/helloscala/)
+[info] Running Hello 
+hello, world
+[success] Total time: 1 s, completed Sep 7, 2011 4:17:01 AM
+</pre>
+</li>
+<li>Create a <em>.gitignore</em> file containing:
+<pre lang="something">
+target
+project/boot
+project/target
+</pre>
+</li>
+<li>Create a git repo, add the files to it, and commit them:
+<pre lang="bash">
+git init
+git add .
+git commit -m init
+</pre>
+</li>
+<li>Create a new app on Heroku using the Cedar stack:
+<pre lang="bash">
+heroku create -s cedar
+</pre>
+</li>
+<li>Upload your app to Heroku using git:
+<pre lang="bash">
+git push heroku master
+</pre>
+</li>
+<li>Run the app on Heroku:
+<pre lang="bash">
+heroku run "sbt run"
+</pre>
+Voilà!  You just ran Scala on the Cloud!
+</li>
+</ol>
+
+You can get the full code for this project on github:
+<a href="https://github.com/jamesward/helloscala">https://github.com/jamesward/helloscala</a>
+
+That was a very simple example to get you started.  Visit the <a href="http://devcenter.heroku.com/tags/scala">Heroku Dev Center</a> to continue learning about how to use Scala on Heroku.  And let me know if you have any questions.

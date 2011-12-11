@@ -1,0 +1,12 @@
+Mobile development with Flash and Flex is a new frontier, full of new adventures and discoveries.  Recently I discovered something that might be useful to you.  By default the mobile web browser on my Android 2.2 device scales a web page to make more room to display pages typically built for a desktop profile.  Here is what a little <a href="http://www.jamesward.com/demos/MobileSizeTest/MobileSizeTest.html">test mobile Flex app</a> I built looks like:
+<img src="http://www.jamesward.com/wp/uploads/2010/07/mobile_flash-default.png" width="480" height="800" style="border: 1px solid black"/>
+
+Strange!  The width and height are larger than the screen resolution.  You can fix this by adding the following to the HTML page:
+<pre lang="xml"><meta name="viewport" content="target-densityDpi=device-dpi; user-scalable=0;" /></pre>
+
+And now it will look like:
+<img src="http://www.jamesward.com/wp/uploads/2010/07/mobile_flash-noscale.png" alt="" title="mobile_flash-noscale" width="480" height="800" style="border: 1px solid black"/>
+
+Now that looks right!  This also turns off the two-finger / pinch zooming feature for the page (which is more important for content that hasn't been optimized for a mobile profile).
+
+I hope this is useful for those of you embarking on new adventures with Flash / Flex on mobile devices!

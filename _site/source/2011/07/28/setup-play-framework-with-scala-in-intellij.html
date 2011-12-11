@@ -1,0 +1,49 @@
+Yesterday at the <a href="https://sites.google.com/site/programmingsummercamp/">Programming Summer Camp</a> a group of us were working together to learn the <a href="http://www.playframework.org/">Play Framework</a>.  Once we were able to get the basics working we wanted to get everything working in <a href="http://www.jetbrains.com/idea/">IntelliJ IDEA</a>.  Due to a lack of good documentation on the subject things did not go smoothly until we figured out the right "magical incantations".  We did eventually get it working so I wanted to document the steps we took.
+
+<ol>
+<li>Add Scala support to Play:
+<pre lang="bash">
+play install scala
+</pre></li>
+<li>Create a new Play project with Scala support:
+<pre lang="bash">
+play new foo --with scala
+</pre></li>
+<li>Have Play create an IntelliJ Module Descriptor:
+<pre lang="bash">
+play idealize foo
+</pre></li>
+<li>Run the app:
+<pre lang="bash">
+play run foo
+</pre></li>
+<li>Access the app in a browser to generate some source files we will use later:
+<a href="http://localhost:9000">http://localhost:9000</a></li>
+<li>Shutdown the Play server.</li>
+<li>Currently the Play Scala Module (version 0.9.1) only supports Scala 2.8.1 so <a href="http://www.scala-lang.org/node/165">download</a> and extract that version.</li>
+<li>Create a new project (from scratch) in IntelliJ.  The location should be the same as the directory where the Play project was created.  Un-check the "Create module" option.<img src="http://www.jamesward.com/wp/uploads/2011/07/1.png" alt="" title="New Project" width="705" height="534" class="alignnone size-full wp-image-2495" /></li>
+<li>In the Project Structure window, with "Modules" selected, click the "+" button to add a new module to the project.</li>
+<li>Select the "Import existing module" option and then point it to the generated .iml file.<img src="http://www.jamesward.com/wp/uploads/2011/07/2.png" alt="" title="Add Module" width="612" height="500" class="alignnone size-full wp-image-2496" /></li>
+<li>With the module now selected, select the content root block for the module (mine is /home/jamesw/projects/foo).  Then select the "tmp/generated" directory in the tree on the right and press the "Sources" button.  The HTML template pages are converted to .scala source files by Play and we need these source files to be included in the project along with the regular source files in the app directory.<img src="http://www.jamesward.com/wp/uploads/2011/07/3.png" alt="" title="Content Root" width="801" height="644" class="alignnone size-full wp-image-2497" /></li>
+<li>Select "Global Libraries" in the Platform Settings on the left and add a new Java Library named "scala-compiler-2.8.1".  Then press the "Attach Classes..." button and navigate to the "lib" directory in your Scala 2.8.1 directory.  Then select the "scala-compiler.jar" and "scala-library.jar" files.</li>
+<li>Add another Global Library named "scala-library-2.8.1" containing the "scala-dbc.jar", "scala-library.jar", and "scala-swing.jar" files.<img src="http://www.jamesward.com/wp/uploads/2011/07/6.png" alt="" title="Global Libraries" width="997" height="654" class="alignnone size-full wp-image-2498" /></li>
+<li>Press the "Apply" button to save the Global Libraries configuration.</li>
+<li>Select "Modules" and then the "Dependencies" tab.  Press the "Add..." button and select "Library" to add a new library to the module.  Select "scala-library-2.8.1" and then press the "Add Selected" button to add it to the Dependencies.<img src="http://www.jamesward.com/wp/uploads/2011/07/7.png" alt="" title="Dependencies" width="1071" height="654" class="alignnone size-full wp-image-2499" /></li>
+<li>Select the "Scala" Facet in the module and set the Compiler library to the "scala-compiler-2.8.1" option.<img src="http://www.jamesward.com/wp/uploads/2011/07/8.png" alt="" title="Scala Facet" width="933" height="653" class="alignnone size-full wp-image-2500" /></li>
+<li>Save the Project Structure by pressing the "Ok" button.  Make sure the project now builds without any errors.</li>
+<li>To run the Play server from IntelliJ a new Run Configuration must be configured.  To create a new Run Configuration select "Run" from the main IntelliJ menu and then select "Edit Configurations".</li>
+<li>Press the "+" button and select "Application" from the list of Run Configuration types.</li>
+<li>Set the name to "Play Server".</li>
+<li>Set the Main class to "play.server.Server".</li>
+<li>Set the VM Parameters to:
+<pre lang="bash">
+-Dapplication.path="."
+</pre></li>
+<li>De-select the "Make" option in the "Before Launch" section.</li>
+<li>Press the "Ok" button to save the configuration. <img src="http://www.jamesward.com/wp/uploads/2011/07/9.png" alt="" title="Run Configuration" width="697" height="650" class="alignnone size-full wp-image-2501" /></li>
+<li>Run the Play Server by selecting "Run" from the "Run" IntelliJ menu and verify that the application still works by opening the application in a browser.</li>
+</ol>
+
+It is so much easier to figure this stuff out with a group of people.  That is just one of the many reasons why the Programming Summer Camp is a great event!
+
+Let me know if you have any questions or problems.

@@ -1,0 +1,19 @@
+--- 
+layout: post
+title: Census RIA Benchmark Updated with GZip and Laszlo
+published: true
+meta: 
+  _edit_last: "1"
+tags: 
+- Ajax
+- Flex
+- Laszlo
+- RIA
+type: post
+status: publish
+---
+I've just posted the newest version of the <a href="/census">Census RIA Benchmark</a> application which compares data loading via various methods in Ajax, Flex, and now Laszlo.  When I first began talking about the results of these benchmarks and heavily advocating AMF for large data sets some people suggested that my results were flawed because I wasn't using gzip compression on the text streams.  I have always wondered how many people actually use gzip but these critics seemed to indicate that everyone was using it.  Based on some past experiments I postulated that AMF would still be significantly faster than using gzip.  There is a trade off when you use gzip.  The amount of data that has to cross the wire is significantly smaller but there is increased latency on the server to do the gzip and on the client to ungzip.  Sometimes this trade off is worth it.  Unless you are using AMF.  AMF uses a very basic form of compression that is extremely fast, faster even than just creating XML or JSON strings.  And of course much faster than creating big strings and then compressing/decompressing them.  Now there is definitive proof of this.  AMF is still by far the fastest method for loading large data sets in RIAs.  Not only is it faster for loading the data, Tamarin makes client-side operations like sorts and filters extremely fast.  All of this is evident if you spend some time with the <a href="/census">Census application</a>.  Check it out and let me know what you think.
+
+For this version I've added a Laszlo test.  Sometimes people ask what the differences are between Flex and Laszlo.  This was my first time building anything with Laszlo so I won't comment on the differences in programming models since my views are probably skewed after spending three years with Flex and only a few hours with Laszlo.  But two significant differences between Flex and Laszlo can easily be seen in the benchmark.  First Laszlo doesn't use AMF3 that I know of.  Let me know if I am wrong about this so I can update the test.  Also Laszlo does not yet compile to Flash 9 bytecode so Laszlo applications are not able to take advantage of the Tamarin virtual machine.  Beyond that I really don't know much about the differences.  If anyone that reads this has used both it would be great to hear about your experiences.  Just please don't tell me that Laszlo is better because it has multiple output formats.  Tell me how this or other features have made a difference in what you have built.  Also since this was my first attempt at building a Laszlo application I may not have done everything correctly.  So please take a look at the <a href="http://flexapps.cvs.sourceforge.net/flexapps/census/">source code</a> and help me make it better and more accurate.
+
+I hope that you find the Census RIA Benchmark application helpful.  Please let me know if you have any feedback about it.

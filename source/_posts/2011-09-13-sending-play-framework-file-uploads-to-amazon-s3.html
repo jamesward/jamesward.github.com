@@ -1,0 +1,194 @@
+--- 
+layout: post
+title: Sending Play Framework File Uploads to Amazon S3
+published: true
+meta: 
+  _edit_last: "1"
+  custom_permalink: 2011/09/13/sending-play-framework-file-uploads-to-amazon-s3
+tags: 
+- Heroku
+- Java
+- Play Framework
+type: post
+status: publish
+---
+A couple of questions [<a href="http://stackoverflow.com/questions/7314106/handling-file-uploads-in-play-framework-on-heroku/7334400">1</a>, <a href="http://stackoverflow.com/questions/7258965/store-blob-in-heroku-or-similar-cloud-services">2</a>] on StackOverflow.com led me to look into how we can send file uploads in a Play Framework application to <a href="http://aws.amazon.com/s3/">Amazon S3</a> instead of the local disk.  For applications running on Heroku this is especially important because the local disk is not persistent.  Persistent disk storage makes it hard to scale apps.  Instead of using the file system, it's better to use an external service which is independent of the web tier.
+
+While at JavaZone I sat down with <a href="https://twitter.com/peterhilton">Peter Hilton</a> and <a href="https://twitter.com/nicolasleroux">Nicolas Leroux</a> to come up with a way to handle this.  It only took us 30 minutes to get something working - start to finish - including setup time.  This is what is so compelling about Play Framework.  I've built many Java web apps and it always seems like I spend too much time setting up builds, IDEs, and plumbing.  With Play we were setup and working on the actual app in less than a minute.  After getting everything working locally it took another minute to actually run it on the cloud with Heroku.  The combination of Play Framework and Heroku is a developer's dream for fast-paced development and deployment.
+
+All of the code for the sample application is on github:
+<a href="https://github.com/jamesward/plays3upload">https://github.com/jamesward/plays3upload</a>
+
+The basics of what we did was this:
+<pre lang="java">
+public static void doUpload(String comment, File attachment)
+{
+    AWSCredentials awsCredentials = new BasicAWSCredentials(System.getenv("AWS_ACCESS_KEY"), System.getenv("AWS_SECRET_KEY"));
+    AmazonS3 s3Client = new AmazonS3Client(awsCredentials);
+    s3Client.createBucket(BUCKET_NAME);
+    String s3Key = UUID.randomUUID().toString();
+    s3Client.putObject(BUCKET_NAME, s3Key, attachment);
+    Document doc = new Document(comment, s3Key, attachment.getName());
+    doc.save();
+    listUploads();
+}
+</pre>
+
+This uses a JPA Entity to persist the metadata about the file upload (for some reason we named it 'Document') and a reference to the file's key in S3.  But there was a sexier way, so my co-worker <a href="https://github.com/tkral">Tim Kral</a> added a new <a href="https://github.com/jamesward/plays3upload/blob/master/app/s3/storage/S3Blob.java">S3Blob</a> type that could be used directly in the JPA Entity.  Tim also cleaned up the configuration to make it more Play Framework friendly.  So lets walk through the entire app so you can see the pieces.
+
+The <a href="https://github.com/jamesward/plays3upload/blob/master/app/models/Document.java">app/models/Document.java</a> JPA Entity has three fields - the file being of type S3Blob:
+<pre lang="java">
+package models;
+
+import javax.persistence.Entity;
+
+import play.db.jpa.Model;
+import s3.storage.S3Blob;
+
+@Entity
+public class Document extends Model
+{
+    public String fileName;
+    public S3Blob file;
+    public String comment;
+}
+</pre>
+
+The S3Blob is now doing all of the work to talk to the Amazon S3 APIs to persist and fetch the actual file.
+
+Configuration of S3 is done by adding a plugin to the <a href="https://github.com/jamesward/plays3upload/blob/master/conf/play.plugins">conf/play.plugins</a> file:
+<pre lang="props">
+0: s3.storage.S3Plugin
+</pre>
+
+The <a href="https://github.com/jamesward/plays3upload/blob/master/app/s3/storage/S3Blob.java">S3Plugin</a> handles reading the AWS credentials from the <a href="https://github.com/jamesward/plays3upload/blob/master/conf/application.conf">conf/application.conf</a> file, setting up the S3Client, and creating the S3 Bucket - if necessary.
+
+In the <a href="https://github.com/jamesward/plays3upload/blob/master/conf/application.conf">conf/application.conf</a> file, environment variables are mapped to the configuration parameters in the Play application:
+<pre lang="props">
+aws.access.key=${AWS_ACCESS_KEY}
+aws.secret.key=${AWS_SECRET_KEY}
+s3.bucket=${S3_BUCKET}
+</pre>
+
+The values could be entered into the conf file directly but I used environment variables so they would be easier to change when running on Heroku.
+
+The Amazon AWS API must be added to the <a href="https://github.com/jamesward/plays3upload/blob/master/conf/dependencies.yml">conf/dependencies.yml</a> file:
+<pre lang="yml">
+require:
+    - play
+    - com.amazonaws -> aws-java-sdk 1.2.7
+</pre>
+
+The sample application has a new controller in <a href="https://github.com/jamesward/plays3upload/blob/master/app/controllers/Files.java">app/controllers/Files.java</a> that can display the upload form, handle the file upload, display the list of uploads, and handle the file download:
+<pre lang="java">
+package controllers;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.List;
+
+import models.Document;
+import play.libs.MimeTypes;
+import play.mvc.Controller;
+import s3.storage.S3Blob;
+
+public class Files extends Controller
+{
+
+  public static void uploadForm()
+  {
+    render();
+  }
+
+  public static void doUpload(File file, String comment) throws FileNotFoundException
+  {
+    final Document doc = new Document();
+    doc.fileName = file.getName();
+    doc.comment = comment;
+    doc.file = new S3Blob();
+    doc.file.set(new FileInputStream(file), MimeTypes.getContentType(file.getName()));
+    
+    doc.save();
+    listUploads();
+  }
+
+  public static void listUploads()
+  {
+    List<Document> docs = Document.findAll();
+    render(docs);
+  }
+
+  public static void downloadFile(long id)
+  {
+    final Document doc = Document.findById(id);
+    notFoundIfNull(doc);
+    response.setContentTypeIfNotSet(doc.file.type());
+    renderBinary(doc.file.get(), doc.fileName);
+  }
+
+}
+</pre>
+
+The <strong>uploadForm()</strong> method just causes the <a href="https://github.com/jamesward/plays3upload/blob/master/app/views/Files/uploadForm.html">app/views/Files/uploadForm.html</a> page to be displayed.
+
+The <strong>doUpload()</strong> method handles the file upload and creates a new <strong>Document</strong> object that stores the file in S3 and the comment in a database.  After storing the file and comment it runs the <strong>listUploads()</strong> method. Of-course a database must be configured in the <a href="https://github.com/jamesward/plays3upload/blob/master/conf/application.conf">conf/application.conf</a> file.  For running on Heroku the database is provided and just needs to be configured with the following values:
+<pre lang="props">
+db=${DATABASE_URL}
+jpa.dialect=org.hibernate.dialect.PostgreSQLDialect
+jpa.ddl=update
+</pre>
+
+The <strong>listUploads()</strong> method fetches all <strong>Document</strong> objects out of the database and then displays the <a href="https://github.com/jamesward/plays3upload/blob/master/app/views/Files/listUploads.html">apps/views/files/listUploads.html</a> page.
+
+If a user selects a file from the list then the <strong>downloadFile()</strong> method is called which finds the file in S3 and sends it back to the client as a binary stream.  An alternative to this would be to get the file directly from Amazon using either the <a href="file:///home/jamesw/aws-java-sdk-1.2.6/documentation/javadoc/com/amazonaws/services/s3/AmazonS3Client.html#generatePresignedUrl(java.lang.String, java.lang.String, java.util.Date)">S3 generatePresignedUrl()</a> method or via <a href="http://aws.amazon.com/cloudfront/">CloudFront</a>.
+
+Finally in the <a href="https://github.com/jamesward/plays3upload/blob/master/conf/routes">conf/routes</a> file, requests to "/" have been mapped to the <strong>Files.uploadForm()</strong> method:
+<pre lang="props">
+GET     /                                       Files.uploadForm
+</pre>
+
+That's it!  Now we have an easy way to persist file uploads in an external system!
+
+<h2>Running the Play! app on Heroku</h2>
+
+If you'd like to run this example on Heroku, here is what you need to do:
+
+Install the heroku command line client on <a href="http://toolbelt.herokuapp.com/linux/readme">Linux</a>, <a href="http://toolbelt.herokuapp.com/osx/download">Mac</a>, or <a href="http://toolbelt.herokuapp.com/windows/download">Windows</a>.</li>
+
+Login to Heroku via the command line:
+<pre lang="bash">
+heroku auth:login
+</pre>
+
+Clone the git repo:
+<pre lang="bash">
+git clone git@github.com:jamesward/plays3upload.git
+</pre>
+
+Move to the project dir:
+<pre lang="bash">
+cd plays3upload
+</pre>
+
+Create the app on Heroku:
+<pre lang="bash">
+heroku create -s cedar
+</pre>
+
+Set the AWS environment vars on Heroku:
+<pre lang="bash">
+heroku config:add AWS_ACCESS_KEY="YOUR_AWS_ACCESS_KEY" AWS_SECRET_KEY="YOUR_AWS_SECRET_KEY" S3_BUCKET="AN_AWS_UNIQUE_BUCKET_ID"
+</pre>
+
+Upload the app to Heroku:
+<pre lang="bash">
+git push heroku master
+</pre>
+
+Open the app in the browser:
+<pre lang="bash">
+heroku open
+</pre>
+
+Let me know if you have any questions or problems.  And thanks to Peter, Nicolas, and Tim for helping with this!

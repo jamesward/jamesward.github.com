@@ -1,0 +1,15 @@
+I've heard it so many times...  "Flash 9 doesn't work on 64bit Linux"  So when I loaded 64bit Gentoo Linux my new Merom based Intel Core 2 Duo, I really was expecting an adventure.  Turns out that it was actually pretty uneventful.  It worked first try without any problems and in only 2 commands.  Here's what I did..
+
+First I added the net-www/netscape-flash package to /etc/portage/package.unmask
+<code>sudo vi /etc/portage/package.unmask</code>
+
+Then I emerged Flash 9 & the Netscape Plugin Wrapper
+<code>sudo emerge -av netscape-flash nspluginwrapper</code>
+
+Then I reloaded Firefox, tested it, and it works great!  I assume it's this easy on other distributions, but I only have Gentoo to test on.
+
+Of course this means much more than just being able to watch YouTube videos...  Now that the <a href="http://www.adobe.com/products/flex/sdk/">Flex 2 SDK is free</a> (as in beer) anyone can build applications that work the same on all major browsers and operating systems!  I'm happy to say that since I started doing Flex development about two years ago, Firefox on Linux has been my primary build and test environment.  And in that two years the only time I've had to write any of those "if IE" things was when I was writing JavaScript for a soon to be released Ajax & Flex benchmarking tool.
+
+Using my OS of choice...  Writing code once that works the same universally... These are things that make me happy.  :)
+
+Oh, and the fact that Flash is now built on the Mozilla / Open Source <a href="http://www.mozilla.org/projects/tamarin/">Tamarin VM</a> makes me ecstatic!

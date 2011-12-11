@@ -1,0 +1,78 @@
+--- 
+layout: post
+title: "Matt Raible: Comparing JVM Web Frameworks"
+published: true
+meta: {}
+
+tags: 
+- Flex
+type: post
+status: publish
+---
+<a href="http://raibledesigns.com">Matt Raible</a> is one of those guys in the Java community who I've always respected.  He has been around for a long time and contributed a ton to making the ecosystem better.  He recently posted a few blogs about "Comparing JVM Web Frameworks":
+<a href="http://raibledesigns.com/rd/entry/comparing_web_frameworks_time_for">http://raibledesigns.com/rd/entry/comparing_web_frameworks_time_for</a>
+<a href="http://raibledesigns.com/rd/entry/comparing_jvm_web_frameworks_presentation">http://raibledesigns.com/rd/entry/comparing_jvm_web_frameworks_presentation</a>
+
+I wanted to respond to Matt's request to provide feedback about his presentation.  Due to the length of my response I decided to post it on my blog instead of in the comments on his.  So here goes...
+
+Matt says not to believe evangelists, like myself.  But he does say to "believe developers that are experienced with the framework and have used it in production".  Hmmm...  I'm both.  I was a developer who successfully built a production Flex based customer service portal on Oracle Portal and Oracle CRM.  Since then I was hired as an evangelist to help companies like Salesforce, Intuit, Oracle, BEA and many others successfully build production Flex applications.  I also still get to build production applications on Flex like my <a href="/census">Census RIA Benchmark</a>, the <a href="http://buni.org">buni.org webmail client</a>, and numerous others.  So if you think my view is untrustworthy that's ok, there are <a href="http://www.artima.com/weblogs/viewpost.jsp?thread=193593">plenty</a> <a href="http://flexblog.faratasystems.com/?author=3">of</a> <a href="http://groups.google.com/group/javaposse/browse_thread/thread/d53ba7522d5f5028/3787226c7df1f555">others</a> who hold the <a href="http://groups.google.com/group/javaposse/browse_thread/thread/ce89f73babc3729e/367ce3d05b72f91d">same</a> <a href="http://www.urubatan.info/2007/10/java-flex-cool-application-and-reliable-back-end/">views</a>.
+
+First lets address Matt's Pros of Flex:
+
+<div style="background: #eeeeee"><blockquote>
+Produces Flash UI
+Funded by Adobe
+Has a “poster child” in Picnik
+</blockquote></div>
+
+"Produces Flash UI" - Lets dive into a few reasons why that is a pro:
+1) Consistent across browsers and operating systems
+2) Native vector graphic support
+3) Native video support
+4) Performance of a JIT Compiler Enabled VM
+
+"Funded by Adobe" - There are a few others that I'd probably highlight before this one, like:
+1) Mature UI framework for RIAs
+2) Back-end agnostic (Anything that can produce SOAP, RESTful, JSON, AMF, whatever)
+3) Strong community momentum (now over 8000 members of the <a href="http://groups.yahoo.com/group/flexcoders/">flexcoders Yahoo Group</a>, over 600 Flex blogs aggregated on <a href="http://weblogs.macromedia.com/mxna">MXNA</a>, over 50 worldwide <a href="http://flex.org/community">Flex User Groups</a>)
+
+"Has a 'poster child' in Picnik" - Picnik is great but I'd probably say something like "Has 130 'poster children' - <a href="http://flex.org/showcase/">http://flex.org/showcase/</a>".  And that doesn't include the thousands of non-public facing Flex apps.
+
+Now lets address the cons:
+<div style="background: #eeeeee"><blockquote>
+Flash is difficult to integration test
+508 Compliance
+Adobe Funded open source project
+</blockquote></div>
+
+"Flash is difficult to integration test" - Not really.  Check out:
+<a href="http://flex.org/ACDS/AutomatedTestingInFlex.pdf">http://flex.org/ACDS/AutomatedTestingInFlex.pdf</a>
+<a href="http://weblogs.macromedia.com/amcleod/archives/2007/01/flex_automation.cfm">http://weblogs.macromedia.com/amcleod/archives/2007/01/flex_automation.cfm</a>
+<a href="http://renaun.com/blog/2006/11/27/161/">http://renaun.com/blog/2006/11/27/161/</a>
+
+"508 Compliance" - Works great!  Check out:
+<a href="http://www.adobe.com/accessibility/">http://www.adobe.com/accessibility/</a>
+<a href="http://livedocs.adobe.com/flex/201/html/accessible_088_01.html">http://livedocs.adobe.com/flex/201/html/accessible_088_01.html</a>
+<a href="http://www.adobe.com/macromedia/accessibility/features/flex/">http://www.adobe.com/macromedia/accessibility/features/flex/</a>
+
+"Adobe Funded open source project" - I'm not sure how this is a con.
+
+I'd also like to respond to another comment Matt makes:
+<div style="background: #eeeeee"><blockquote>It seems like learning Flex is going to be better for your career, but it's likely useless without the Flex Builder - which is not open source.</blockquote></div>
+
+You can use the free and open source Flex SDK with any IDE you want.  Until recently when Flex Builder was released for Linux my primary IDE for Flex was vim.  That's over two years of Flex development without Flex Builder.  It's certainly possible and many people are using only the free Flex SDK to build their Flex applications.  They are building RIAs by only using open source Flex tools and not paying Adobe a dime.
+
+
+Now we could debate these pros and cons all day.  But really it depends on what you are building.  What I find most interesting is how these frameworks relate to building Rich Internet Applications.  That helps narrow it down a bit since very content-centric applications differ greatly from RIAs.  But what is a RIA?  I've taken a stab at <a href="http://www.jamesward.org/wordpress/2007/10/17/what-is-a-rich-internet-application/">defining RIA</a>.
+
+Based on those characteristics I can tell you more definitively how Flex compares as an RIA framework.
+
+Connected - RIAs blur the line between connected and disconnected.  Flex provides the programming model for building applications that work as desktop and web applications.  In both cases there are a variety of ways to persist data locally and interact with other offline applications.
+
+Alive - The success of the iPhone shows us that users want software that feels more alive - more like the natural world.  With capabilities like vector graphics, bitmap manipulation, drop shadows, translucency, etc all just baked into Flex, Flash Player, and AIR - creating interfaces that feel alive is natural and simple.
+
+Interactive - We all interact with things and others in many different ways - visually, audibly, with touch, and, etc.  Flex natively supports video playback, web cam integration, and audio playback and recording.  In a recent application, I built <a href="http://www.goribbit.com/">Ribbit</a> phone calling right into the application.  And it only took three lines of code!
+
+Responsive - It's strange if I ask someone a question and they don't respond in less than a second.  However most web applications force us to wait around.  My <a href="/census">Census RIA Benchmark</a> application was created to show the kind of responsiveness you can expect from Flex and web applications.
+
+Overall what is most exciting to me about Flex, Flash Player, and AIR is how they really enable us to build better software experiences - software experiences that function and look more like the natural world.
