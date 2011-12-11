@@ -1,0 +1,186 @@
+---
+author: admin
+date: '2010-07-07 08:34:06'
+layout: post
+slug: amf-js-a-pure-javascript-amf-implementation
+status: publish
+title: amf.js - A Pure JavaScript AMF Implementation
+wordpress_id: '1846'
+categories:
+- Flash Player
+- Flex
+- JavaScript
+---
+
+I just finished the first version of a new pure [JavaScript library for
+AMF](http://github.com/jamesward/JSAMF). I've wanted to do this for a while
+but didn't think it was possible since JavaScript doesn't have a ByteArray.
+But then I came across this: "[High Performance JavaScript Port of
+ActionScript's ByteArray](http://www.adamia.com/blog/high-performance-
+javascript-port-of-actionscript-byteArray)". That became the basis for
+[amf.js](http://github.com/jamesward/JSAMF). Before I get into the gory
+details of how this works, check out some developer eye candy: [http://www.jam
+esward.com/demos/JSAMF/censusTest.html](http://www.jamesward.com/demos/JSAMF/c
+ensusTest.html)
+
+Ok, hopefully that worked for you. I've tested this in the latest Chrome,
+Firefox, Safari, and IE and they all seem to work. It should also work on your
+iPad, iPhone, or Android device.
+
+Now for those gory details... AMF is a protocol initially created in Flash
+Player as a way to serialize data for storage on disk or transfer over a
+network. Typically in web apps we use text-based serialization protocols (like
+JSON or RESTful XML) for data transfer. But there are some advantages to using
+binary protocols - primarily [much better
+performance](http://www.jamesward.com/2009/06/17/blazing-fast-data-transfer-
+in-flex/). There are two versions of the AMF protocol,
+[AMF0](http://download.macromedia.com/pub/labs/amf/amf0_spec_121207.pdf) and [
+AMF3](http://opensource.adobe.com/wiki/download/attachments/1114283/amf3_spec_
+05_05_08.pdf). Both are publicly documented by Adobe and numerous server-side
+implementations of AMF exist. AMF is just a serialization technology, not a
+transport. So you can put AMF encoded data into any transport (like HTTP /
+HTTPS). Typically Flash Player is the client that reads / writes AMF data.
+
+I recently had a conversation with [Stephan
+Janssen](http://twitter.com/Stephan007) who runs
+[Parleys.com](http://parleys.com) (an amazing Flex app), which started me on
+this fun project. The Parleys.com PC-profile web client and the Adobe AIR
+desktop client both use BlazeDS and AMF as the primary serialization protocol
+for moving data between client and server. This is a great choice for those
+clients because it makes the apps snappy. But for the HTML5 client Stephan
+wants to reuse his AMF endpoints. This is where amf.js comes in.
+
+Flash Player has a ByteArray API that can be used for a lot of amazing things.
+One of those things is to read and write AMF. If you have an object in Flash
+Player and you create a new ByteArray and then call
+"byteArray.writeObject(myObject)" you will get a ByteArray with the AMF
+representation of that object. Likewise if you get some AMF and you call
+"byteArray.readObject()" you get the object(s) from the AMF. In Flex there are
+high level APIs (like RemoteObject, Consumer, etc.) that use this native AMF
+support in Flash Player.
+
+To create a pure JavaScript AMF library the first thing that is needed is a
+pure JavaScript ByteArray library since JavaScript doesn't natively have one.
+I used one from [adamia.com](http://www.adamia.com/blog/high-performance-
+javascript-port-of-actionscript-byteArray) since it was similar to the
+ByteArray in Flash Player, seemed fast, and seemed to parse floats correctly.
+This ByteArray has some of the basic functions like readByte, readFloat, etc.
+But what about that cool readObject function? Well, that has to be built from
+scratch. And it should support both AMF0 and AMF3.
+
+Using the AMF specs and code from BlazeDS & pyamf as a reference I was able to
+add the other functions to the ByteArray. But there was a problem. Using
+XMLHttpRequest as the method of getting the AMF was not working right. Some
+bytes were incorrect. It turns out XMLHttpRequest uses UTF-8 and that screws
+up some of the bytes above 128. I tried other charsets and each one would
+change some range of bytes. That is not good because I need the bytes to be
+exactly what the server sent. Then I came across [this gem](http://web.archive
+.org/web/20061114143134/http://mgran.blogspot.com/2006/08/downloading-binary-
+streams-with.html):
+
+    
+    //XHR binary charset opt by Marcus Granado 2006 [http://mgran.blogspot.com]
+    req.overrideMimeType('text/plain; charset=x-user-defined');
+
+  
+Using the "x-user-defined" charset left the bytes alone. Perfect! Except that
+IE doesn't support the req.overrideMimeType function. But IE does actually
+have a real ByteArray available in req.responseBody via VBScript. For now in
+IE I just change the ByteArray into a string (like req.responseText in the
+other browsers) although a lot of optimization could be done to just use the
+VBScript ByteArray directly.
+
+Right now amf.js is just a basic JavaScript library for reading AMF data. It
+doesn't support using a BlazeDS MessageBrokerServlet yet because I need to be
+able to assemble a AMF object in JavaScript and send that in the HTTP request
+to the servlet. But it works fine with a custom servlet that uses BlazeDS's
+AMF library to just write AMF into the HTTP response. It should also work with
+pyamf, AMFPHP, and other AMF server libraries.
+
+To use amf.js start by dumping some AMF into an HTTP response. In Java with
+BlazeDS I did this:
+
+    
+    
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        response.setHeader("Content-Type", "application/x-amf;charset=x-user-defined");
+        ServletOutputStream out = response.getOutputStream();
+        ActionMessage requestMessage = new ActionMessage(MessageIOConstants.AMF3);
+        MessageBody amfMessage = new MessageBody();
+        amfMessage.setData(someSerializableObject);
+        requestMessage.addBody(amfMessage);
+        AmfMessageSerializer amfMessageSerializer = new AmfMessageSerializer();
+        amfMessageSerializer.initialize(SerializationContext.getSerializationContext(), out, new AmfTrace());
+        amfMessageSerializer.writeMessage(requestMessage);
+        out.close();
+    }
+    
+
+  
+In a HTML web page add the amf.js script:
+
+    
+    
+    
+    
+
+  
+In JavaScript make a XHR request for some data:
+
+    
+    
+    var url = "TestServlet";
+    var req;  
+    function getAMF()
+    {
+        if (window.ActiveXObject)
+        {
+            req = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        else if (window.XMLHttpRequest)
+        {
+            req = new XMLHttpRequest();
+            //XHR binary charset opt by Marcus Granado 2006 [http://mgran.blogspot.com]
+            req.overrideMimeType('text/plain; charset=x-user-defined');
+        }
+        req.onreadystatechange = processReqChange;
+        req.open("GET", url, true);
+        req.send(null);
+    }
+    
+
+  
+And when the response comes back decode the AMF:
+
+    
+    
+    function processReqChange()
+    {
+        if (req.readyState == 4)
+        {
+            if (req.status == 200)
+            {
+                var o = decodeAMF(req.responseText).messages[0].body;
+            }
+            else
+            {
+                alert("There was a problem retrieving the data:\n" + req.statusText);
+            }
+        }
+    }
+    
+
+  
+For details on how to support IE, check out the source code for
+[censusTest.html](http://www.jamesward.com/demos/JSAMF/censusTest.html).
+
+While amf.js works in my tests there is more work to be done. I need to add
+the write functions so that AMF can be sent to the server. Then supporting
+BlazeDS's MessageBrokerServlet should be pretty straightforward. I'd also like
+to create pure JavaScript implementations of Flex's RemoteObject, Consumer,
+and Producer APIs. Also, I need people to test amf.js with their AMF to make
+sure that I've implemented things correctly. All of the [code is on
+github.com](http://github.com/jamesward/JSAMF) so go ahead and fork it! Let me
+know what you think.
+

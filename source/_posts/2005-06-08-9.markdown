@@ -1,0 +1,30 @@
+---
+author: admin
+date: '2005-06-08 14:15:56'
+layout: post
+slug: '9'
+status: publish
+title: Flex WYSIWYG
+wordpress_id: '40'
+categories:
+- RIA
+---
+
+Last night I created a simple WYSIWYG tool based on Flex, inspired in part by
+the [Zamples](http://www.zamples.com/) idea of [Live Code
+Examples](http://zamples.com/JspExplorer/samples/index.jsp). The goal is to do
+on-the-fly conversion of simple markup to Flash objects. This code is
+particularly useful for environments where content management is seperate from
+the web application. This is pretty basic and there may be better ways to do
+this, but I hadn't seen this done before so I took a stab at it. Feel free to
+suggest improvements!
+
+Here's the source code:
+[wysiwyg_test.mxml](http://www.cayambe.com/wysiwyg/wysiwyg_test.mxml)
+[wysiwyg.as](http://www.cayambe.com/wysiwyg/wysiwyg.as)
+[Image.as](http://www.cayambe.com/wysiwyg/Image.as)
+
+Let me know what you think!
+
+-James
+

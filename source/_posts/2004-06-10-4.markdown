@@ -1,0 +1,21 @@
+---
+author: admin
+date: '2004-06-10 22:39:36'
+layout: post
+slug: '4'
+status: publish
+title: Building Mozilla Firefox 0.9 rc1 From Source on Gentoo
+wordpress_id: '35'
+categories:
+- Linux
+- Open Source
+---
+
+Yesterday Mozilla released [Firefox 0.9
+rc1](http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/0.9rc) and I just
+couldn't wait any longer for the ebuild, so I figured out how to get it built
+from the cvs source. The instructions are posted on the [Gentoo
+Forums](http://forums.gentoo.org/viewtopic.php?t=183733). Not a big deal, but
+I thought this was blog worthy since it was fun and exciting. I guess that
+makes me a nerd. :)
+

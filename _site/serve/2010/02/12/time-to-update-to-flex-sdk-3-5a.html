@@ -1,5 +1,0 @@
-If you are using a Flex SDK before 3.5a then it's probably time to update.  Flex SDKs before 3.4 have a <a href="http://www.adobe.com/support/security/bulletins/apsb09-13.html">security vulnerability</a>.  I believe the problem is actually in the HTML template, so when you update make sure that you also update the HTML templates that you are using.  The Flex SDK 3.4 had the <a href="https://bugs.adobe.com/jira/browse/SDK-22883">double responder bug</a>.  And the initial release of Flex SDK 3.5 had a <a href="https://bugs.adobe.com/jira/browse/SDK-24766">bug with AIR's ApplicationUpdaterUI</a>.  If you overlay your own AIR SDK on top of the Flex SDK then be aware that you will actually be overwriting the ApplicationUpdaterUI fix (comments in the bug report discuss how to deal with that).
-
-So it's time to move to the <a href="http://opensource.adobe.com/wiki/display/flexsdk/Download+Flex+3">latest Flex SDK 3.5a</a>!
-
-Also, if you are using BlazeDS, LCDS, or FDS then it's time to update that as well due to <a href="http://www.adobe.com/support/security/bulletins/apsb10-05.html">a security vulnerability</a> that was published yesterday.

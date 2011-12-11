@@ -1,0 +1,67 @@
+---
+author: admin
+date: '2009-04-16 11:54:07'
+layout: post
+slug: flex-paint-2
+status: publish
+title: Flex Paint 2.0 with Source Code
+wordpress_id: '910'
+categories:
+- Flex
+---
+
+UPDATE: I've created a [new version of Flex
+Paint](http://www.jamesward.com/2010/03/22/flex-paint-updated-to-flex-4/) with
+Flex 4.
+
+It's surprising and somewhat humbling to find out which of my blog posts are
+the most popular. There are some posts that I spend days on and they end up
+only being read by a few people. Then there are others that are simple, short,
+and to be honest kinda boring that end up being read by tons of people. My
+original [Flex Paint blog](http://www.jamesward.com/blog/2006/08/16/flex-
+paint-flex-display-object-to-png/) is one of those simple, short but highly
+viewed blogs. I would never have thought that out of all my blog posts that
+one would be read by so many. Since it's almost two years old and presumably
+being used as a reference by many people, I thought it would be useful to
+update it to use the new Flash Player 10 [FileReference
+API](http://livedocs.adobe.com/flex/3/langref/flash/net/FileReference.html) to
+eliminate the need to send the image to the server.
+
+Here is the new version:  ([source
+code](/demos/FlexPaint2/srcview/index.html))
+
+Saving the drawn image with Flash Player 10 is as simple as:
+
+    
+            var bd:BitmapData = new BitmapData(canvas.width,canvas.height);
+            bd.draw(canvas);
+      
+            var ba:ByteArray = (new PNGEncoder()).encode(bd);
+            
+            (new FileReference()).save(ba, "doodle.png");
+
+  
+This reads the image client-side, encodes it, and then initiates a save
+dialog. Pretty simple stuff. The only downside is that using this new code
+I'll no longer get to see the amazing things that people are drawing. Here are
+some of the most interesting drawings people made with the old version:
+
+![](/demos/FlexPaint/1229473134284.png)
+
+![](/demos/FlexPaint/1231944828597.png)
+
+![](/demos/FlexPaint/1232093014444.png)
+
+![](/demos/FlexPaint/1232118713440.png)
+
+![](/demos/FlexPaint/1232336233020.png)
+
+![](/demos/FlexPaint/1234263678780.png)
+
+![](/demos/FlexPaint/1234597589351.png)
+
+![](/demos/FlexPaint/1238344083132.png)
+
+  
+Let me know what you think about the new version!
+

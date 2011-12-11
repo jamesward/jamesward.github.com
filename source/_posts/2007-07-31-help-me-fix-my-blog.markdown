@@ -1,0 +1,21 @@
+---
+author: admin
+date: '2007-07-31 05:17:29'
+layout: post
+slug: help-me-fix-my-blog
+status: publish
+title: Help me fix my blog [solved]
+wordpress_id: '139'
+categories:
+- Other
+---
+
+One of the "problems" with using Flex so much is that I get used to having a
+simple, predictable layout mechanism. I seem to have forgotten how to do just
+about anything in HTML. So can someone help me fix the Digg, Reddit, and Share
+This stuff below? I've tried and tried and can't figure out how to get the
+dang things to align correctly. Ideally they would align to the bottom of a
+div or something. Gosh it's really embarrassing admitting publicly that I
+can't do HTML anymore. But since you have already seen how bad this blog
+looks, you probably already guessed that. :) Oh well. Please help.
+

@@ -1,0 +1,45 @@
+---
+author: admin
+date: '2005-05-26 10:37:20'
+layout: post
+slug: '8'
+status: publish
+title: Using Greasemonkey To Fix Other's Bugs
+wordpress_id: '39'
+categories:
+- Linux
+- RIA
+---
+
+Ever since I got into Macromedia Flex I have not been able to view .mxml
+applications in any Mozilla based browser on Linux. Mozilla for some reason
+cuts off the Flash at around 240 pixels in width. I have searched the web and
+Mozilla's Bugzilla trying to find others who have also experienced this
+problem. I haven't found much. A few Mozilla bugs seem to indicate others had
+this same problem. But not enough for anyone at Mozilla or even Macromedia to
+care. There has only been 1 post about this issue on the flexcoders Yahoo
+list. So not really a big deal, except to those of us on Linux!
+
+It seems that the problem is with percentage width embedded objects inside
+percentage width tables. When writing mxml applications I can easily work
+around the issue by not using a table. However, anytime I view someone else's
+application who has not worked around this bug, I only see the left 240 pixels
+of the application. I could try to file a bug with Mozilla, but I think that's
+been done and didn't get the issue resolved. Greasemonkey to the rescue!
+
+Greasemonkey is a Firefox extension which lets me easily manipulate web pages
+when they are loaded in my browser. So I wrote a simple Greasemonkey script
+which fixes the problem! Fo those interested, here is what you need to do...
+
+Install the Greasemonkey extension from:
+[http://greasemonkey.mozdev.org/](http://greasemonkey.mozdev.org/) Install my
+user script from: [http://www.cayambe.com/fix_embed_percentage_bug.user.js](ht
+tp://www.cayambe.com/fix_embed_percentage_bug.user.js) Go to: [http://flexapps
+.macromedia.com/flex15/explorer/explorer.mxml](http://flexapps.macromedia.com/
+flex15/explorer/explorer.mxml)
+
+or any other Flex application and you should see the full application!
+
+My script is just a hack. If you have any ideas for improving it, please let
+me know!
+

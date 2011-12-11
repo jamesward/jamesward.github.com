@@ -1,0 +1,71 @@
+---
+author: admin
+date: '2009-09-16 11:00:09'
+layout: post
+slug: query-the-loaded-classes-in-flex-as3
+status: publish
+title: Query the Loaded Classes in Flex / AS3
+wordpress_id: '1221'
+categories:
+- ActionScript
+- Flex
+---
+
+One of the things I love most about programming is running into walls and then
+finding creative ways to get over (or through) them. The most recent wall I
+ran into with Flex was that I wanted to be able to find classes at runtime
+that either implement a given interface or have specific metadata on them.
+Flash Player doesn't provide an API to do this directly so I went searching
+for a workaround. [Christophe Herreman](http://www.herrodius.com/blog/) tipped
+me off to a few great utilities for doing this:
+
+  * [getDefinitionNames](http://etcs.ru/pre/getDefinitionNamesSource/) by Denis Kolyako
+  * [as3-commons-reflect](http://www.as3commons.org/as3-commons-reflect/index.html)
+  
+A Flex application (using the Flex framework or AS3 only) can use
+getDefinitionNames to query any loaded SWF file (Application, Module, etc) for
+its class definitions. The getDefinitionNames utility just parses through the
+loaded bytecode and finds the class definitions. Then the as3-commons-reflect
+library can help determine which of those classes implement a given interface
+or have specific metadata on them. Here is an example:
+
+  
+[(source code)](/demos/GetClasses/srcview/index.html)
+
+Here is how it works:
+
+    
+    
+        var a:Array = getDefinitionNames(systemManager.loaderInfo);
+        
+        allClasses.dataProvider = a;
+        
+        ifooClasses.dataProvider = new ArrayCollection();
+        metafooClasses.dataProvider = new ArrayCollection();
+        
+        for each (var cn:String in a)
+        {
+          var t:Type = Type.forName(cn);
+          for each (var md:MetaData in t.metaData)
+          {
+            if (md.name == "MetaFoo")
+            {
+              metafooClasses.dataProvider.addItem(cn);
+              break;
+            }
+          }
+          
+          if (ClassUtils.getImplementedInterfaceNames(t.clazz).indexOf("IFoo") >= 0)
+          {
+            ifooClasses.dataProvider.addItem(cn);
+          }
+        }
+    
+
+  
+Pretty cool! There are a number of fun uses for this kind of thing... Modular
+IOC containers, client-side plugins, etc.
+
+Getting over this wall was pretty easy thanks to Denis and Christophe. The
+Flex / AS3 community rocks!
+

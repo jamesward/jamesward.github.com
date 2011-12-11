@@ -1,0 +1,18 @@
+---
+author: admin
+date: '2008-05-02 11:06:45'
+layout: post
+slug: count-on-flex-9547
+status: publish
+title: Count on Flex - 9,547
+wordpress_id: '273'
+categories:
+- Flex
+---
+
+**9,547** = Number of members of the [FlexCoders Yahoo! Group](http://tech.groups.yahoo.com/group/flexcoders/).  
+That’s **9,547** more reasons you can Count on Flex!
+
+“Count on Flex” is a series of blogs about the current state of the Flex
+ecosystem… by the numbers.
+

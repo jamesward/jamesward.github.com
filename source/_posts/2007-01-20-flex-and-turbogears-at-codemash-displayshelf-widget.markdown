@@ -1,0 +1,136 @@
+---
+author: admin
+date: '2007-01-20 10:40:46'
+layout: post
+slug: flex-and-turbogears-at-codemash-displayshelf-widget
+status: publish
+title: Flex and TurboGears at CodeMash - DisplayShelf Widget
+wordpress_id: '88'
+categories:
+- Flex
+- Python
+- Widgets
+---
+
+This past week I spoke at the [CodeMash](http://www.codemash.org) conference.
+It was a really great event full of stimulating conversation. Even more fun
+than [trying to surf in the wave
+machine](http://video.google.com/videoplay?docid=-2676913860949129275&hl=en)
+was an Open Spaces style session that [Kevin
+Dangoor](http://www.blueskyonmars.com/) (creator of TurboGears) and I hosted.
+We had planned to just sneak off into a corner and turn [Ely
+Greenfield](http://www.quietlyscheming.com/blog/)'s [DisplayShelf
+component](http://www.quietlyscheming.com/blog/components/tutorial-
+displayshelf-component/) into a [TurboGears](http://www.turbogears.org)
+Widget. However, word quickly spread that we were going to do this and
+everyone wanted to watch as we coded. We had a bunch of fellow geeks huddled
+around every spare laptop and monitor we could find. I shared my screen with
+VNC so that everyone could watch what Kevin and I were doing. It was by far
+the best geek-out session I have had in a long time! Check out a screenshot of
+the DisplayShelf widget in a TurboGears application, showing a picture of our
+geek-out session:
+
+![](http://www.jamesward.org/wordpress/wp-content/uploads/2007/01/tg_pic.jpg)
+
+Continue reading to learn more about what we built, how we built it, and how
+you can use it...  The DisplayShelf is similar to the iTunes cover art
+display. It's built with the free Flex SDK, open source, and MIT licensed.
+Earlier in the week I made the DisplayShelf work with TurboGears, but it
+wasn't yet a reusable widget. Kevin walked me through the process of
+converting my test application to a real widget. In about twenty minutes we
+had most of the widget setup. To expedite the process we used an existing
+project to test the new widget. This particular project had previously been
+used to get the DisplayShelf running, sans-widget. Very few times in my
+sixteen years of programming adventures have things with this many moving
+parts worked on the first try. I coded the 3 lines nessecary to use the new
+widget, went to my browser and hit reload, one hundred percent convinced I
+would see an error message. I saw the DisplayShelf, which I thought was
+actually still cached somewhere from my previous project. I reloaded again,
+expecting to see an error. No error. I reloaded the TurboGears server, again
+expecting to see an error. No error. What is wrong? Where is the error? Surely
+this didn't work first try! I viewed the source of the web page and sure
+enough it was using the new DisplayShelf widget! Everyone (excluding Kevin)
+was pretty amazed. I guess Kevin is accustomed to these types of successes
+with TurboGears.
+
+The next step was to upload the new widget to the [Cheese
+Shop](http://cheeseshop.python.org/pypi/DisplayShelf/1.0), a home for Python
+based widgets. Kevin walked me though the process. I expected this to be
+tedious... Packaging things up in some strange way, navigating a difficult web
+site, uploading, etc. Kevin again blew us away with the simplicity of doing
+this sort of thing. Literally it was two commands to get our widget on the
+Cheese Shop. Again everyone except Kevin is amazed.
+
+Now that the widget was built and posted in the Cheese Shop it was time to
+test using the widget from scratch. I did this with Kevin's help, while
+someone else tired on their own computer. Within a few minutes we both had
+applications which were using the new widget! Again everyone except Kevin is
+amazed. See the recurring theme? Coming from a variety of backgrounds we
+couldn't believe how easy it was to build web applications and use widgets
+with TurboGears. Kevin just smiled as we all had epiphanies.
+
+Using Flex for rich widgets in TurboGears applications is a great combination
+of technologies. You get two great programming models and seamless interaction
+with both the
+[FABridge](http://labs.adobe.com/wiki/index.php/Flex_Framework:FABridge) and
+with TurboGears's JSON support. A few months ago Bruce Eckel and I recorded a
+[screencast](http://www.jamesward.org/wordpress/2007/01/10/bruce-eckel-is-
+thinking-in-flex/) of us building an application with a Flex front-end and a
+TurboGears back-end. The application we built used JSON to expose the
+TurboGears back-end to Flex. We had really great success with this approach.
+At CodeMash we took another approach and used the FABridge to pass objects
+from TurboGears to a Flex application. Both approaches work really well and
+depending on what you are building, one may be more applicable than another.
+
+Now lets walk through how you can use the DisplayShelf component in your
+TurboGears applications. This assumes that you already have TurboGears
+installed.
+
+1) Get the DisplayShelf component from the Cheese Shop:
+
+`easy-install DisplayShelf`
+
+  
+2) Create a new TurboGears application using the quickstart wizard:
+
+`tg-admin quickstart`
+
+  
+3) In the created project directory, start the TurboGears server with the
+created start script (your start script name is based on your package name):
+
+`python start-dstest.py`
+
+  
+4) Add the DisplayShelf widget to your controllers.py file:
+
+`from displayshelf.widgets import DisplayShelf`
+
+  
+5) Return the DisplayShelf widget in your default template:
+
+` def index(self):  return dict(shelf=DisplayShelf())`
+
+  
+6) Copy some images into the static/images directory.
+
+7) Replace the body of the welcome.kid file with the DisplayShelf (specify an
+array of the images in your static/images directory):
+
+`${shelf(['static/images/1.jpg','static/images/2.jpg','static/images/3.jpg','s
+tatic/images/4.jpg'],height='600')} `
+
+  
+8) Load [http://localhost:8080/](http://localhost:8080/) in your browser.
+
+That's it! You are now using the DisplayShelf in your TurboGears app! If you
+start the TurboGears toolbox and go to
+[http://localhost:7654/widgets/](http://localhost:7654/widgets/) you will also
+find the DisplayShelf in the Widget Browser.
+
+It's that easy! Thanks Kevin and [Mark](http://compoundthinking.com/blog/) for
+all your help this past week getting me up-to-speed on TurboGears! TurboGears
+truly is a world class web application framework! And the widget system is by
+far the best I've ever seen! Now lets get some more Flex based widgets
+created! :)
+

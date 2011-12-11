@@ -1,0 +1,121 @@
+---
+author: admin
+date: '2006-07-05 01:40:33'
+layout: post
+slug: debug-flex-java-together-in-flex-builder-2
+status: publish
+title: Debug Flex & Java Together in Flex Builder 2
+wordpress_id: '47'
+categories:
+- Flex
+- Java
+- RIA
+---
+
+I recently conducted an eSeminar on building enterprise applications with Flex
+Builder and Flex Data Services. You can view the recording of that
+presentation at: [http://seminars.breezecentral.com/p24622178/](http://seminar
+s.breezecentral.com/p24622178/)
+
+In my session I promised that I would formally document the process for
+debugging Flex & Java together in Flex Builder. So finally, here is that
+documentation.
+
+If you haven't already done so, the first thing you will need to do is install
+Flex Builder 2 as an Eclipse Plugin and Flex Data Services with integrated
+JRun. You can get these products on the [Adobe
+website](http://www.adobe.com/cfusion/tdrc/index.cfm?product=flex). I use FDS
+with JRun for this example, but you could easily use Tomcat or any other app
+server. A few steps may change slightly, but the general concepts would be the
+same.
+
+Now just follow along.
+
+1) Start Flex Builder & Flex Data Services
+
+2) Create a new Flex Project in Flex Builder
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/1a.png)
+
+2.1) Specify that the application will use Flex Data Services and that the
+application should be compiled on the server
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/2a.png)
+
+2.2) Click Next 2.3) Locate the root folder of your FDS samples application;
+mine is E:\fds2\jrun4\servers\default\samples 2.4) Change the root URL to be
+the URL to the samples application; mine is http://localhost:8700/samples/
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/2-5a.png)
+
+2.5) Click Next 2.4) Lets name the project crm 2.5) Uncheck the "Use default
+location" box 2.6) Specify the Folder as
+<your_fds_samples_application>\dataservice\crm for instance mine is:
+E:\fds2\jrun4\servers\default\samples\dataservice\crm 2.7) Specify the Main
+application file as mini.mxml ![](http://www.cayambe.com/wordpress/wp-
+content/uploads/2006/06/3a.png)
+
+2.8) Select Finish
+
+3) Test everything by right-clicking on the mini.mxml file in the Eclipse
+Navigator, then Run As -> Flex Application
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/4a.png)
+
+3.1) Your browser should load the mini application and look like:
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/5a.png)
+
+4) Now back to Flex Builder where we will create another new project, but this
+time a Java Project 4.1) Name the project samples_server 4.2) Create the
+project from existing source, specifying the WEB-INF folder of the samples
+application, in my case: E:\fds2\jrun4\servers\default\samples\WEB-INF
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/6a.png)
+
+4.3) Select Next 4.4) Go to the Libraries tab and select "Add External JARs"
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/7a.png)
+
+4.5) Select the jrun.jar file located in <your_fds_install>\jrun4\lib
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/8a.png)
+
+4.6) Also add the flex-services.jar located in
+<your_fds_install>\jrun4\servers\lib ![](http://www.cayambe.com/wordpress/wp-
+content/uploads/2006/06/9a.png)
+
+4.7) Select Finish
+
+5) Setup Java Debugging 5.1) Shutdown Flex Data Services 5.2) In the Eclipse
+Navigator browse to the src/samples.crm/EmployeeDAO.java class 5.3) Right-
+click on the EmployeeDAO.java file and select Debug As -> Debug...
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/10a.png)
+
+5.4) Select Java_Application then New 5.5) Specify the name as "JRun_Debug"
+5.6) Check the box "Include libraries when searching for a main class" 5.7)
+Enter the Main class: jrunx.kernel.JRun ![](http://www.cayambe.com/wordpress
+/wp-content/uploads/2006/06/11a.png) 5.8) Select the Arguments tab and enter
+"-start default" for the program arguments and "-Xms32m -Xmx384m
+-Dsun.io.useCanonCaches=false" for the VM arguments 5.9) Select the Apply
+button 5.10) Select the Debug button 5.11) Insure that Flex Data Services
+started ![](http://www.cayambe.com/wordpress/wp-
+content/uploads/2006/06/12a.png)
+
+6) Set a breakpoint in EmployeeDAO.java in the findEmployeesByCompany method
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/13a.png)
+
+7) Set a breakpoint in mini.mxml in the fill function
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/14a.png)
+
+8) Right-click on mini.mxml in the Eclipse Navigator and select Debug As ->
+Flex Application ![](http://www.cayambe.com/wordpress/wp-
+content/uploads/2006/06/15a.png)
+
+9) You should hit the breakpoint in the mini Flex application, then select
+Resume in the debugger ![](http://www.cayambe.com/wordpress/wp-
+content/uploads/2006/06/16a.png)
+
+10) You should hit the breakpoint in the Java backend
+![](http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/17a.png)
+
+11) Now jump up and down with joy saying "I can actually debug web
+applications!"
+
+I hope this is helpful for you. It's sure helped me figure out just where
+things in my applications were going wrong.
+
+-James
+
