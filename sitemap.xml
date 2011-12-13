@@ -1786,52 +1786,28 @@
         <loc>
             http://jamesward.github.com/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/
         </loc>
-        <lastmod>2011-12-12T21:24:28-07:00</lastmod>
+        <lastmod>2011-12-12T23:49:50-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://jamesward.github.com/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/
         </loc>
-        <lastmod>2011-12-12T21:24:28-07:00</lastmod>
+        <lastmod>2011-12-12T23:11:44-07:00</lastmod>
     </url>
     <url>
         <loc>http://jamesward.github.com/archives/</loc>
-        <lastmod>2011-12-12T21:24:28-07:00</lastmod>
-    </url>
-    <url>
-        <loc>http://jamesward.github.com/feed/index.xml</loc>
-        <lastmod>2011-12-11T23:59:12-07:00</lastmod>
-    </url>
-    <url>
-        <loc>http://jamesward.github.com/about-james-ward.html</loc>
-        <lastmod>2011-12-12T21:24:28-07:00</lastmod>
-    </url>
-    <url>
-        <loc>http://jamesward.github.com/amf-js.html</loc>
-        <lastmod>2011-12-12T21:24:28-07:00</lastmod>
-    </url>
-    <url>
-        <loc>http://jamesward.github.com/archived-pages-projects.html</loc>
-        <lastmod>2011-12-12T21:24:28-07:00</lastmod>
-    </url>
-    <url>
-        <loc>http://jamesward.github.com/ask-the-ria-cowboy.html</loc>
-        <lastmod>2011-12-12T21:24:28-07:00</lastmod>
-    </url>
-    <url>
-        <loc>http://jamesward.github.com/flex-and-java-resources.html</loc>
-        <lastmod>2011-12-12T21:24:28-07:00</lastmod>
-    </url>
-    <url>
-        <loc>http://jamesward.github.com/pbjas-as3-pixel-bender-library.html</loc>
-        <lastmod>2011-12-12T21:24:28-07:00</lastmod>
-    </url>
-    <url>
-        <loc>http://jamesward.github.com/portable-rias-tutorial.html</loc>
-        <lastmod>2011-12-12T21:24:28-07:00</lastmod>
+        <lastmod>2011-12-12T23:49:50-07:00</lastmod>
     </url>
     <url>
         <loc>http://jamesward.github.com/</loc>
-        <lastmod>2011-12-12T21:24:28-07:00</lastmod>
+        <lastmod>2011-12-12T23:49:50-07:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jamesward.github.com/feed/</loc>
+        <lastmod>2011-12-12T23:49:50-07:00</lastmod>
+    </url>
+    <url>
+        <loc>http://jamesward.github.com/about-james-ward/</loc>
+        <lastmod>2011-12-12T23:51:33-07:00</lastmod>
     </url>
 </urlset>

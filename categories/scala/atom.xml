@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Scala | James Ward]]></title>
   <link href="http://jamesward.github.com/categories/scala/atom.xml" rel="self"/>
   <link href="http://jamesward.github.com/"/>
-  <updated>2011-12-12T21:25:53-07:00</updated>
+  <updated>2011-12-13T00:32:25-07:00</updated>
   <id>http://jamesward.github.com/</id>
   <author>
     <name><![CDATA[James Ward]]></name>
@@ -21,9 +21,9 @@
     <content type="html"><![CDATA[<p>For the next wave of the Heroku Java User Group Tour I will be speaking about running Java, Play Framework, and Scala apps on the cloud in these three wonderful places:</p>
 
 <ul>
-<li><p><a href="http://www.boulderjug.org/">Boulder, Colorado - December 13</a></p></li>
-<li><p><a href="http://www.phxjug.org/meetings.html#next">Phoenix, Arizona - December 14</a></p></li>
-<li><p><a href="http://www.pjug.org/">Portland, Oregon - December 20</a></p></li>
+<li><a href="http://www.boulderjug.org/">Boulder, Colorado - December 13</a></li>
+<li><a href="http://www.phxjug.org/meetings.html#next">Phoenix, Arizona - December 14</a></li>
+<li><a href="http://www.pjug.org/">Portland, Oregon - December 20</a></li>
 </ul>
 
 

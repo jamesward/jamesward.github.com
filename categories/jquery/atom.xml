@@ -4,7 +4,7 @@
   <title><![CDATA[Category: jQuery | James Ward]]></title>
   <link href="http://jamesward.github.com/categories/jquery/atom.xml" rel="self"/>
   <link href="http://jamesward.github.com/"/>
-  <updated>2011-12-12T21:25:53-07:00</updated>
+  <updated>2011-12-13T00:32:25-07:00</updated>
   <id>http://jamesward.github.com/</id>
   <author>
     <name><![CDATA[James Ward]]></name>
@@ -31,13 +31,11 @@ cd playbars
 <p><strong>Optional Step 3)</strong> If you want to work in an IDE then you can run one of the following commands and then open the generated project in your IDE:</p>
 
 <pre><code>play idealize
+</code></pre>
 
+<p>Or:</p>
 
-
-
-
-
-play eclipsify
+<pre><code>play eclipsify
 </code></pre>
 
 <p>I won't walk though the IDE specific steps here, but you can refer to the <a href="http://www.playframework.org/documentation/1.2/ide">Play documentation on IDE integration</a> if you want to get that setup.  Note that IntelliJ IDEA has great support for Play Framework with a console right in the IDE.</p>
@@ -55,12 +53,14 @@ play eclipsify
 <p>The default page provides you with great Play documentation on how to get started.  But we will soon be changing that page.  If you want to view the documentation locally after we change the page you can use these links:</p>
 
 <ul>
-<li><p><a href="http://localhost:9000/@documentation/home">Documentation</a></p></li>
-<li><p><a href="http://localhost:9000/@api/index.html">Play JavaDoc</a></p></li>
+<li><a href="http://localhost:9000/@documentation/home">Documentation</a></li>
+<li><a href="http://localhost:9000/@api/index.html">Play JavaDoc</a></li>
 </ul>
 
 
-<p><strong>Step 6)</strong> Lets start by creating a new JPA entity.  Keeping it very simple, lets create a new "app/models/Bar.java" file containing:</p>
+<p><strong>Step 6)</strong> Lets start by creating a new JPA entity.  Keeping it very simple, lets create a new <code>app/models/Bar.java</code> file containing:</p>
+
+<p>```java</p>
 
 <pre><code>package models;
 
@@ -76,9 +76,13 @@ public class Bar extends Model {
 }
 </code></pre>
 
+<p>```</p>
+
 <p>This entity uses the standard JPA Entity annotation but also extends the Play Model class which provides some nice conveniences which you can read more about <a href="http://www.playframework.org/documentation/1.2.3/jpa">in the Play JPA docs</a>.  I'm using just a plain public property on this class but you can also use the Java Bean getter/setter stuff in you like.</p>
 
-<p><strong>Step 7)</strong> Create a simple unit / integration test for this Bar object by creating a "test/BarTest.java" file with the following contents:</p>
+<p><strong>Step 7)</strong> Create a simple unit / integration test for this Bar object by creating a <code>test/BarTest.java</code> file with the following contents:</p>
+
+<p>```java</p>
 
 <pre><code>import org.junit.*;
 import java.util.*;
@@ -101,7 +105,9 @@ public class BarTest extends UnitTest {
 }
 </code></pre>
 
-<p><strong>Step 8)</strong> Setup the default database by editing the "conf/application.conf" file and uncommenting the following line:</p>
+<p>```</p>
+
+<p><strong>Step 8)</strong> Setup the default database by editing the <code>conf/application.conf</code> file and uncommenting the following line:</p>
 
 <pre><code># db=mem
 </code></pre>
@@ -111,9 +117,11 @@ public class BarTest extends UnitTest {
 <p><strong>Step 9)</strong> Run the application's tests by opening the following URL in your browser:
 <a href="http://localhost:9000/@tests">http://localhost:9000/@tests</a></p>
 
-<p>Select "BarTest" and then click the "Start!" button.  The test should pass.</p>
+<p>Select <code>BarTest</code> and then click the <code>Start!</code> button.  The test should pass.</p>
 
-<p><strong>Step 10)</strong> Add the following two methods to the "app/controllers/Application.java" file:</p>
+<p><strong>Step 10)</strong> Add the following two methods to the <code>app/controllers/Application.java</code> file:</p>
+
+<p>```java</p>
 
 <pre><code>    public static void addBar(Bar bar) {
         bar.save();
@@ -125,17 +133,21 @@ public class BarTest extends UnitTest {
     }
 </code></pre>
 
+<p>```</p>
+
 <p>The <em>addBar</em> method takes a <em>Bar</em>, saves it, and then redirects back to the index page.  Play will automatically parse request parameters and populate the <em>Bar</em> object.  The <em>listBars</em> method queries for all of the Bars in the database and then outputs then as serialized JSON.</p>
 
-<p><strong>Step 11)</strong> Play has a very flexible model for mapping URLs to controllers.  Lets setup two new routes that will map URLs to the new methods we've added to the Application controller.  Add the following lines to the "conf/routes" file but make sure you either add them above the "Catch all" or simply remove the "Catch all" route:</p>
+<p><strong>Step 11)</strong> Play has a very flexible model for mapping URLs to controllers.  Lets setup two new routes that will map URLs to the new methods we've added to the Application controller.  Add the following lines to the <code>conf/routes</code> file but make sure you either add them above the <code>Catch all</code> or simply remove the <code>Catch all</code> route:</p>
 
 <pre><code>POST    /                                       Application.addBar
 GET     /bars.json                              Application.listBars
 </code></pre>
 
-<p>The first route handles HTTP POST requests to the "/" URL and handles them with the <em>Application.addBar</em> method.  The second route handles requests to the "/bars.json" URL and handles them with the <em>Application.listBars</em> method.</p>
+<p>The first route handles HTTP POST requests to the <code>/</code> URL and handles them with the <em>Application.addBar</em> method.  The second route handles requests to the <code>/bars.json</code> URL and handles them with the <em>Application.listBars</em> method.</p>
 
-<p><strong>Step 12)</strong> Lets add a <a href="http://www.playframework.org/documentation/1.2.4/test#Functionaltest">FunctionalTest</a> that will actually make requests to the Controller and test that our new routes and controller methods are working.  Add the following method to the "test/ApplicationTest.java" file:</p>
+<p><strong>Step 12)</strong> Lets add a <a href="http://www.playframework.org/documentation/1.2.4/test#Functionaltest">FunctionalTest</a> that will actually make requests to the Controller and test that our new routes and controller methods are working.  Add the following method to the <code>test/ApplicationTest.java</code> file:</p>
+
+<p>```java</p>
 
 <pre><code>    @Test
     public void barTest() {
@@ -146,15 +158,19 @@ GET     /bars.json                              Application.listBars
     }
 </code></pre>
 
-<p>This test adds a new <em>Bar</em> by doing an HTTP POST to "/" and passing it some form encoded data.  Then a request is made to "/bars.json" and the response is checked to make sure there wasn't an error.  Since there isn't a DELETE method (which could easily be added) there isn't a good way to clean up what this test does.</p>
+<p>```</p>
+
+<p>This test adds a new <em>Bar</em> by doing an HTTP POST to <code>/</code> and passing it some form encoded data.  Then a request is made to <code>/bars.json</code> and the response is checked to make sure there wasn't an error.  Since there isn't a DELETE method (which could easily be added) there isn't a good way to clean up what this test does.</p>
 
 <p>Run the <em>ApplicationTest</em> Functional Test in the Play Framework Web Test Runner:
 <a href="http://localhost:9000/@tests?select=ApplicationTest.class">http://localhost:9000/@tests?select=ApplicationTest.class</a></p>
 
-<p>Because the test didn't clean up after itself you can now see the JSON from "/bars.json" in your browser by visiting:
+<p>Because the test didn't clean up after itself you can now see the JSON from <code>/bars.json</code> in your browser by visiting:
 <a href="http://localhost:9000/bars.json">http://localhost:9000/bars.json</a></p>
 
-<p><strong>Step 13)</strong> Now it is time to create the actual web UI for this application.  A combination of plain HTML (via Play's Groovy templates) and jQuery will be used.  Play Framework uses a convention to render the HTML from the "app/views/Application/index.html" template when <em>Application.index</em>'s render method is called.  In the "index.html" file and you will see:</p>
+<p><strong>Step 13)</strong> Now it is time to create the actual web UI for this application.  A combination of plain HTML (via Play's Groovy templates) and jQuery will be used.  Play Framework uses a convention to render the HTML from the <code>app/views/Application/index.html</code> template when the render method in <code>Application.index</code> is called.  In the <code>index.html</code> file and you will see:</p>
+
+<p>```</p>
 
 <pre><code>#{extends 'main.html' /}
 #{set title:'Home' /}
@@ -162,7 +178,11 @@ GET     /bars.json                              Application.listBars
 #{welcome /}
 </code></pre>
 
-<p>You can also take a look at the referenced "app/views/main.html" file to see what the base template looks like.  It does the standard HTML page stuff and then inserts the body of the "index.html" page into the "#{doLayout /}" section.  The "main.html" template also loads jQuery and provides a way to insert some JavaScript into the <em>head</em> section of the page.  In the "index.html" file, replace the "#{welcome /}" line with a form that will allow users to create new bars:</p>
+<p>```</p>
+
+<p>You can also take a look at the referenced <code>app/views/main.html</code> file to see what the base template looks like.  It does the standard HTML page stuff and then inserts the body of the <code>index.html</code> page into the <code>#{doLayout /}</code> section.  The <code>main.html</code> template also loads jQuery and provides a way to insert some JavaScript into the <em>head</em> section of the page.  In the <code>index.html</code> file, replace the <code>#{welcome /}</code> line with a form that will allow users to create new bars:</p>
+
+<p>```</p>
 
 <pre><code>#{form @addBar()}
     &lt;input type="text" name="bar.name"&gt;&lt;/input&gt;
@@ -170,19 +190,27 @@ GET     /bars.json                              Application.listBars
 #{/form}
 </code></pre>
 
-<p>The "#{form @addBar()}" syntax is Groovy that creates a form tag and sets the form action to the URL that corresponds to the <em>Application.addBar</em> method.  You can test this out by loading this page in your browser:
+<p>```</p>
+
+<p>The <code>#{form @addBar()}</code> syntax is Groovy that creates a form tag and sets the form action to the URL that corresponds to the <code>Application.addBar</code> method.  You can test this out by loading this page in your browser:
 <a href="http://localhost:9000/">http://localhost:9000/</a></p>
 
-<p>The form should be functional now.  Enter the name of a bar and click the submit button.  Because the "addBar" method calls the "index" method, after the POST, the browser is redirected back to the index page.  You can verify that the data is being saved by loading the <a href="http://localhost:9000/bars.json">bars.json</a> page again.</p>
+<p>The form should be functional now.  Enter the name of a bar and click the submit button.  Because the <code>addBar</code> method calls the <code>index</code> method, after the POST, the browser is redirected back to the index page.  You can verify that the data is being saved by loading the <a href="http://localhost:9000/bars.json">bars.json</a> page again.</p>
 
-<p>Now lets add some Ajax / jQuery to the "index.html" page that will get the JSON data and display it in the page.  Add an empty <em>ul</em> tag with an <em>id</em> of "bars":</p>
+<p>Now lets add some Ajax / jQuery to the <code>index.html</code> page that will get the JSON data and display it in the page.  Add an empty <code>ul</code> tag with an <code>id</code> of <code>bars</code>:</p>
+
+<p>```html</p>
 
 <pre><code>&lt;ul id="bars"&gt;
 
 &lt;/ul&gt;
 </code></pre>
 
-<p>Now we will insert the JavaScript into the correct place in the page by setting the "moreScripts" variable:</p>
+<p>```</p>
+
+<p>Now we will insert the JavaScript into the correct place in the page by setting the <code>moreScripts</code> variable:</p>
+
+<p>```html</p>
 
 <pre><code>#{set 'moreScripts'}
 &lt;script type="text/javascript"&gt;
@@ -197,7 +225,9 @@ GET     /bars.json                              Application.listBars
 #{/set}
 </code></pre>
 
-<p>Using jQuery this bit of JavaScript adds a function handler for when the page is loaded, then in that function it makes a get request to "bars.json".  That request has a function handler for when the result comes back from the Ajax request.  Inside that function handler the data is iterated through and each "bar" is appended into the page element with the id of "bars" - the <em>ul</em> tag.</p>
+<p>```</p>
+
+<p>Using jQuery this bit of JavaScript adds a function handler for when the page is loaded, then in that function it makes a get request to "bars.json".  That request has a function handler for when the result comes back from the Ajax request.  Inside that function handler the data is iterated through and each "bar" is appended into the page element with the id of "bars" - the <code>ul</code> tag.</p>
 
 <p>Try out the application and make sure that you can still add new bars and see the list of all the bars in the database.</p>
 
@@ -210,23 +240,23 @@ GET     /bars.json                              Application.listBars
 
 <p>If this is the first time you've done this then new ssh keys for git will be created and associated with your Heroku account.</p>
 
-<p><strong>Step 2)</strong> Each application on Heroku has a Postgres database for testing.  To use that database when running on Heroku we need to configure it.  Play applications on Heroku run in "prod" mode.  To set the database to use the Heroku database add the following lines to the "conf/application.conf" file:</p>
+<p><strong>Step 2)</strong> Each application on Heroku has a Postgres database for testing.  To use that database when running on Heroku we need to configure it.  Play applications on Heroku run in "prod" mode.  To set the database to use the Heroku database add the following lines to the <code>conf/application.conf</code> file:</p>
 
 <pre><code>%prod.db=${DATABASE_URL}
 %prod.jpa.dialect=org.hibernate.dialect.PostgreSQLDialect
 %prod.jpa.ddl=update
 </code></pre>
 
-<p>The default way to provide database (and other resource) connection strings to an application on Heroku, is through environment variables.  The <em>DATABASE_URL</em> environment variable will contain the database host, name, username, and password.  Play Framework knows how to handle that information and setup the JDBC connections.</p>
+<p>The default way to provide database (and other resource) connection strings to an application on Heroku, is through environment variables.  The <code>DATABASE_URL</code> environment variable will contain the database host, name, username, and password.  Play Framework knows how to handle that information and setup the JDBC connections.</p>
 
-<p><strong>Step 3)</strong> Heroku uses <em>git</em> as a means to uploading applications.  Whether or not you use <em>git</em> for your SCM tool you can use <em>git</em> as the tool to upload an app to Heroku.  In the root directory of your project create <em>git</em> repo, add the files to it, and then commit the files:</p>
+<p><strong>Step 3)</strong> Heroku uses git as a means to uploading applications.  Whether or not you use git for your SCM tool you can use git as the tool to upload an app to Heroku.  In the root directory of your project create git repo, add the files to it, and then commit the files:</p>
 
 <pre><code>git init
 git add app conf public test
 git commit -m init
 </code></pre>
 
-<p>Note: Instead of doing a selective "git add" you can create a ".gitignore" file containing the files to not add to the git repo.</p>
+<p>Note: Instead of doing a selective <code>git add</code> you can create a <code>.gitignore</code> file containing the files to not add to the git repo.</p>
 
 <p><strong>Step 4)</strong> Now we will provision a new application on Heroku using the Heroku CLI.  Each application you create gets 750 free "<a href="http://devcenter.heroku.com/articles/dynos">dyno</a>" hours per month.  So as a developer you can use Heroku for free and only pay when you need to scale beyond one dyno.  On the command line create a new application using the "cedar" stack:</p>
 
@@ -242,7 +272,7 @@ git commit -m init
 
 <p>Once the files have been received by Heroku, Play Framework's precompiler will be run, Heroku will assemble a "slug file", and then the "slug" will be deployed onto a dyno.</p>
 
-<p><strong>Step 6)</strong> You can now open the application in your browser by navigating to the domain outputted following the "heroku create" or by simply running:</p>
+<p><strong>Step 6)</strong> You can now open the application in your browser by navigating to the domain outputted following the <code>heroku create</code> or by simply running:</p>
 
 <pre><code>heroku open
 </code></pre>
