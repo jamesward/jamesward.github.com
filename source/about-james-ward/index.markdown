@@ -5,6 +5,7 @@ slug: about-james-ward
 status: publish
 title: About James Ward
 wordpress_id: '84'
+alias: /bio
 ---
 
 Short Bio:

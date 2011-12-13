@@ -14,17 +14,8 @@ categories:
 
 For the next wave of the Heroku Java User Group Tour I will be speaking about running Java, Play Framework, and Scala apps on the cloud in these three wonderful places:
 
-
-
-
   * [Boulder, Colorado - December 13](http://www.boulderjug.org/)
-
-
   * [Phoenix, Arizona - December 14](http://www.phxjug.org/meetings.html#next)
-
-
   * [Portland, Oregon - December 20](http://www.pjug.org/)
-
-
 
 I hope to see you there!
