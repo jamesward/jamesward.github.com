@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2009-04-29 08:53:00'
 layout: post
 slug: announcing-pbjas-an-actionscript-3-pixel-bender-shader-library
@@ -11,30 +10,11 @@ categories:
 - Pixel Bender
 ---
 
-One of the major new features in Flash Player 10 is Pixel Bender. Like its
-name suggests, the primary purpose of Pixel Bender is to allow you to easily
-manipulate pixels inside a Flash application. A great demo of this is the
-[FotoBooth application](http://www.everythingflex.com/fp10/fotobooth/), which
-applies different filters to webcam input. While tweaking pixels is the
-primary purpose of Pixel Bender, it can also be used as a multi-threaded
-number crunching machine. You can pass it some numbers, have it perform some
-mathematical operations on those numbers, and then return the result. This
-opens up some very interesting opportunities to get outside of the normal
-single-threaded nature of ActionScript in Flash Player.
+One of the major new features in Flash Player 10 is Pixel Bender.  Like its name suggests, the primary purpose of Pixel Bender is to allow you to easily manipulate pixels inside a Flash application.  A great demo of this is the [FotoBooth application](http://www.everythingflex.com/fp10/fotobooth/), which applies different filters to webcam input.  While tweaking pixels is the primary purpose of Pixel Bender, it can also be used as a multi-threaded number crunching machine.  You can pass it some numbers, have it perform some mathematical operations on those numbers, and then return the result.  This opens up some very interesting opportunities to get outside of the normal single-threaded nature of ActionScript in Flash Player.
 
-Pixel Bender number crunching machines can be used as filters for things on
-screen or used for just generic number crunching. To create one of these
-number crunching machines, known as a Shader, you would usually use the Pixel
-Bender Toolkit. The Pixel Bender Toolkit runs on Mac and Windows and allows
-you to write a Shader in the Pixel Bender shader language. Shaders can then be
-exported for use in Flash Player.
+Pixel Bender number crunching machines can be used as filters for things on screen or used for just generic number crunching.  To create one of these number crunching machines, known as a Shader, you would usually use the Pixel Bender Toolkit.  The Pixel Bender Toolkit runs on Mac and Windows and allows you to write a Shader in the Pixel Bender shader language.  Shaders can then be exported for use in Flash Player.
 
-To run a Shader in a Flash application (whether it's built with Flex or
-something else) the compiled Shader (a .pbj file) needs to be loaded and then
-either run as a ShaderFilter or a ShaderJob. A ShaderJob can either run
-synchronously or asynchronously. If run asynchronously then it's non-blocking
-and the ActionScript code continues to run at the same time as the Shader.
-Here is an example for how to run a ShaderFilter:
+To run a Shader in a Flash application (whether it's built with Flex or something else) the compiled Shader (a .pbj file) needs to be loaded and then either run as a ShaderFilter or a ShaderJob.  A ShaderJob can either run synchronously or asynchronously.  If run asynchronously then it's non-blocking and the ActionScript code continues to run at the same time as the Shader.  Here is an example for how to run a ShaderFilter:
 
     
     
@@ -47,60 +27,36 @@ Here is an example for how to run a ShaderFilter:
         i.filters = [shaderFilter];
     
 
-  
+
+
 Here is how you run a ShaderJob:
 
     
     
         [Embed(source="VerySimpleFilter.pbj", mimeType="application/octet-stream")]
-        var TestShaderClass:Class;  
-        var testShader:Shader = new Shader(assembledPBJByteArray);  
-        result = new ByteArray();  
+        var TestShaderClass:Class;
+    
+        var testShader:Shader = new Shader(assembledPBJByteArray);
+    
+        result = new ByteArray();
+    
         var shaderJob:ShaderJob = new ShaderJob(testShader, result, width, height);
         shaderJob.start();
     
 
-  
-This is very cool stuff and there are a ton of amazing possible uses of Pixel
-Bender. But I wasn't happy with having to use the Pixel Bender Toolkit to
-create Shaders. Compiled Pixel Bender Shaders are just byte code that tells
-the Pixel Bender virtual machine what to do. So why can't they be created at
-runtime in ActionScript? Well, now they can!
 
-The pbjAS library is an AS3 library for creating Pixel Bender Shaders in
-ActionScript. When I began researching it I discovered that Tinic Uro (a Flash
-Player engineer) had created [C++
-applications](http://www.kaourantin.net/2008/09/pixel-bender-pbj-files.html)
-to assemble and disassemble Pixel Bender byte code. This would have been a
-great starting place but I don't know C or C++ and at the time knew nothing
-about byte code. Luckily I found that Haxe already had a [Pixel Bender Shader
-library](http://www.ncannasse.fr/projects/pbj) and since the Haxe language is
-similar to ActionScript this was a great starting place for pbjAS.
 
-I began writing pbjAS by porting the Haxe code to ActionScript. The languages
-are pretty similar but I needed to rework a few things. For instance Haxe has
-Enums while AS3 does not; Haxe can do a switch statement on a type while AS3
-can't. As I began porting the code I also started writing unit tests. There
-are two major parts of the library: the assembler, which creates Pixel Bender
-Shaders, and the disassembler, which converts Pixel Bender Shaders into their
-AS3 representations. Both parts are now working as confirmed by a simple unit
-test that takes a prebuilt Shader, disassembles it, and then reassembles it
-into the byte code that matches the prebuilt Shader.
+This is very cool stuff and there are a ton of amazing possible uses of Pixel Bender.  But I wasn't happy with having to use the Pixel Bender Toolkit to create Shaders.  Compiled Pixel Bender Shaders are just byte code that tells the Pixel Bender virtual machine what to do.  So why can't they be created at runtime in ActionScript?  Well, now they can!
 
-Assembling a Shader with pbjAS requires creating a PBJ object, which contains
-information about the Shader parameters and operations. The operations are
-defined in an assembly-like manner. This may seem strange for those familiar
-with the Pixel Bender Toolkit because it uses a higher level language. The
-assembly-like language is very similar to the way the byte code is actually
-organized. While the Pixel Bender assembly language is pretty straightforward,
-it is not the ideal language for building number crunching machines. So phase
-two of the pbjAS project is to wrap the assembly language with a higher level
-language - perhaps MathML.
+The pbjAS library is an AS3 library for creating Pixel Bender Shaders in ActionScript.  When I began researching it I discovered that Tinic Uro (a Flash Player engineer) had created [C++ applications](http://www.kaourantin.net/2008/09/pixel-bender-pbj-files.html) to assemble and disassemble Pixel Bender byte code.  This would have been a great starting place but I don't know C or C++ and at the time knew nothing about byte code.  Luckily I found that Haxe already had a [Pixel Bender Shader library](http://www.ncannasse.fr/projects/pbj) and since the Haxe language is similar to ActionScript this was a great starting place for pbjAS.
+
+I began writing pbjAS by porting the Haxe code to ActionScript.  The languages are pretty similar but I needed to rework a few things.  For instance Haxe has Enums while AS3 does not; Haxe can do a switch statement on a type while AS3 can't.  As I began porting the code I also started writing unit tests.  There are two major parts of the library: the assembler, which creates Pixel Bender Shaders, and the disassembler, which converts Pixel Bender Shaders into their AS3 representations.  Both parts are now working as confirmed by a simple unit test that takes a prebuilt Shader, disassembles it, and then reassembles it into the byte code that matches the prebuilt Shader.
+
+Assembling a Shader with pbjAS requires creating a PBJ object, which contains information about the Shader parameters and operations.  The operations are defined in an assembly-like manner.  This may seem strange for those familiar with the Pixel Bender Toolkit because it uses a higher level language.  The assembly-like language is very similar to the way the byte code is actually organized.  While the Pixel Bender assembly language is pretty straightforward, it is not the ideal language for building number crunching machines. So phase two of the pbjAS project is to wrap the assembly language with a higher level language - perhaps MathML.
 
 The steps to create a Pixel Bender Shader with pbjAS are:
 
-1) Get the [pbjAS library](/pbjas/pbjAS-0.1.swc) and include it in a project's
-library path
+1) Get the [pbjAS library](/pbjas/pbjAS-0.1.swc) and include it in a project's library path
 
 2) Create a PBJ object and set some metadata about the Shader:
 
@@ -111,7 +67,8 @@ library path
           myPBJ.name = "SingleMulFilter";
     
 
-  
+
+
 3) Add input and output parameters (of type PBJParam) to the PBJ:
 
     
@@ -122,24 +79,9 @@ library path
       new PBJParam("product", new Parameter(PBJType.TFloat, true, new RFloat(2, [PBJChannel.R])))];
     
 
-  
-Each PBJParam has a name, a Parameter, and optional metadata. In this example
-the first parameter's name is num1. Its Parameter is of type TFloat. There are
-four types of floats: TFloat (a single float), TFloat2 (contains two floats),
-TFloat3 (contains three floats), and TFloat4 (contains four floats). Each
-parameter also needs to specify whether it is an output parameter. In the
-example above the first two parameters are inputs while the last one is an
-output parameter. The third argument in Parameter's constructor is the
-register for the parameter. A register is basically an identifier for the
-parameter - it specifies an index and information about how to access the
-parameter. The first parameter has a register index of zero. Like parameter
-types there are four register types: RFloat, RFloat2, RFloat3, and RFloat4.
-Every register has four possible channels. This corresponds with the four
-floats typically used in pixel manipulation: Red, Green, Blue, and Alpha.
-Every register other than RFloat4 (which uses all four channels) must specify
-which channel(s) to use. In the example above each register uses only one
-channel so it's an RFloat and the channel they use on the register is the Red
-channel, which is declared as "PBJChannel.R".
+
+
+Each PBJParam has a name, a Parameter, and optional metadata.  In this example the first parameter's name is num1.  Its Parameter is of type TFloat.  There are four types of floats: TFloat (a single float), TFloat2 (contains two floats), TFloat3 (contains three floats), and TFloat4 (contains four floats).  Each parameter also needs to specify whether it is an output parameter.  In the example above the first two parameters are inputs while the last one is an output parameter.  The third argument in Parameter's constructor is the register for the parameter.  A register is basically an identifier for the parameter - it specifies an index and information about how to access the parameter.  The first parameter has a register index of zero.  Like parameter types there are four register types: RFloat, RFloat2, RFloat3, and RFloat4.  Every register has four possible channels.  This corresponds with the four floats typically used in pixel manipulation: Red, Green, Blue, and Alpha.  Every register other than RFloat4 (which uses all four channels) must specify which channel(s) to use.  In the example above each register uses only one channel so it's an RFloat and the channel they use on the register is the Red channel, which is declared as "PBJChannel.R".
 
 4) Next add the operations to perform on the input:
 
@@ -150,16 +92,9 @@ channel, which is declared as "PBJChannel.R".
       new OpMov(new RFloat(2, [PBJChannel.R]), new RFloat(0, [PBJChannel.R]))];
     
 
-  
-There are numerous operations that can be performed on the specified data. A
-full list of the operations is in the [pbjas.ops
-package](/pbjas/asdoc/pbjAS/ops/package-detail.html) or look in the Pixel
-Bender Reference (currently only found in the Pixel Bender Toolkit). In this
-example the first operation multiplies register number 0's Red channel by
-register number 1's Red channel. The result always goes into the first
-specified register, in this case register 0. The next operation moves the
-value in register 0's Red channel to register 2's Red channel, which is the
-output parameter.
+
+
+There are numerous operations that can be performed on the specified data.  A full list of the operations is in the [pbjas.ops package](/pbjas/asdoc/pbjAS/ops/package-detail.html) or look in the Pixel Bender Reference (currently only found in the Pixel Bender Toolkit).  In this example the first operation multiplies register number 0's Red channel by register number 1's Red channel.  The result always goes into the first specified register, in this case register 0.  The next operation moves the value in register 0's Red channel to register 2's Red channel, which is the output parameter.
 
 5) The byte code for the Shader now needs to be created:
 
@@ -168,7 +103,8 @@ output parameter.
     var assembledPBJByteArray:ByteArray = PBJAssembler.assemble(myPBJ);
     
 
-  
+
+
 6) Then a new Shader is created from the byte code:
 
     
@@ -176,7 +112,8 @@ output parameter.
     var testShader:Shader = new Shader(assembledPBJByteArray);
     
 
-  
+
+
 7) Any input parameters can now be specified on the Shader:
 
     
@@ -185,23 +122,20 @@ output parameter.
     testShader.data.num2.value = [Math.round(Math.random() * 1000)];
     
 
-  
-Notice that the values are specified by the names given to the input
-parameters. Also the values must be set in an Array because depending on the
-parameter type there can be between one and four values for each input
-parameter.
+
+
+Notice that the values are specified by the names given to the input parameters.  Also the values must be set in an Array because depending on the parameter type there can be between one and four values for each input parameter.
 
 8) Create a Vector to hold the result:
 
     
     
-    var result:Vector. = new Vector.();
+    var result:Vector.<number> = new Vector.<number>();
     
 
-  
-Shaders can have results as either Vector, ByteArray, or BitmapData. Shaders
-can also have input parameters as type Texture, which can be passed to the
-Shader as any of those three types.
+
+
+Shaders can have results as either Vector, ByteArray, or BitmapData.  Shaders can also have input parameters as type Texture, which can be passed to the Shader as any of those three types.
 
 9) Create a ShaderJob, which will allow the Shader to be run:
 
@@ -210,19 +144,9 @@ Shader as any of those three types.
     var shaderJob:ShaderJob = new ShaderJob(testShader, result, 1, 1);
     
 
-  
-The third parameter is the width of the input and the fourth is the height.
-These parameters determine how many times to run the Shader. In this case it
-will just be run once. If a Vector of length twenty were used as an input to
-the Shader then the width multiplied by the height must be equal to twenty.
-Pixel Bender will take advantage of multiple CPUs if they exist but for that
-to happen the height of the ShaderJob must be more than one. So it's best to
-give a ShaderJob a height of at least two if it will be run on a data set with
-more than one item. The output from the Shader is always equal to the length
-of the input. However Textures in Pixel Bender can have from one to four
-channels. If a Texture with four channels is used on a Vector then the number
-of items in the Vector must be a multiple of four. Also in that case the
-height and width would be one fourth the length of the Vector.
+
+
+The third parameter is the width of the input and the fourth is the height.  These parameters determine how many times to run the Shader.  In this case it will just be run once.  If a Vector of length twenty were used as an input to the Shader then the width multiplied by the height must be equal to twenty.  Pixel Bender will take advantage of multiple CPUs if they exist but for that to happen the height of the ShaderJob must be more than one.  So it's best to give a ShaderJob a height of at least two if it will be run on a data set with more than one item.  The output from the Shader is always equal to the length of the input.  However Textures in Pixel Bender can have from one to four channels.  If a Texture with four channels is used on a Vector then the number of items in the Vector must be a multiple of four.  Also in that case the height and width would be one fourth the length of the Vector.
 
 10) Start the Shader in synchronous mode:
 
@@ -231,75 +155,68 @@ height and width would be one fourth the length of the Vector.
     shaderJob.start(true);
     
 
-  
-The optional parameter to the start method on the shaderJob tells it whether
-to run synchronously or asynchronously. In this case it's set to true meaning
-it should run synchronously. If it's run asynchronously then an event listener
-needs to be registered on the shaderJob's complete event. Asynchronous
-ShaderJobs will not block the UI.
 
-You can see the full source code for this example in the [pbjas's
-TestShaderJob unit test](/pbjas/demos/pbjASTest/srcview/index.html).
+
+The optional parameter to the start method on the shaderJob tells it whether to run synchronously or asynchronously.  In this case it's set to true meaning it should run synchronously.  If it's run asynchronously then an event listener needs to be registered on the shaderJob's complete event.  Asynchronous ShaderJobs will not block the UI.
+
+You can see the full source code for this example in the [pbjas's TestShaderJob unit test](/pbjas/demos/pbjASTest/srcview/index.html).
+
+
 
 ## Demos
 
-  
-The first demo creates a simple multiply Shader that then is just applied to
-an image. The Shader is run when the slider value changes.
 
-  
+
+The first demo creates a simple multiply Shader that then is just applied to an image.  The Shader is run when the slider value changes.
+
+
+
 ([view source](/pbjas/demos/pbjASFilter/srcview/index.html))
 
-This second demo compares the difference between calculating a bunch of square
-roots in AS3 and in Pixel Bender. Pixel Bender does well but most of it's time
-is actually still being spent in AS3 code execution moving data around. Since
-it's a really simple Pixel Bender filter this isn't a great example of just
-how fast Pixel Bender is but it still beats out AS3 for very large data sets.
-Also in this demo I'm using a small library I started playing with that will
-slice up the input into multiple ShaderJobs. The reason I do this is that the
-maximum theoretical input size for a Pixel Bender Shader is 16,777,216 items.
-However due to [a bug](https://bugs.adobe.com/jira/browse/FP-1845) in Flash
-Player I consistently get crashes on data sets larger than about 2,000,000
-items. So with very large data sets it's nice to have some automatic slicing.
-Also the maximum height or width of a Shader is 8,192. So each Shader's height
-and width needs to be calculated to avoid hitting that limit. This stuff is in
-the MathPBJ project. Here is the sqrt demo:
+This second demo compares the difference between calculating a bunch of square roots in AS3 and in Pixel Bender.  Pixel Bender does well but most of it's time is actually still being spent in AS3 code execution moving data around.  Since it's a really simple Pixel Bender filter this isn't a great example of just how fast Pixel Bender is but it still beats out AS3 for very large data sets.  Also in this demo I'm using a small library I started playing with that will slice up the input into multiple ShaderJobs.  The reason I do this is that the maximum theoretical input size for a Pixel Bender Shader is 16,777,216 items.  However due to [a bug](https://bugs.adobe.com/jira/browse/FP-1845) in Flash Player I consistently get crashes on data sets larger than about 2,000,000 items.  So with very large data sets it's nice to have some automatic slicing.  Also the maximum height or width of a Shader is 8,192.  So each Shader's height and width needs to be calculated to avoid hitting that limit.  This stuff is in the MathPBJ project.  Here is the sqrt demo:
 
-  
+
+
 ([view source](/pbjas/demos/pbjASSqrtTest/srcview/index.html))
 
-The next demo shows that a more complex Shader can crunch numbers while not
-locking the UI:
+The next demo shows that a more complex Shader can crunch numbers while not locking the UI:
 
-  
+
+
 ([view source](/pbjas/demos/pbjASLockingTest/srcview/index.html))
 
-Finally this last demo isn't very exciting. It's just the unit tests for the
-pbjAS library. But if you want to better understand how to use the library the
-best place to learn is by looking at the unit tests.
+Finally this last demo isn't very exciting.  It's just the unit tests for the pbjAS library.  But if you want to better understand how to use the library the best place to learn is by looking at the unit tests.
 
-  
+
+
 ([view source](/pbjas/demos/pbjASTest/srcview/index.html))
+
+
 
 ## Resources
 
-  
-Now that you know what pbjAS is and how to use it here are some other
-resources you might need to get started:
+
+
+Now that you know what pbjAS is and how to use it here are some other resources you might need to get started:
+
+
+
+
 
   * [pbjAS Source Code in git](http://github.com/jamesward/pbjas)
+
+
   * [pbjAS asdoc](/pbjas/asdoc/index.html)
+
+
   * [pbjAS Google Group](http://groups.google.com/group/pbjas-dev)
-  
+
+
+
+
 
 ## Future Plans
 
-  
-This is really just a 0.1 release of the pbjAS library. So there is still more
-to do. One of the major things I'd like to do is to wrap pbjAS with a higher
-level language, perhaps MathML. That would make using Pixel Bender for number
-crunching transparent and easy. Before that though I need to get 100% unit
-test coverage on the existing library. I'd love any help on these items. All
-the code is in GitHub awaiting your contributions! So please let me know what
-you think and feel free to contribute!
 
+
+This is really just a 0.1 release of the pbjAS library.  So there is still more to do.  One of the major things I'd like to do is to wrap pbjAS with a higher level language, perhaps MathML.  That would make using Pixel Bender for number crunching transparent and easy.  Before that though I need to get 100% unit test coverage on the existing library.  I'd love any help on these items.  All the code is in GitHub awaiting your contributions!  So please let me know what you think and feel free to contribute!

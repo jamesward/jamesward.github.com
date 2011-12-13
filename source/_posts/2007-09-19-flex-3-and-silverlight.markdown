@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2007-09-19 13:26:56'
 layout: post
 slug: flex-3-and-silverlight
@@ -11,22 +10,4 @@ categories:
 - Silverlight
 ---
 
-InfoQ recently published [an interview with
-me](http://www.infoq.com/news/2007/09/flex3) about Flex 3 and Silverlight. In
-the interview I talked about what I see are some of the differences between
-Flex and Silverlight. After reading my words again I realized that they may
-come across as critical of Silverlight. I don't at all intend them to be taken
-that way. Silverlight is helping to bring the idea of richer and better user
-interfaces to the masses. This vision is something I believe in and I'm glad
-that Microsoft and Sun (with JavaFX) have all now embraced the RIA vision and
-are making significant investments to make it reality. Silverlight and JavaFX,
-have validated the programming and deployment models which Flex uses. The
-combination of things like a declarative language, a procedural language,
-cross-platform bytecode, a high performance VM, vector graphics, and a web
-browser plugin have been the foundation of Flex based RIAs since 2004.
-Silverlight and JavaFX have validated that this is the best way to build a
-successful RIA platform. So please don't read my comments on Silverlight and
-JavaFX as being critical. I'm excited that Microsoft and Sun now believe in
-the RIA vision. But I'm also glad that I get to evangelize the RIA solution
-which is proven and available today.
-
+InfoQ recently published [an interview with me](http://www.infoq.com/news/2007/09/flex3) about Flex 3 and Silverlight.  In the interview I talked about what I see are some of the differences between Flex and Silverlight.  After reading my words again I realized that they may come across as critical of Silverlight.  I don't at all intend them to be taken that way.  Silverlight is helping to bring the idea of richer and better user interfaces to the masses.  This vision is something I believe in and I'm glad that Microsoft and Sun (with JavaFX) have all now embraced the RIA vision and are making significant investments to make it reality.  Silverlight and JavaFX, have validated the programming and deployment models which Flex uses.  The combination of things like a declarative language, a procedural language, cross-platform bytecode, a high performance VM, vector graphics, and a web browser plugin have been the foundation of Flex based RIAs since 2004.  Silverlight and JavaFX have validated that this is the best way to build a successful RIA platform.  So please don't read my comments on Silverlight and JavaFX as being critical.  I'm excited that Microsoft and Sun now believe in the RIA vision.  But I'm also glad that I get to evangelize the RIA solution which is proven and available today.

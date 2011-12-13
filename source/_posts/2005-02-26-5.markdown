@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2005-02-26 16:23:35'
 layout: post
 slug: '5'
@@ -10,23 +9,31 @@ categories:
 - RIA
 ---
 
-For a while I have been wanting to create a TreeGrid component for Flex. The
+For a while I have been wanting to create a TreeGrid component for Flex.  The
 basic idea is to allow a user to navigate a Tree like object within a
-DataGrid. Well, I just finished a very hacky version 1: Here are some problems
-with the current implementation:
+DataGrid.  Well, I just finished a very hacky version 1:
+Here are some problems with the current implementation:
 
-  * I get strange flicker when mousing over the cells. Don't know why.
-  * If I resize the right column to cover part of the Title, the title doesn't get clipped. Don't know why.
-  * The code looks only for children named "product". I don't know of a way to make this generic / configurable.
-  * Only supports 3 levels because I can't figure out how to do recursion in the disclosurePress function. When I tried to call another function to do recursion the recursive method never got called. Don't know why.
-Other than all that, it works decently. :) Any ActionScript experts out there,
-please help me out. :)
 
-[Here is the mxml code](http://www.cayambe.com/TreeGrid/TreeGrid.mxml) [Here
-is the cellRenderer
-code](http://www.cayambe.com/TreeGrid/TreeGridCellRenderer.as)
+
+	
+  * I get strange flicker when mousing over the cells.  Don't know why.
+
+	
+  * If I resize the right column to cover part of the Title, the title doesn't get clipped.  Don't know why.
+
+	
+  * The code looks only for children named "product".  I don't know of a way to make this generic / configurable.
+
+	
+  * Only supports 3 levels because I can't figure out how to do recursion in the disclosurePress function.  When I tried to call another function to do recursion the recursive method never got called.  Don't know why.
+
+
+Other than all that, it works decently.  :)  Any ActionScript experts out there, please help me out.  :)
+
+[Here is the mxml code](http://www.cayambe.com/TreeGrid/TreeGrid.mxml)
+[Here is the cellRenderer code](http://www.cayambe.com/TreeGrid/TreeGridCellRenderer.as)
 
 Enjoy!
 
 -James
-

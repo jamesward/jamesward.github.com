@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2008-08-15 09:28:57'
 layout: post
 slug: flex-show-with-bruce-eckel
@@ -11,8 +10,4 @@ categories:
 - Java
 ---
 
-[Listen to the Flex Show interview with Bruce Eckel and
-me.](http://www.theflexshow.com/blog/index.cfm/2008/8/13/The-Flex-Show-
-Episode-50-Interview-James-Ward-and-Bruce-Eckell) Then let me know what you
-think.
-
+[Listen to the Flex Show interview with Bruce Eckel and me.](http://www.theflexshow.com/blog/index.cfm/2008/8/13/The-Flex-Show-Episode-50-Interview-James-Ward-and-Bruce-Eckell)  Then let me know what you think.

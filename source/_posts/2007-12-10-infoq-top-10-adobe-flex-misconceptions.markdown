@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2007-12-10 10:34:34'
 layout: post
 slug: infoq-top-10-adobe-flex-misconceptions
@@ -10,8 +9,4 @@ categories:
 - Flex
 ---
 
-[Jon Rose](http://ectropic.com/wordpress/) has just posted a great article on
-InfoQ about the [Top 10 Adobe Flex
-Misconceptions](http://www.infoq.com/news/2007/12/top-10-flex-misconceptions).
-Let me know what you think about this list and my responses.
-
+[Jon Rose](http://ectropic.com/wordpress/) has just posted a great article on InfoQ about the [Top 10 Adobe Flex Misconceptions](http://www.infoq.com/news/2007/12/top-10-flex-misconceptions).  Let me know what you think about this list and my responses.

@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2008-02-25 12:04:58'
 layout: post
 slug: 3-2-1-lift-off
@@ -14,32 +13,16 @@ categories:
 - Salesforce.com
 ---
 
-Today Adobe launched [Flex 3](http://www.adobe.com/products/flex/) and [Adobe
-AIR 1.0](http://www.adobe.com/products/air/) – the most mature and
-comprehensive platform for Rich Internet Applications in existence.
+Today Adobe launched [Flex 3](http://www.adobe.com/products/flex/) and [Adobe AIR 1.0](http://www.adobe.com/products/air/) – the most mature and comprehensive platform for Rich Internet Applications in existence.
 
-The news of the launch is everywhere but I wanted to point out a few of the
-most exciting things related to this launch.
+The news of the launch is everywhere but I wanted to point out a few of the most exciting things related to this launch.
 
-The Flex SDK and BlazeDS are now [officially open
-source](http://opensource.adobe.com).
+The Flex SDK and BlazeDS are now [officially open source](http://opensource.adobe.com).
 
-InfoQ has published an [interview with
-me](http://www.infoq.com/news/2008/02/flex3-update) on the Flex 3 launch. They
-have also posted an [interview with Kevin
-Hoyt](http://www.infoq.com/news/2008/02/air-1.0-overview) on the AIR 1.0
-launch as well as [an overview of today's
-announcements](http://www.infoq.com/news/2008/02/air-flex-release).
+InfoQ has published an [interview with me](http://www.infoq.com/news/2008/02/flex3-update) on the Flex 3 launch.  They have also posted an [interview with Kevin Hoyt](http://www.infoq.com/news/2008/02/air-1.0-overview) on the AIR 1.0 launch as well as [an overview of today's announcements](http://www.infoq.com/news/2008/02/air-flex-release).
 
-Salesforce.com and Adobe have launched the [Force.com Toolkit for Adobe AIR
-and Flex](http://www.jamesward.org/wordpress/2008/02/25/announcing-the-
-forcecom-toolkit-for-adobe-air-and-flex/).
+Salesforce.com and Adobe have launched the [Force.com Toolkit for Adobe AIR and Flex](http://www.jamesward.org/wordpress/2008/02/25/announcing-the-forcecom-toolkit-for-adobe-air-and-flex/).
 
-Not really related to the launch but also very exciting – Chet Haase, Java
-Swing guru and co-author of Filthy Rich Clients has [joined the Flex
-engineering team](http://graphics-geek.blogspot.com/2008/02/what-hello-
-world.html).
+Not really related to the launch but also very exciting – Chet Haase, Java Swing guru and co-author of Filthy Rich Clients has [joined the Flex engineering team](http://graphics-geek.blogspot.com/2008/02/what-hello-world.html).
 
-This launch is the biggest RIA launch ever! I can't wait to see what you build
-with these awesome technologies!
-
+This launch is the biggest RIA launch ever!  I can't wait to see what you build with these awesome technologies!

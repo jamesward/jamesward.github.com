@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2009-01-27 14:07:00'
 layout: post
 slug: adobe-tv-data-synchronization-with-flex-and-lcds
@@ -10,6 +9,5 @@ categories:
 - Flex
 - LCDS
 ---
-
 
 

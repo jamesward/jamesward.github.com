@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2011-09-21 08:45:22'
 layout: post
 slug: java-concurrency-with-akka-composing-futures
@@ -12,4 +11,3 @@ categories:
 ---
 
 None
-

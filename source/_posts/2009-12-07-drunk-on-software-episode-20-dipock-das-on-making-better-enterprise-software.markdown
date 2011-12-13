@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2009-12-07 12:02:29'
 layout: post
 slug: drunk-on-software-episode-20-dipock-das-on-making-better-enterprise-software
@@ -10,9 +9,8 @@ categories:
 - Drunk on Software
 ---
 
-Here is another new episode of [Drunk on
-Software](http://www.drunkonsoftware.com)!
+Here is another new episode of [Drunk on Software](http://www.drunkonsoftware.com)!
 
-  
+
+
 Let me know what you think!
-

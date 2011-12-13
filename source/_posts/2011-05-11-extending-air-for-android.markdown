@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2011-05-11 08:06:36'
 layout: post
 slug: extending-air-for-android
@@ -13,5 +12,4 @@ categories:
 - Mobile
 ---
 
-
-
+None

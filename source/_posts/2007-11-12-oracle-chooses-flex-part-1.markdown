@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2007-11-12 17:21:30'
 layout: post
 slug: oracle-chooses-flex-part-1
@@ -11,19 +10,8 @@ categories:
 - Oracle
 ---
 
-Today I'm at Oracle OpenWorld watching a number of keynotes and sessions and
-I'm seeing Flex EVERYWHERE! First up was the Monday Keynote with Charles
-Phillips where Oracle demonstrated a new Flex based MetaLink. Back when I was
-a DBA/SysAdmin/Programmer I had to use MetaLink to get support from Oracle.
-Working with the interface was like a trip to dentist. Not fun. Well, today
-Oracle demonstrated the new version of MetaLink built with Flex. It looks
-great and using it is like a trip to the day spa. Great job Oracle! Here's a
-photo of the new interface courtesy of Todd Ruhl:
+Today I'm at Oracle OpenWorld watching a number of keynotes and sessions and I'm seeing Flex EVERYWHERE!  First up was the Monday Keynote with Charles Phillips where Oracle demonstrated a new Flex based MetaLink.  Back when I was a DBA/SysAdmin/Programmer I had to use MetaLink to get support from Oracle.  Working with the interface was like a trip to dentist.  Not fun.  Well, today Oracle demonstrated the new version of MetaLink built with Flex.  It looks great and using it is like a trip to the day spa.  Great job Oracle!  Here's a photo of the new interface courtesy of Todd Ruhl:
 
-![](http://www.jamesward.org/wordpress/wp-
-content/uploads/2007/11/metalink.jpg)
+![](http://www.jamesward.org/wordpress/wp-content/uploads/2007/11/metalink.jpg)
 
-There are many more Oracle applications being demonstrated over the next few
-days that were built with Flex. Stay tuned for more photos and announcements.
-This is only the tip of the iceberg!
-
+There are many more Oracle applications being demonstrated over the next few days that were built with Flex.  Stay tuned for more photos and announcements.  This is only the tip of the iceberg!

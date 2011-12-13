@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2011-04-11 06:54:36'
 layout: post
 slug: building-mobile-apps-with-flex-4-5
@@ -11,9 +10,7 @@ categories:
 - Mobile
 ---
 
-Now that Flex 4.5 has [officially been
-announced](http://www.adobe.com/products/flex/mobile/) I wanted to show just
-how easy it is to start building mobile apps with Flex:
+Now that Flex 4.5 has [officially been announced](http://www.adobe.com/products/flex/mobile/) I wanted to show just how easy it is to start building mobile apps with Flex:
 
-Very fun stuff! Let me know what you think.
 
+Very fun stuff!  Let me know what you think.

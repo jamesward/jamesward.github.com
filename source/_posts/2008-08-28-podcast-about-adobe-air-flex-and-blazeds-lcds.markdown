@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2008-08-28 13:35:05'
 layout: post
 slug: podcast-about-adobe-air-flex-and-blazeds-lcds
@@ -14,8 +13,4 @@ categories:
 - LCDS
 ---
 
-A podcast I recently did with [Chariot
-Solutions](http://www.chariotsolutions.com) has just been
-[published](http://www.chariotsolutions.com/shownotes/show/17). Let me know
-what you think.
-
+A podcast I recently did with [Chariot Solutions](http://www.chariotsolutions.com) has just been [published](http://www.chariotsolutions.com/shownotes/show/17).  Let me know what you think.

@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2008-11-25 22:08:51'
 layout: post
 slug: duanes-world-road-to-max-2008-europe-with-james-ward
@@ -10,7 +9,6 @@ categories:
 - Conferences
 ---
 
-I had the great opportunity to be the star of a new Duane's World episode! In
-this episode Duane and I share some fine scotch and discuss all of the good
-reasons to attend [MAX Europe](http://max.adobe.com). Check it out!
+I had the great opportunity to be the star of a new Duane's World episode!  In this episode Duane and I share some fine scotch and discuss all of the good reasons to attend [MAX Europe](http://max.adobe.com).  Check it out!
+
 

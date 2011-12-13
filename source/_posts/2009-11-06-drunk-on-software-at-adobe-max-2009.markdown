@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2009-11-06 14:03:19'
 layout: post
 slug: drunk-on-software-at-adobe-max-2009
@@ -10,6 +9,5 @@ categories:
 - Drunk on Software
 ---
 
-Here's a special episode of [Drunk on
-Software](http://www.drunkonsoftware.com) from Adobe MAX 2009. Enjoy!!
+Here's a special episode of [Drunk on Software](http://www.drunkonsoftware.com) from Adobe MAX 2009.  Enjoy!!
 

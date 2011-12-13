@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2007-08-14 20:04:26'
 layout: post
 slug: pot-of-gold-at-the-flex-air-jam
@@ -11,28 +10,10 @@ categories:
 - Flex
 ---
 
-This week I have been in Crested Butte, Colorado at the [Flex / AIR
-Jam](http://www.mindviewinc.com/Conferences/FlexAIRJam/Index.php). It's been a
-great event for everyone. Those new to Flex have learned a ton and those with
-more experience have been able to extend their knowledge by working on real
-projects. Over the past two days I've made considerable progress on two
-different projects. One project is the new version of the [Census - RIA
-Benchmark](/census) app. I'll be posting the new version with GZip support and
-a new Laszlo test tomorrow. The other project I've been working on is an
-enterprise Flex application framework kinda like a portal. This project is
-named "Anvil". The goals of Anvil are to support large Flex application
-deployment scenarios, illustrate best practices for application partitioning,
-and be a reusable open source framework for portal-like applications. I'll be
-publishing more info on Anvil in the next few weeks.
+This week I have been in Crested Butte, Colorado at the [Flex / AIR Jam](http://www.mindviewinc.com/Conferences/FlexAIRJam/Index.php).  It's been a great event for everyone.  Those new to Flex have learned a ton and those with more experience have been able to extend their knowledge by working on real projects.  Over the past two days I've made considerable progress on two different projects.  One project is the new version of the [Census - RIA Benchmark](/census) app.  I'll be posting the new version with GZip support and a new Laszlo test tomorrow.  The other project I've been working on is an enterprise Flex application framework kinda like a portal.  This project is named "Anvil".  The goals of Anvil are to support large Flex application deployment scenarios, illustrate best practices for application partitioning, and be a reusable open source framework for portal-like applications.  I'll be publishing more info on Anvil in the next few weeks.
 
-Today we had a nice surprise. We were heads down coding and Bruce told us to
-go outside to look for a rainbow because it was sunny and raining. We walked
-outside to see an amazing rainbow that was brighter than any I have ever seen.
-A few of us decided to walk down the street to get a better view. I happened
-to find a nice flower pot which the rainbow seemed to end in... Like a pot of
-gold! I hope that many more of you will be able to find another pot of gold
-with us at the next Flex Jam! :)
+Today we had a nice surprise.  We were heads down coding and Bruce told us to go outside to look for a rainbow because it was sunny and raining.  We walked outside to see an amazing rainbow that was brighter than any I have ever seen.  A few of us decided to walk down the street to get a better view.  I happened to find a nice flower pot which the rainbow seemed to end in...  Like a pot of gold!  I hope that many more of you will be able to find another pot of gold with us at the next Flex Jam!  :)
 
-![](http://www.jamesward.org/wordpress/wp-
-content/uploads/2007/08/img_4576.jpg)
+![](http://www.jamesward.org/wordpress/wp-content/uploads/2007/08/img_4576.jpg)
+
 

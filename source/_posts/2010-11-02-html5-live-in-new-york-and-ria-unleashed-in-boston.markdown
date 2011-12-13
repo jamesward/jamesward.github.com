@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2010-11-02 06:33:01'
 layout: post
 slug: html5-live-in-new-york-and-ria-unleashed-in-boston
@@ -11,13 +10,4 @@ categories:
 - HTML5
 ---
 
-I'll be speaking at two great events next week on the East Coast. First up is
-[HTML5 Live](http://html5live.org/html5-nyc-2010/) in New York on Tuesday
-November 9th. At HTML5 Live I'll be talking about "[Development Tools for
-Building HTML5 Content & Applications](http://html5live.org/html5-nyc-2010/pre
-sentation/Development+Tools+for+Building+HTML5+Content+%26+Applications)".
-Then on Friday November 12th I'll be at [RIA
-Unleashed](http://riaunleashed.com/) in Boston talking about "[Flex 4.5
-Hero](http://riaunleashed.com/page.cfm/agenda)". These two events will
-certainly be enlightening. :) I hope to see you there!
-
+I'll be speaking at two great events next week on the East Coast.  First up is [HTML5 Live](http://html5live.org/html5-nyc-2010/) in New York on Tuesday November 9th.  At HTML5 Live I'll be talking about "[Development Tools for Building HTML5 Content & Applications](http://html5live.org/html5-nyc-2010/presentation/Development+Tools+for+Building+HTML5+Content+%26+Applications)".  Then on Friday November 12th I'll be at [RIA Unleashed](http://riaunleashed.com/) in Boston talking about "[Flex 4.5 Hero](http://riaunleashed.com/page.cfm/agenda)".  These two events will certainly be enlightening.  :)  I hope to see you there!

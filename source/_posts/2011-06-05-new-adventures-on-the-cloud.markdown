@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2011-06-05 17:47:25'
 layout: post
 slug: new-adventures-on-the-cloud
@@ -11,36 +10,12 @@ categories:
 - Flex
 ---
 
-When I started doing professional software development almost 15 years ago I
-was focused on the server-side. I started with Perl / CGI web apps - some of
-which are still in production today. Then I dove into Java web development
-with Java Web Server 1.0, Struts, JBoss, Tomcat and many other game changing
-technologies.
+When I started doing professional software development almost 15 years ago I was focused on the server-side.  I started with Perl / CGI web apps - some of which are still in production today.  Then I dove into Java web development with Java Web Server 1.0, Struts, JBoss, Tomcat and many other game changing technologies.
 
-In 2004 I started getting into Macromedia Flex. I was amazed at how easy it
-was to retrieve and nicely render data from a Java back-end. In 2005 I began
-evangelizing Flex + Java. Following the acquisition of Macromedia by Adobe,
-Flex has really flourished. Adobe Flex is now the dominant RIA technology and
-it has been so fun to be a part of that!
+In 2004 I started getting into Macromedia Flex.  I was amazed at how easy it was to retrieve and nicely render data from a Java back-end.  In 2005 I began evangelizing Flex + Java.  Following the acquisition of Macromedia by Adobe, Flex has really flourished.  Adobe Flex is now the dominant RIA technology and it has been so fun to be a part of that!
 
-Over the past seven years I've had so many great adventures on the client-
-side, but when a new opportunity on the server-side came my way I couldn't
-pass it up. Starting June 6th I'll be stepping back into the Java world to
-evangelize the Cloud for Salesforce.com. I'm excited to dive into some of the
-emerging Java/JVM technologies like Scala, Play Framework, and Clojure!
+Over the past seven years I've had so many great adventures on the client-side, but when a new opportunity on the server-side came my way I couldn't pass it up.  Starting June 6th I'll be stepping back into the Java world to evangelize the Cloud for Salesforce.com.  I'm excited to dive into some of the emerging Java/JVM technologies like Scala, Play Framework, and Clojure!
 
-This change is certainly bittersweet for me. Flex continues to make app
-development easier. With things like Android support in Flex 4.5 and iOS
-support coming soon, the future of Flex is bright. I've been very privileged
-to be a part of the Flex community for the past seven years. This group of
-passionate and creative developers have taught me so many new things. Learning
-how to do runtime bytecode modification and co-creating [Mixing
-Loom](http://www.jamesward.com/2011/04/26/introducing-mixing-loom-runtime-
-actionscript-bytecode-modification/) has certainly been one of the highlights!
+This change is certainly bittersweet for me.  Flex continues to make app development easier.  With things like Android support in Flex 4.5 and iOS support coming soon, the future of Flex is bright.  I've been very privileged to be a part of the Flex community for the past seven years. This group of passionate and creative developers have taught me so many new things.  Learning how to do runtime bytecode modification and co-creating [Mixing Loom](http://www.jamesward.com/2011/04/26/introducing-mixing-loom-runtime-actionscript-bytecode-modification/) has certainly been one of the highlights!
 
-As I begin this new adventure on the Cloud I'm excited about what lies ahead
-for Flex and for the Cloud. Both continue to help us developers build better
-software. I've hopefully helped you learn how to build great UIs with Flex.
-Now I will help you learn how to build solid and scalable back-ends on the
-Cloud!
-
+As I begin this new adventure on the Cloud I'm excited about what lies ahead for Flex and for the Cloud.  Both continue to help us developers build better software.  I've hopefully helped you learn how to build great UIs with Flex.  Now I will help you learn how to build solid and scalable back-ends on the Cloud!

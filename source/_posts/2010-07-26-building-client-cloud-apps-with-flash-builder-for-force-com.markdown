@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2010-07-26 12:15:25'
 layout: post
 slug: building-client-cloud-apps-with-flash-builder-for-force-com
@@ -14,82 +13,43 @@ categories:
 - Salesforce.com
 ---
 
-I have a theory. The majority of people who use enterprise software today use
-old school Client / Server apps. We've been trying to move these apps to the
-web for more than ten years. The ease of deployment of web apps is a clear
-motivator. Yet the client capabilities of the plain old web browser have not
-been sufficient for many apps to make the leap. This is why I love Flex and
-the Flash Platform. It provides a way to use web technologies and the web
-deployment model but adds many of the critical things needed for mission
-critical apps that people use all day long.
+I have a theory.  The majority of people who use enterprise software today use old school Client / Server apps.  We've been trying to move these apps to the web for more than ten years.  The ease of deployment of web apps is a clear motivator.  Yet the client capabilities of the plain old web browser have not been sufficient for many apps to make the leap.  This is why I love Flex and the Flash Platform.  It provides a way to use web technologies and the web deployment model but adds many of the critical things needed for mission critical apps that people use all day long.
 
-But no one wants to go back to the Client / Server architecture. We want to
-embrace Cloud Computing architectures but not lose the client capabilities.
-What we really need is the Client / Cloud architecture. We need a web
-deployment model that provides ease of deployment but also the ability to
-install applications on our desktops and mobile devices.
+But no one wants to go back to the Client / Server architecture.  We want to embrace Cloud Computing architectures but not lose the client capabilities.  What we really need is the Client / Cloud architecture.  We need a web deployment model that provides ease of deployment but also the ability to install applications on our desktops and mobile devices.
 
-This is why I'm so excited about the new [Adobe Flash Builder for
-Force.com](http://developer.force.com/flashbuilder). In a nutshell this is a
-tool that Adobe and Salesforce.com built together to enable developers to
-build great software using Flex for the UI and Force.com for the Cloud back-
-end. It's a wonderful combination of technologies that will help many Client /
-Server apps make the switch to Client / Cloud.
+This is why I'm so excited about the new [Adobe Flash Builder for Force.com](http://developer.force.com/flashbuilder).  In a nutshell this is a tool that Adobe and Salesforce.com built together to enable developers to build great software using Flex for the UI and Force.com for the Cloud back-end.  It's a wonderful combination of technologies that will help many Client / Server apps make the switch to Client / Cloud.
 
-Applications created with Flash Builder for Force.com can be run in the
-browser, on the desktop, and on mobile devices. These applications can be
-assembled from the hundreds of Flex components that are out there (check out
-many of them in [Tour de Flex](http://flex.org/tour)).
+Applications created with Flash Builder for Force.com can be run in the browser, on the desktop, and on mobile devices.  These applications can be assembled from the hundreds of Flex components that are out there (check out many of them in [Tour de Flex](http://flex.org/tour)).
 
-Check out this video to see how to use Flash Builder for Force.com to build a
-simple app:
+Check out this video to see how to use Flash Builder for Force.com to build a simple app:
 
-  
-As you can see, it's very easy to get started. But I wanted to go a step
-further and try to build something real--something that shows a genuine use
-case for extending beyond the out-of-the-box Salesforce.com UI. I wanted to
-keep it really simple so that I could post the code here. What I came up with
-is this (in user story form):
+
+
+As you can see, it's very easy to get started.  But I wanted to go a step further and try to build something real--something that shows a genuine use case for extending beyond the out-of-the-box Salesforce.com UI.  I wanted to keep it really simple so that I could post the code here.  What I came up with is this (in user story form):
+
+
+
 
   * As a Salesforce.com user I want to take a photo, using my phone, of one of my contacts so that the photo can be saved to their contact record for future reference.
+
+
   * As a Salesforce.com user I want to see photos I've taken of my contacts so that I can be reminded of what they look like.
-  
-Simple enough. So here is what I came up with:
 
-  
-To build these two apps I first downloaded and installed [Flash Builder for Fo
-rce.com](https://www.developerforce.com/events/flashbuilder/registration.php).
-I used the [Adobe AIR for Android
-prerelease](http://www.adobe.com/go/airbetasignup) to build the mobile app.
-Here is how I created these apps.
 
-First I added a new field to Contact to store the photo. Salesforce.com
-doesn't have a binary field so I used a large text field (32k limit). I'll
-store the photo Base64 encoded.
 
-Then in Salesforce.com I saved my enterprise.wsdl file. Check out a [great
-video from Dave Carroll](http://wiki.developerforce.com/index.php/Demo_Buildin
-g_Desktop_Client_for_the_Cloud) to see how to do this.
+Simple enough.  So here is what I came up with:
 
-Now in Flash Builder for Force.com I created a new Force.com Flex Project for
-the mobile app. If you do this on your own and want to run on a mobile device
-then you will need to overlay the AIR for Android SDK on top of a Flex 4.1
-SDK. Select Desktop Application as the app type. Replace WindowedApplication
-with just Application. And replace the F3DesktopApplication with
-F3WebApplication since F3DesktopApplication uses APIs that are not available
-on AIR for Android. (BTW: Flash Builder, Flex, and Force.com Flex Projects do
-not officially support mobile deployment yet. It works but there is no support
-and no guarantees.) If you are building a standard Web Application or Desktop
-Application then you can just leave the generated code as is.
 
-Using the Data/Services wizard I connected to Salesforce.com using my
-enterprise.wsdl file. After the services and value objects have been generated
-I modified the Contact object and added a Bindable account property. The
-generated application already included the F3DesktopApplication Declaration
-used to connect to Salesforce. Due to an incompatibility with that API and AIR
-for Android I switched it to use F3WebApplication. In F3WebApplication's
-loginComplete event handler I query Salesforce.com for Accounts and then
-Contacts, associate contacts with their account, and then store the contacts:
+
+To build these two apps I first downloaded and installed [Flash Builder for Force.com](https://www.developerforce.com/events/flashbuilder/registration.php).  I used the [Adobe AIR for Android prerelease](http://www.adobe.com/go/airbetasignup) to build the mobile app.  Here is how I created these apps.
+
+First I added a new field to Contact to store the photo.  Salesforce.com doesn't have a binary field so I used a large text field (32k limit).  I'll store the photo Base64 encoded.
+
+Then in Salesforce.com I saved my enterprise.wsdl file. Check out a [great video from Dave Carroll](http://wiki.developerforce.com/index.php/Demo_Building_Desktop_Client_for_the_Cloud) to see how to do this.
+
+Now in Flash Builder for Force.com I created a new Force.com Flex Project for the mobile app.  If you do this on your own and want to run on a mobile device then you will need to overlay the AIR for Android SDK on top of a Flex 4.1 SDK.  Select Desktop Application as the app type.  Replace WindowedApplication with just Application.  And replace the F3DesktopApplication with F3WebApplication since F3DesktopApplication uses APIs that are not available on AIR for Android.  (BTW: Flash Builder, Flex, and Force.com Flex Projects do not officially support mobile deployment yet.  It works but there is no support and no guarantees.)  If you are building a standard Web Application or Desktop Application then you can just leave the generated code as is.
+
+Using the Data/Services wizard I connected to Salesforce.com using my enterprise.wsdl file.  After the services and value objects have been generated I modified the Contact object and added a Bindable account property.  The generated application already included the F3DesktopApplication Declaration used to connect to Salesforce.  Due to an incompatibility with that API and AIR for Android I switched it to use F3WebApplication.  In F3WebApplication's loginComplete event handler I query Salesforce.com for Accounts and then Contacts, associate contacts with their account, and then store the contacts:
 
     
     
@@ -111,29 +71,28 @@ Contacts, associate contacts with their account, and then store the contacts:
     }, handleError));
     
 
-  
-Notice in the query that I'm fetching photoData__c, which is the custom field
-I created on Contact to store the photo.
 
-In the renderer for a contact I need to either display the photo if there is
-one or let the user add one. Here is the simple UI code to handle that:
+
+Notice in the query that I'm fetching photoData__c, which is the custom field I created on Contact to store the photo.
+
+In the renderer for a contact I need to either display the photo if there is one or let the user add one.  Here is the simple UI code to handle that:
 
     
     
-    
-        
-            
-                
-            
-        
-        
-        
-    
+    <s:group width="92" top="8" right="8" height="92">
+        <s:rect width="92" height="92">
+            <s:fill>
+                <s:solidcolor color="#cccccc"></s:solidcolor>
+            </s:fill>
+        </s:rect>
+        <s:label verticalalign="middle" text="Add a photo" height="92" width="92" textalign="center" id="addPhoto"></s:label>
+        <s:bitmapimage width="92" id="photo" height="92"></s:bitmapimage>
+    </s:group>
     
 
-  
-When the contact is set I check to see if there is a photo and if so display
-it:
+
+
+When the contact is set I check to see if there is a photo and if so display it:
 
     
     
@@ -141,7 +100,8 @@ it:
     {
         photo.visible = false;
         return;
-    }  
+    }
+    
     var decoder:Base64Decoder = new Base64Decoder();
     decoder.decode(contact.photoData__c);
     				
@@ -153,13 +113,11 @@ it:
     loader.loadBytes(decoder.toByteArray());
     
 
-  
-The data from the photoData__c field is Base64 decoded and then displayed
-using the Flex BitmapImage component.
 
-Now when the user clicks on the photo or empty photo box I use the AIR for
-Android CameraUI to grab a photo, resize it, covert it to a PNG, Base64 encode
-it, set it on the contact, and then save the contact to Salesforce.com:
+
+The data from the photoData__c field is Base64 decoded and then displayed using the Flex BitmapImage component.
+
+Now when the user clicks on the photo or empty photo box I use the AIR for Android CameraUI to grab a photo, resize it, covert it to a PNG, Base64 encode it, set it on the contact, and then save the contact to Salesforce.com:
 
     
     
@@ -199,30 +157,25 @@ it, set it on the contact, and then save the contact to Salesforce.com:
     }
     
 
-  
-That's it for the mobile app! I compiled it, exported it to an Android app,
-and then copied it to my phone. Pretty simple and as you can see it works! One
-limitation with my approach is the 32k limit of the photoData__c field.
-However, I think I could easily get around that by striping the Base64 encoded
-data across multiple fields. It's not ideal but it would work.
 
-To display the photo when I view a contact on Salesforce.com I created a very
-simple Flex app using another Force.com Flex Project. I could have also added
-photo upload to this application but chose to keep it simple. All it does is
-display the selected contact's photo. Here is the complete code (after
-generating the required services in Flash Builder):
+
+That's it for the mobile app!  I compiled it, exported it to an Android app, and then copied it to my phone.  Pretty simple and as you can see it works!  One limitation with my approach is the 32k limit of the photoData__c field.  However, I think I could easily get around that by striping the Base64 encoded data across multiple fields.  It's not ideal but it would work.
+
+To display the photo when I view a contact on Salesforce.com I created a very simple Flex app using another Force.com Flex Project.  I could have also added photo upload to this application but chose to keep it simple.  All it does is display the selected contact's photo.  Here is the complete code (after generating the required services in Flash Builder):
 
     
     
     
-      
-        		
+    <s:application xmlns:flexforforce="http://flexforforce.salesforce.com" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx">
+    
+        <fx:script>		
         import mx.rpc.AsyncResponder;
         import mx.utils.Base64Decoder;
-          
-        
-            
-                
+        </fx:script>
+    
+        <fx:declarations>
+            <flexforforce:f3webapplication id="app" requiredtypes="Contact">
+                <flexforforce:logincomplete>
                     app.wrapper.query("select photoData__c from Contact where Id = '" + this.parameters.contactId + "'", new AsyncResponder(function(data:Object, token:Object):void {
                         if (data.length == 1)
                         {
@@ -246,55 +199,68 @@ generating the required services in Flash Builder):
                     }, function(fault:Object):void {
                         // ignored
                     }));
-                
-            
-          
-        
+                </flexforforce:logincomplete>
+            </flexforforce:f3webapplication>
+        </fx:declarations>
+    
+        <s:applicationcomplete>
             app.serverUrl = this.parameters.serverUrl;
             app.loginBySessionId(this.parameters.sessionId);
-        
+        </s:applicationcomplete>
     	
-        
-            
-                
-            
-        
+        <s:rect width="92" height="92">
+            <s:fill>
+                <s:solidcolor color="#cccccc"></s:solidcolor>
+            </s:fill>
+        </s:rect>
     	
-        
+        <s:label verticalalign="middle" visible="false" text="No Photo" height="92" width="92" textalign="center" id="noPhoto"></s:label>
     	
-          
+        <s:bitmapimage width="92" id="photo" height="92"></s:bitmapimage>
     
+    </s:application>
     
 
-  
+
+
 Finally I created a custom S-Control to run the Flex app:
 
     
     
-     
-         
-         
-         
-         
-    
+    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="92" codebase="https://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab" id="ContactPhoto" height="92"> 
+        <param name="movie" value="{!Scontrol.JavaArchive}"></param> 
+        <param name="flashvars" value="sessionId={!API.Session_ID}&serverUrl={!API.Partner_Server_URL_90}&contactId={!Contact.Id}"></param> 
+        <embed src="{!Scontrol.JavaArchive}" pluginspage="http://www.adobe.com/go/getflashplayer" name="ContactPhoto" height="92" width="92" type="application/x-shockwave-flash" flashvars="sessionId={!API.Session_ID}&serverUrl={!API.Partner_Server_URL_90}&contactId={!Contact.Id}"> 
+        </embed> 
+    </object>
     
 
-  
-I uploaded the compiled Flex app to the S-Control and added it to the Contact
-page. And that's it! In just a few hours I extended Force.com and built a cool
-mobile app. I could also have easily created a desktop widget for browsing
-contacts and adding photos. If you are looking for a fun project to use as a
-way to learn this stuff that would be a good one! :)
 
-Here are some resources to help you get started with Flash Builder for
-Force.com:
+
+I uploaded the compiled Flex app to the S-Control and added it to the Contact page.  And that's it!  In just a few hours I extended Force.com and built a cool mobile app.  I could also have easily created a desktop widget for browsing contacts and adding photos.  If you are looking for a fun project to use as a way to learn this stuff that would be a good one!  :)
+
+Here are some resources to help you get started with Flash Builder for Force.com:
+
+
+
 
   * [Force.com Flex Quick Start Tutorial](http://wiki.developerforce.com/index.php/Force.com_Flex_Quick_Start_Tutorial)
-  * [Force.com Flex Project APIs for Web Applications](http://developerforce.s3.amazonaws.com/website/afb/docs/ASDoc_Flex/index.html)
-  * [Force.com Flex Project APIs for Desktop Applications](http://developerforce.s3.amazonaws.com/website/afb/docs/ASDoc_AIR/index.html)
-  * [Numerous other demo applications and tutorials](http://developer.force.com/flashbuilder)
-  * [Source code for my mobile contacts demo](http://github.com/jamesward/MobileContacts)
-  * [Source code for my web contact photo viewer demo](http://github.com/jamesward/WebContactSControl)
-  
-Have fun building the next generation of software! Let me know how it goes.
 
+
+  * [Force.com Flex Project APIs for Web Applications](http://developerforce.s3.amazonaws.com/website/afb/docs/ASDoc_Flex/index.html)
+
+
+  * [Force.com Flex Project APIs for Desktop Applications](http://developerforce.s3.amazonaws.com/website/afb/docs/ASDoc_AIR/index.html)
+
+
+  * [Numerous other demo applications and tutorials](http://developer.force.com/flashbuilder)
+
+
+  * [Source code for my mobile contacts demo](http://github.com/jamesward/MobileContacts)
+
+
+  * [Source code for my web contact photo viewer demo](http://github.com/jamesward/WebContactSControl)
+
+
+
+Have fun building the next generation of software!  Let me know how it goes.

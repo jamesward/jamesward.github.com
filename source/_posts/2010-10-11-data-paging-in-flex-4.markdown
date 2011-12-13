@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2010-10-11 14:33:36'
 layout: post
 slug: data-paging-in-flex-4
@@ -12,27 +11,9 @@ tags:
 - flexorg
 ---
 
-I know -- you've heard it from me before -- [AMF
-rocks!](http://www.jamesward.com/2009/06/17/blazing-fast-data-transfer-in-
-flex/) With AMF you can load massive amounts of data into your Flex ([or
-JavaScript](http://www.jamesward.com/2010/07/07/amf-js-a-pure-javascript-amf-
-implementation/)) apps very quickly. This can often obviate the need for
-paging data. But what if you have lots, and lots, and lots of data? Well then
-you should use data paging. And here is how...
+I know -- you've heard it from me before -- [AMF rocks!](http://www.jamesward.com/2009/06/17/blazing-fast-data-transfer-in-flex/)  With AMF you can load massive amounts of data into your Flex ([or JavaScript](http://www.jamesward.com/2010/07/07/amf-js-a-pure-javascript-amf-implementation/)) apps very quickly.  This can often obviate the need for paging data.  But what if you have lots, and lots, and lots of data?  Well then you should use data paging.  And here is how...
 
-There is a new collection wrapper class in Flex 4 called "[AsyncListView](http
-://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/mx/collections/
-AsyncListView.html)". The UI data controls in Flex 4 know how to handle an
-AsyncListView as a dataProvider. The purpose of the AsyncListView is to give
-you a callback when the underlying list throws an [ItemPendingError](http://he
-lp.adobe.com/en_US/FlashPlatform/reference/actionscript/3/mx/collections/error
-s/ItemPendingError.html). The ItemPendingError indicates that an item that the
-list thinks it has isn't really there yet. This allows you to then load the
-data and update the list. In order to throw an ItemPendingError you need to
-keep track of which items haven't been loaded and then, when an item is
-requested that isn't really there, throw the ItemPendingError. Here is some
-code from my [PagedList](http://github.com/jamesward/DataPaging/blob/master/sr
-c/PagedList.as) implementation:
+There is a new collection wrapper class in Flex 4 called "[AsyncListView](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/mx/collections/AsyncListView.html)".  The UI data controls in Flex 4 know how to handle an AsyncListView as a dataProvider.  The purpose of the AsyncListView is to give you a callback when the underlying list throws an [ItemPendingError](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/mx/collections/errors/ItemPendingError.html).  The ItemPendingError indicates that an item that the list thinks it has isn't really there yet.  This allows you to then load the data and update the list.  In order to throw an ItemPendingError you need to keep track of which items haven't been loaded and then, when an item is requested that isn't really there, throw the ItemPendingError.  Here is some code from my [PagedList](http://github.com/jamesward/DataPaging/blob/master/src/PagedList.as) implementation:
 
     
     
@@ -41,29 +22,25 @@ c/PagedList.as) implementation:
         if (fetchedItems[index] == undefined)
         {
           throw new ItemPendingError("itemPending");
-        }  
+        }
+    
         return _list.getItemAt(index, prefetch);
     }
     
 
-  
-In my main application I just create a PagedList, set its length (which should
-really be done by a remote call instead of manually), and then assign the
-instance of PagedList to the list property on my instance of AsyncListView.
-With MXML this looks like:
+
+
+In my main application I just create a PagedList, set its length (which should really be done by a remote call instead of manually), and then assign the instance of PagedList to the list property on my instance of AsyncListView.  With MXML this looks like:
 
     
     
-    
-    
+    <local:pagedlist length="100000" id="items"></local:pagedlist>
+    <s:asynclistview creatependingitemfunction="handleCreatePendingItemFunction" list="{items}" id="asyncListView"></s:asynclistview>
     
 
-  
-When the ItemPendingError is thrown, the handleCreatePendingItemFunction is
-called. Now I just figure out what page of data is needed, make sure that
-there isn't already a pending request for that page, and then make the
-request. When the response comes back I simply update the underlying
-collection. Here is the code that does that:
+
+
+When the ItemPendingError is thrown, the handleCreatePendingItemFunction is called.  Now I just figure out what page of data is needed, make sure that there isn't already a pending request for that page, and then make the request.  When the response comes back I simply update the underlying collection.  Here is the code that does that:
 
     
     
@@ -93,24 +70,15 @@ collection. Here is the code that does that:
     }
     
 
-  
-In this example I'm using RemoteObject (AMF) but this could be anything
-(HTTPService, WebService, etc.) as long as there is a method on the back end
-that lets me set the starting location and the page size.
 
-Here is a simple demo of data paging using the new Spark DataGrid in Flex
-Hero. The page size is 100 and there are 100,000 total items.
 
-[Fork or view the code](http://github.com/jamesward/DataPaging) for this
-example on [github.com](http://github.com).
+In this example I'm using RemoteObject (AMF) but this could be anything (HTTPService, WebService, etc.) as long as there is a method on the back end that lets me set the starting location and the page size.
 
-Of course another option for doing data paging more automatically is with
-LiveCycle Data Services. Check out a great example of [Data Paging with LCDS
-in Tour de Flex](http://www.adobe.com/devnet-
-archive/flex/tourdeflex/web/#sampleId=13850;illustIndex=0;docIndex=0) to learn
-more about that.
+Here is a simple demo of data paging using the new Spark DataGrid in Flex Hero.  The page size is 100 and there are 100,000 total items.
 
-A big thanks to [Mike Labriola](http://blogs.digitalprimates.net/codeSlinger/)
-for helping me figure this out! Please let me know if you have any questions
-about this.
 
+[Fork or view the code](http://github.com/jamesward/DataPaging) for this example on [github.com](http://github.com).
+
+Of course another option for doing data paging more automatically is with LiveCycle Data Services.  Check out a great example of [Data Paging with LCDS in Tour de Flex](http://www.adobe.com/devnet-archive/flex/tourdeflex/web/#sampleId=13850;illustIndex=0;docIndex=0) to learn more about that.
+
+A big thanks to [Mike Labriola](http://blogs.digitalprimates.net/codeSlinger/) for helping me figure this out!  Please let me know if you have any questions about this.

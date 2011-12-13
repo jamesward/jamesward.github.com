@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2007-02-26 11:37:43'
 layout: post
 slug: reusable-ant-task-compile-flex-if-source-was-updated
@@ -11,19 +10,17 @@ categories:
 - Java
 ---
 
-I'm working on a project that compiles 11 Flex applications. My Ant build file
-was getting pretty messy and I was continually commenting out files that I
-didn't want to build. By using an Ant macro and some uptodate trickery I was
-able to significantly decrease my build times when I am only updating files
-for a single application. The macro also helped to make the build much more
-manageable.
+I'm working on a project that compiles 11 Flex applications.  My Ant build file was getting pretty messy and I was continually commenting out files that I didn't want to build.  By using an Ant macro and some uptodate trickery I was able to significantly decrease my build times when I am only updating files for a single application.  The macro also helped to make the build much more manageable.
 
-  
-You can find the whole build here: [http://flexapps.cvs.sourceforge.net/flexap
-ps/census/build.xml?revision=1.14&view;=markup](http://flexapps.cvs.sourceforg
-e.net/flexapps/census/build.xml?revision=1.14&view=markup)
+
+
+You can find the whole build here:
+[http://flexapps.cvs.sourceforge.net/flexapps/census/build.xml?revision=1.14&view;=markup](http://flexapps.cvs.sourceforge.net/flexapps/census/build.xml?revision=1.14&view=markup)
 
 First I setup a macro:
+
+
+
 
     
       <macrodef name="compileflex">
@@ -44,9 +41,15 @@ First I setup a macro:
         </sequential>
       </macrodef>
 
-  
-The macro calls the "compilemxml" target when the swf is not up-to-date. The
-compilemxml target is a pretty plain Ant target:
+
+
+
+
+
+The macro calls the "compilemxml" target when the swf is not up-to-date.  The compilemxml target is a pretty plain Ant target:
+
+
+
 
     
       <target name="compilemxml" unless="${src}.uptodate">
@@ -68,17 +71,28 @@ compilemxml target is a pretty plain Ant target:
         </java>
       </target>
 
-  
+
+
+
+
+
 The macro is simple to use:
+
+
+
 
     
       <compileflex src="${src.flex.dir}/flex_soap_as.mxml" dest="build/census.war/flex_soap_as.swf"/>
 
-  
-In that instance, the uptodate check will check the src file, the swc, and the
-css to see if they are uptodate. If any of them were updated more recently
-than the swf, then compilemxml will be called. If you have other unique files
-which need to also be checked, you can pass those in a uptodatefiles element:
+
+
+
+
+
+In that instance, the uptodate check will check the src file, the swc, and the css to see if they are uptodate.  If any of them were updated more recently than the swf, then compilemxml will be called.  If you have other unique files which need to also be checked, you can pass those in a uptodatefiles element:
+
+
+
 
     
       <compileflex src="${src.flex.dir}/index.mxml" dest="build/census.war/index.swf">
@@ -94,13 +108,11 @@ which need to also be checked, you can pass those in a uptodatefiles element:
           </uptodatefiles>
         </compileflex>
 
-  
-The one kinda-hack I had to do to make this work, was to make sure that the
-property which gets set by the uptodate task is unique for each time
-compileflex is called. I used the ${src}.uptodate property name to accomplish
-this.
 
-This build is pretty catered to my needs, however, you should be able to
-easily customize it to fit your needs. I hope you find this useful. Let me
-know if you have any questions!
 
+
+
+
+The one kinda-hack I had to do to make this work, was to make sure that the property which gets set by the uptodate task is unique for each time compileflex is called.  I used the ${src}.uptodate property name to accomplish this.
+
+This build is pretty catered to my needs, however, you should be able to easily customize it to fit your needs.  I hope you find this useful.  Let me know if you have any questions!

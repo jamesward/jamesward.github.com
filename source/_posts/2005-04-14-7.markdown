@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2005-04-14 21:09:00'
 layout: post
 slug: '7'
@@ -10,100 +9,18 @@ categories:
 - RIA
 ---
 
-For the past six months I have been building one of the first ever Rich
-Internet Application (RIA) portals. The project has been incredibly fun and
-wrought with many challenges. Since the inception of our crazy idea to build a
-RIA portal I have learned a great deal about where the web is going. My RIA
-adventure started when I first encountered Macromedia 's Flex Explorer. I saw
-the very elegant components, and I was awed. Then I saw examples of the code I
-would soon be writing, and I was hooked. I couldn't believe that a terrible UI
-developer like me could so easily create a beautiful RIA. I dove right in and
-quickly built a prototype of our soon-to-be portal complete with DataGrids and
-RemoteObjects, which were written in Java and exposed via AMF to the Flash-
-based front end. After a short time developing in Flex I realized I could
-never again enjoy building a Struts / JSP / HTML web application. They are too
-cumbersome and tedious for me after seeing how easy it is to build web
-applications in Flex.
+For the past six months I have been building one of the first ever Rich Internet Application (RIA) portals. The project has been incredibly fun and wrought with many challenges. Since the inception of our crazy idea to build a RIA portal I have learned a great deal about where the web is going. My RIA adventure started when I first encountered Macromedia 's Flex Explorer. I saw the very elegant components, and I was awed. Then I saw examples of the code I would soon be writing, and I was hooked. I couldn't believe that a terrible UI developer like me could so easily create a beautiful RIA. I dove right in and quickly built a prototype of our soon-to-be portal complete with DataGrids and RemoteObjects, which were written in Java and exposed via AMF to the Flash-based front end. After a short time developing in Flex I realized I could never again enjoy building a Struts / JSP / HTML web application. They are too cumbersome and tedious for me after seeing how easy it is to build web applications in Flex.
 
-Along the way I began learning about other RIA technologies currently
-available and on the horizon. The most comparable framework to Flex is Laszlo.
-Laszlo has similar components and a similar programming model, but its key
-difference is that Laszlo is open source. A few of the other technologies I
-have played with and read about include Microsoft's XAML, Mozilla's XUL, a
-Java based RIA framework called JDNC, and the new kid on the block, Ajax. XAML
-is still vaporware, to be released with Windows Longhorn. XUL is a good
-framework but requires a Mozilla-based browser. JDNC is also a decent
-framework but relies on client-side Java, often a problematic experience for
-users. Ajax uses existing technologies, works in all modern browsers and is
-Google's RIA technology of choice for Gmail, Google Suggest, and Google Maps.
-The race is on for which of these technologies, or perhaps another, will
-become the "standard" RIA technology.
+Along the way I began learning about other RIA technologies currently available and on the horizon. The most comparable framework to Flex is Laszlo. Laszlo has similar components and a similar programming model, but its key difference is that Laszlo is open source. A few of the other technologies I have played with and read about include Microsoft's XAML, Mozilla's XUL, a Java based RIA framework called JDNC, and the new kid on the block, Ajax. XAML is still vaporware, to be released with Windows Longhorn. XUL is a good framework but requires a Mozilla-based browser. JDNC is also a decent framework but relies on client-side Java, often a problematic experience for users. Ajax uses existing technologies, works in all modern browsers and is Google's RIA technology of choice for Gmail, Google Suggest, and Google Maps. The race is on for which of these technologies, or perhaps another, will become the "standard" RIA technology.
 
-The first RIA technology that achieves critical mass will be hard to unseat.
-RIA vendors are facing a land grab, and any technology that hasn't achieved a
-significant programmer base will be marginalized by Microsoft when they start
-pushing XAML.
+The first RIA technology that achieves critical mass will be hard to unseat.  RIA vendors are facing a land grab, and any technology that hasn't achieved a significant programmer base will be marginalized by Microsoft when they start pushing XAML.
 
-Flex currently sits in first place in terms of adoption, but it won't be there
-for long. The problem is that at around $20,000 for 2 cpu's, Macromedia is
-blocking mass adoption by only providing an enterprise pricing model. From
-Macromedia's perspective, this might make sense. Of course they quickly want
-to recoup cash from their investment in Flex. However, this strategy seems
-short-sighted to me, because I think Flex is good enough to become the de
-facto RIA standard. The Flash player is essentially the cross-platform GUI
-toolkit us programmers have dreamed of for decades. It works exactly the same
-on different OS's, browsers, etc. The new Flash mobile client could allow Flex
-to move into the cell phone and PDA market.
+Flex currently sits in first place in terms of adoption, but it won't be there for long. The problem is that at around $20,000 for 2 cpu's, Macromedia is blocking mass adoption by only providing an  enterprise pricing model. From Macromedia's perspective, this might make sense. Of course they quickly want to recoup cash from their investment in Flex. However, this strategy seems short-sighted to me, because I think Flex is good enough to become the de facto RIA standard. The Flash player is essentially the cross-platform GUI toolkit us programmers have dreamed of for decades. It works exactly the same on different OS's, browsers, etc. The new Flash mobile client could allow Flex to move into the cell phone and PDA market.
 
-There are so many things to love about Flex. Flex creates a very natural and
-distinct separation of tiers, much cleaner than even Struts provides.
-Macromedia has built a wonderful IDE for Flex called Flex Builder. Flex really
-performs with the direction of Macromedia Professional Services. It pains me
-to see Macromedia exclusively focusing on the enterprise market because it
-leaves the little guys out; the ones who are building the frameworks and web
-applications of tomorrow. Most innovation happens in small businesses, and if
-they don't have access to Flex because of price, they will not base their
-innovations on the Flex platform. Macromedia is sacrificing long-term market
-domination in favor of short-term return.
+There are so many things to love about Flex. Flex creates a very natural and distinct separation of tiers, much cleaner than even Struts provides. Macromedia has built a wonderful IDE for Flex called Flex Builder. Flex really performs with the direction of Macromedia Professional Services. It pains me to see Macromedia exclusively focusing on the enterprise market because it leaves the little guys out; the ones who are building the frameworks and web applications of tomorrow. Most innovation happens in small businesses, and if they don't have access to Flex because of price, they will not base their innovations on the Flex platform.  Macromedia is sacrificing long-term market domination in favor of short-term return.
 
-The most-used web technologies of today flourished because they were friendly
-to the little guy. What I mean is that they were free, or at least very cheap;
-they had great communities, and they were good platforms to base a solution
-on. Macromedia's business model leaves out the types of programmers using PHP,
-many of the Struts / JSP programmers, and many Flash developers. These little
-guys in the next nine to twelve months are going to want to start dabbling in
-RIA technologies. Where are they going to look first? Open source is where
-many programmers look first for frameworks. To compete against open source,
-and to drive adoption by SMBs, Flex needs a business model that provides
-pricing and deployment that will drive quick adoption.
+The most-used web technologies of today flourished because they were friendly to the little guy. What I mean is that they were free, or at least very cheap; they had great communities, and they were good platforms to base a solution on. Macromedia's business model leaves out the types of programmers using PHP, many of the Struts / JSP programmers, and many Flash developers. These little guys in the next nine to twelve months are going to want to start dabbling in RIA technologies. Where are they going to look first? Open source is where many programmers look first for frameworks. To compete against open source, and to drive adoption by SMBs, Flex needs a business model that provides pricing and deployment that will drive quick adoption.
 
-Laszlo, being open source, has a slight advantage on Flex in this area, but
-until Laszlo aligns itself with existing open source communities like Apache
-or JBoss it will not capitalize on its advantage to the degree that it might.
-JDNC is too complex and client-side Java is pretty much dead. But what about
-Ajax? There isn't a true framework for Ajax yet, but there clearly will be,
-and I think that it will give Ajax a great shot at eventually winning the
-race. All Ajax needs is a good PHP framework and a good Java framework and
-hoards of new RIAs will start to pop up all over the web. The PHP hackers will
-probably be the first ones out the gate with a quickly adopted framework.
-Tagging along behind will be a few different Java-based frameworks. I would
-like to see Tapestry add some Flex-like Ajax components to it's repertoire
-(which Howard Lewis Ship recently announced was on his to-do list). This would
-help the adoption of Tapestry and provide those in the Java world looking for
-a RIA framework with a great open source option. XAML will have a shot if
-Microsoft decides to release it before Longhorn, since by the time Longhorn is
-available, other RIA technologies will have had enough time to build quite a
-bit of momentum. As for JDNC, XUL, and all the other RIA options, there's just
-no compelling reasons to use them.
+Laszlo, being open source, has a slight advantage on Flex in this area, but until Laszlo aligns itself with existing open source communities like Apache or JBoss it will not capitalize on its advantage to the degree that it might. JDNC is too complex and client-side Java is pretty much dead. But what about Ajax? There isn't a true framework for Ajax yet, but there clearly will be, and I think that it will give Ajax a great shot at eventually winning the race. All Ajax needs is a good PHP framework and a good Java framework and hoards of new RIAs will start to pop up all over the web. The PHP hackers will probably be the first ones out the gate with a quickly adopted framework. Tagging along behind will be a few different Java-based frameworks. I would  like to see Tapestry add some Flex-like Ajax components to it's repertoire (which Howard Lewis Ship recently announced was on his to-do list). This would help the adoption of Tapestry and provide those in the Java world looking for a RIA framework with a great open source option. XAML will have a shot if Microsoft decides to release it before Longhorn, since by the time Longhorn is available, other RIA technologies will have had enough time to build quite a bit of momentum. As for  JDNC, XUL, and all the other RIA options, there's just no compelling reasons to use them.
 
-Under Macromedia's current business model, Flex will never be more than a
-niche product, serving a declining percentage of a rapidly growing market. The
-trap for Macromedia is that the little niche they will serve will only be
-profitable for a few short years. Markets reward leaders, and third place or
-lower means death. Right now, I predict that without any changes in
-Macromedia's business model for Flex, that XAML and Ajax will fight it out for
-first and second place, and within five years or less Flex will be
-discontinued. It would be a real shame to see a product with such opportunity
-like Flex go the way of so many other promising products because of a short-
-sighted business model.
-
+Under Macromedia's current business model, Flex will never be more than a niche product, serving a declining percentage of a rapidly growing market.  The trap for Macromedia is that the little niche they will serve will only be profitable for a few short years.  Markets reward leaders, and third place or lower means death.  Right now, I predict that without any changes in Macromedia's business model for Flex, that XAML and Ajax will fight it out for first and second place, and within five years or less Flex will be discontinued.   It would be a real shame to see a product with such opportunity like Flex go the way of so many other promising products because of a short-sighted business model.

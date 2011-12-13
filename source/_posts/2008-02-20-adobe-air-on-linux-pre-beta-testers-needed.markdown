@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2008-02-20 10:02:31'
 layout: post
 slug: adobe-air-on-linux-pre-beta-testers-needed
@@ -13,45 +12,27 @@ categories:
 - Linux
 ---
 
-[![](/wordpress/wp-content/uploads/2008/02/air_linux-small.jpg)](/wordpress
-/wp-content/uploads/2008/02/air_linux.jpg)
+[![](/wordpress/wp-content/uploads/2008/02/air_linux-small.jpg)](/wordpress/wp-content/uploads/2008/02/air_linux.jpg)
 
-Adobe AIR is a cross-operating system runtime for deliverying rich Internet
-applications on the desktop. Developers using Flex, Flash, HTML, JavaScript,
-and Ajax can easily build applications for the desktop using Adobe AIR. As of
-today there have only been releases of Adobe AIR for Windows and Mac but Adobe
-is committed to also delivering a version for Linux. This is great news for
-developers like me who use Linux as their primary desktop operating system.
-The Adobe AIR team is now in the phase of development where they need a
-handful of additional testers to begin testing initial builds of AIR on Linux.
-If you are interested please answer the questions below in an email to
-helptesterairlinux at adobe dot com.
+Adobe AIR is a cross-operating system runtime for deliverying rich Internet applications on the desktop.  Developers using Flex, Flash, HTML, JavaScript, and Ajax can easily build applications for the desktop using Adobe AIR.  As of today there have only been releases of Adobe AIR for Windows and Mac but Adobe is committed to also delivering a version for Linux.  This is great news for developers like me who use Linux as their primary desktop operating system.  The Adobe AIR team is now in the phase of development where they need a handful of additional testers to begin testing initial builds of AIR on Linux.  If you are interested please answer the questions below in an email to helptesterairlinux at adobe dot com.
 
-1. Are you comfortable working with prerelease software that is not yet
-feature complete?
+   1. Are you comfortable working with prerelease software that is not yet feature complete?
 
-2. Will you be able to submit bug reports on issues that you find back to our
-development team?
+   2. Will you be able to submit bug reports on issues that you find back to our development team?
 
-3. How many hours a week can you spend testing on Linux?
+   3. How many hours a week can you spend testing on Linux?
 
-4. What is the primary distribution of Linux that you're using? If you are
-using more than one distribution, please list.
+   4. What is the primary distribution of Linux that you're using? If you are using more than one distribution, please list.
 
-5. Will you be developing applications on your Linux machine (as opposed to
-writing on Windows and testing the applications on Linux)?
+   5. Will you be developing applications on your Linux machine (as opposed to writing on Windows and testing the applications on Linux)?
 
-6. What other operating system are you using, if any (Mac, Windows)? Can you
-compare the behavior of AIR for Linux with AIR for Windows and AIR for Mac OS?
+   6. What other operating system are you using, if any (Mac, Windows)? Can you compare the behavior of AIR for Linux with AIR for Windows and AIR for Mac OS?
 
-7. Are you working on an AIR application today? If so, please describe.
+   7. Are you working on an AIR application today? If so, please describe.
 
-8. Are you primarily a Flash, Flex or JavaScript developer?
+   8. Are you primarily a Flash, Flex or JavaScript developer?
 
-9. What is your name, company name and email address?
+   9. What is your name, company name and email address?
 
-Unfortunately at this point not everyone will be accepted into this pre-beta
-program however there will be public betas when the pre-beta has been
-sufficiently tested. And at that point maybe we will finally know whether
-penguins can fly when given AIR.
 
+Unfortunately at this point not everyone will be accepted into this pre-beta program however there will be public betas when the pre-beta has been sufficiently tested.  And at that point maybe we will finally know whether penguins can fly when given AIR.

@@ -1,5 +1,4 @@
 ---
-author: admin
 date: '2009-02-13 12:41:51'
 layout: post
 slug: ria-cowboy-videos-dreamforce-2008-pivotlink
@@ -12,6 +11,6 @@ categories:
 - Salesforce.com
 ---
 
-In this video from Dreamforce 2008 PivotLink shows off their Flex-based SaaS
-BI product. Cool Stuff!
+In this video from Dreamforce 2008 PivotLink shows off their Flex-based SaaS BI product.  Cool Stuff!
+
 
