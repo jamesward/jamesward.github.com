@@ -1,0 +1,853 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="One of the major new features in Flash Player 10 is Pixel Bender. Like its name suggests, the primary purpose of Pixel Bender is to allow you to &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/page/15">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2009/04/29/announcing-pbjas-an-actionscript-3-pixel-bender-shader-library/">Announcing pbjAS - an ActionScript 3.0 Pixel Bender Shader Library</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-29T08:53:00-06:00" pubdate data-updated="true">Apr 29<span>th</span>, 2009</time>
+        
+         | <a href="/2009/04/29/announcing-pbjas-an-actionscript-3-pixel-bender-shader-library/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>One of the major new features in Flash Player 10 is Pixel Bender.  Like its name suggests, the primary purpose of Pixel Bender is to allow you to easily manipulate pixels inside a Flash application.  A great demo of this is the <a href="http://www.everythingflex.com/fp10/fotobooth/">FotoBooth application</a>, which applies different filters to webcam input.  While tweaking pixels is the primary purpose of Pixel Bender, it can also be used as a multi-threaded number crunching machine.  You can pass it some numbers, have it perform some mathematical operations on those numbers, and then return the result.  This opens up some very interesting opportunities to get outside of the normal single-threaded nature of ActionScript in Flash Player.</p>
+
+<p>Pixel Bender number crunching machines can be used as filters for things on screen or used for just generic number crunching.  To create one of these number crunching machines, known as a Shader, you would usually use the Pixel Bender Toolkit.  The Pixel Bender Toolkit runs on Mac and Windows and allows you to write a Shader in the Pixel Bender shader language.  Shaders can then be exported for use in Flash Player.</p>
+
+<p>To run a Shader in a Flash application (whether it&#8217;s built with Flex or something else) the compiled Shader (a .pbj file) needs to be loaded and then either run as a ShaderFilter or a ShaderJob.  A ShaderJob can either run synchronously or asynchronously.  If run asynchronously then it&#8217;s non-blocking and the ActionScript code continues to run at the same time as the Shader.  Here is an example for how to run a ShaderFilter:</p>
+
+<pre><code>    [Embed(source="VerySimpleFilter.pbj", mimeType="application/octet-stream")]
+    var TestShaderClass:Class;
+
+    testShader = new Shader(new TestShaderClass());
+
+    var shaderFilter:ShaderFilter = new ShaderFilter(testShader);
+    i.filters = [shaderFilter];
+</code></pre>
+
+<p>Here is how you run a ShaderJob:</p>
+
+<pre><code>    [Embed(source="VerySimpleFilter.pbj", mimeType="application/octet-stream")]
+    var TestShaderClass:Class;
+
+    var testShader:Shader = new Shader(assembledPBJByteArray);
+
+    result = new ByteArray();
+
+    var shaderJob:ShaderJob = new ShaderJob(testShader, result, width, height);
+    shaderJob.start();
+</code></pre>
+
+<p>This is very cool stuff and there are a ton of amazing possible uses of Pixel Bender.  But I wasn&#8217;t happy with having to use the Pixel Bender Toolkit to create Shaders.  Compiled Pixel Bender Shaders are just byte code that tells the Pixel Bender virtual machine what to do.  So why can&#8217;t they be created at runtime in ActionScript?  Well, now they can!</p>
+
+<p>The pbjAS library is an AS3 library for creating Pixel Bender Shaders in ActionScript.  When I began researching it I discovered that Tinic Uro (a Flash Player engineer) had created <a href="http://www.kaourantin.net/2008/09/pixel-bender-pbj-files.html">C++ applications</a> to assemble and disassemble Pixel Bender byte code.  This would have been a great starting place but I don&#8217;t know C or C++ and at the time knew nothing about byte code.  Luckily I found that Haxe already had a <a href="http://www.ncannasse.fr/projects/pbj">Pixel Bender Shader library</a> and since the Haxe language is similar to ActionScript this was a great starting place for pbjAS.</p>
+
+<p>I began writing pbjAS by porting the Haxe code to ActionScript.  The languages are pretty similar but I needed to rework a few things.  For instance Haxe has Enums while AS3 does not; Haxe can do a switch statement on a type while AS3 can&#8217;t.  As I began porting the code I also started writing unit tests.  There are two major parts of the library: the assembler, which creates Pixel Bender Shaders, and the disassembler, which converts Pixel Bender Shaders into their AS3 representations.  Both parts are now working as confirmed by a simple unit test that takes a prebuilt Shader, disassembles it, and then reassembles it into the byte code that matches the prebuilt Shader.</p>
+
+<p>Assembling a Shader with pbjAS requires creating a PBJ object, which contains information about the Shader parameters and operations.  The operations are defined in an assembly-like manner.  This may seem strange for those familiar with the Pixel Bender Toolkit because it uses a higher level language.  The assembly-like language is very similar to the way the byte code is actually organized.  While the Pixel Bender assembly language is pretty straightforward, it is not the ideal language for building number crunching machines. So phase two of the pbjAS project is to wrap the assembly language with a higher level language - perhaps MathML.</p>
+
+<p>The steps to create a Pixel Bender Shader with pbjAS are:</p>
+
+<p>1) Get the <a href="/pbjas/pbjAS-0.1.swc">pbjAS library</a> and include it in a project&#8217;s library path</p>
+
+<p>2) Create a PBJ object and set some metadata about the Shader:</p>
+
+<pre><code>      var myPBJ:PBJ = new PBJ();
+      myPBJ.version = 1;
+      myPBJ.name = "SingleMulFilter";
+</code></pre>
+
+<p>3) Add input and output parameters (of type PBJParam) to the PBJ:</p>
+
+<pre><code>myPBJ.parameters = [
+  new PBJParam("num1", new Parameter(PBJType.TFloat, false, new RFloat(0, [PBJChannel.R]))),
+  new PBJParam("num2", new Parameter(PBJType.TFloat, false, new RFloat(1, [PBJChannel.R]))),
+  new PBJParam("product", new Parameter(PBJType.TFloat, true, new RFloat(2, [PBJChannel.R])))];
+</code></pre>
+
+<p>Each PBJParam has a name, a Parameter, and optional metadata.  In this example the first parameter&#8217;s name is num1.  Its Parameter is of type TFloat.  There are four types of floats: TFloat (a single float), TFloat2 (contains two floats), TFloat3 (contains three floats), and TFloat4 (contains four floats).  Each parameter also needs to specify whether it is an output parameter.  In the example above the first two parameters are inputs while the last one is an output parameter.  The third argument in Parameter&#8217;s constructor is the register for the parameter.  A register is basically an identifier for the parameter - it specifies an index and information about how to access the parameter.  The first parameter has a register index of zero.  Like parameter types there are four register types: RFloat, RFloat2, RFloat3, and RFloat4.  Every register has four possible channels.  This corresponds with the four floats typically used in pixel manipulation: Red, Green, Blue, and Alpha.  Every register other than RFloat4 (which uses all four channels) must specify which channel(s) to use.  In the example above each register uses only one channel so it&#8217;s an RFloat and the channel they use on the register is the Red channel, which is declared as &#8220;PBJChannel.R&#8221;.</p>
+
+<p>4) Next add the operations to perform on the input:</p>
+
+<pre><code>myPBJ.code = [
+  new OpMul(new RFloat(0, [PBJChannel.R]), new RFloat(1, [PBJChannel.R])),
+  new OpMov(new RFloat(2, [PBJChannel.R]), new RFloat(0, [PBJChannel.R]))];
+</code></pre>
+
+<p>There are numerous operations that can be performed on the specified data.  A full list of the operations is in the <a href="/pbjas/asdoc/pbjAS/ops/package-detail.html">pbjas.ops package</a> or look in the Pixel Bender Reference (currently only found in the Pixel Bender Toolkit).  In this example the first operation multiplies register number 0&#8217;s Red channel by register number 1&#8217;s Red channel.  The result always goes into the first specified register, in this case register 0.  The next operation moves the value in register 0&#8217;s Red channel to register 2&#8217;s Red channel, which is the output parameter.</p>
+
+<p>5) The byte code for the Shader now needs to be created:</p>
+
+<pre><code>var assembledPBJByteArray:ByteArray = PBJAssembler.assemble(myPBJ);
+</code></pre>
+
+<p>6) Then a new Shader is created from the byte code:</p>
+
+<pre><code>var testShader:Shader = new Shader(assembledPBJByteArray);
+</code></pre>
+
+<p>7) Any input parameters can now be specified on the Shader:</p>
+
+<pre><code>testShader.data.num1.value = [Math.round(Math.random() * 1000)];
+testShader.data.num2.value = [Math.round(Math.random() * 1000)];
+</code></pre>
+
+<p>Notice that the values are specified by the names given to the input parameters.  Also the values must be set in an Array because depending on the parameter type there can be between one and four values for each input parameter.</p>
+
+<p>8) Create a Vector to hold the result:</p>
+
+<pre><code>var result:Vector.&lt;number&gt; = new Vector.&lt;number&gt;();
+</code></pre>
+
+<p>Shaders can have results as either Vector, ByteArray, or BitmapData.  Shaders can also have input parameters as type Texture, which can be passed to the Shader as any of those three types.</p>
+
+<p>9) Create a ShaderJob, which will allow the Shader to be run:</p>
+
+<pre><code>var shaderJob:ShaderJob = new ShaderJob(testShader, result, 1, 1);
+</code></pre>
+
+<p>The third parameter is the width of the input and the fourth is the height.  These parameters determine how many times to run the Shader.  In this case it will just be run once.  If a Vector of length twenty were used as an input to the Shader then the width multiplied by the height must be equal to twenty.  Pixel Bender will take advantage of multiple CPUs if they exist but for that to happen the height of the ShaderJob must be more than one.  So it&#8217;s best to give a ShaderJob a height of at least two if it will be run on a data set with more than one item.  The output from the Shader is always equal to the length of the input.  However Textures in Pixel Bender can have from one to four channels.  If a Texture with four channels is used on a Vector then the number of items in the Vector must be a multiple of four.  Also in that case the height and width would be one fourth the length of the Vector.</p>
+
+<p>10) Start the Shader in synchronous mode:</p>
+
+<pre><code>shaderJob.start(true);
+</code></pre>
+
+<p>The optional parameter to the start method on the shaderJob tells it whether to run synchronously or asynchronously.  In this case it&#8217;s set to true meaning it should run synchronously.  If it&#8217;s run asynchronously then an event listener needs to be registered on the shaderJob&#8217;s complete event.  Asynchronous ShaderJobs will not block the UI.</p>
+
+<p>You can see the full source code for this example in the <a href="/pbjas/demos/pbjASTest/srcview/index.html">pbjas&#8217;s TestShaderJob unit test</a>.</p>
+
+<h2>Demos</h2>
+
+<p>The first demo creates a simple multiply Shader that then is just applied to an image.  The Shader is run when the slider value changes.</p>
+
+<p>(<a href="/pbjas/demos/pbjASFilter/srcview/index.html">view source</a>)</p>
+
+<p>This second demo compares the difference between calculating a bunch of square roots in AS3 and in Pixel Bender.  Pixel Bender does well but most of it&#8217;s time is actually still being spent in AS3 code execution moving data around.  Since it&#8217;s a really simple Pixel Bender filter this isn&#8217;t a great example of just how fast Pixel Bender is but it still beats out AS3 for very large data sets.  Also in this demo I&#8217;m using a small library I started playing with that will slice up the input into multiple ShaderJobs.  The reason I do this is that the maximum theoretical input size for a Pixel Bender Shader is 16,777,216 items.  However due to <a href="https://bugs.adobe.com/jira/browse/FP-1845">a bug</a> in Flash Player I consistently get crashes on data sets larger than about 2,000,000 items.  So with very large data sets it&#8217;s nice to have some automatic slicing.  Also the maximum height or width of a Shader is 8,192.  So each Shader&#8217;s height and width needs to be calculated to avoid hitting that limit.  This stuff is in the MathPBJ project.  Here is the sqrt demo:</p>
+
+<p>(<a href="/pbjas/demos/pbjASSqrtTest/srcview/index.html">view source</a>)</p>
+
+<p>The next demo shows that a more complex Shader can crunch numbers while not locking the UI:</p>
+
+<p>(<a href="/pbjas/demos/pbjASLockingTest/srcview/index.html">view source</a>)</p>
+
+<p>Finally this last demo isn&#8217;t very exciting.  It&#8217;s just the unit tests for the pbjAS library.  But if you want to better understand how to use the library the best place to learn is by looking at the unit tests.</p>
+
+<p>(<a href="/pbjas/demos/pbjASTest/srcview/index.html">view source</a>)</p>
+
+<h2>Resources</h2>
+
+<p>Now that you know what pbjAS is and how to use it here are some other resources you might need to get started:</p>
+
+<ul>
+<li><p><a href="http://github.com/jamesward/pbjas">pbjAS Source Code in git</a></p></li>
+<li><p><a href="/pbjas/asdoc/index.html">pbjAS asdoc</a></p></li>
+<li><p><a href="http://groups.google.com/group/pbjas-dev">pbjAS Google Group</a></p></li>
+</ul>
+
+
+<h2>Future Plans</h2>
+
+<p>This is really just a 0.1 release of the pbjAS library.  So there is still more to do.  One of the major things I&#8217;d like to do is to wrap pbjAS with a higher level language, perhaps MathML.  That would make using Pixel Bender for number crunching transparent and easy.  Before that though I need to get 100% unit test coverage on the existing library.  I&#8217;d love any help on these items.  All the code is in GitHub awaiting your contributions!  So please let me know what you think and feel free to contribute!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2009/04/28/would-you-pay-for-flex-builder-on-linux/">Would You Pay for Flex Builder on Linux?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-28T15:13:01-06:00" pubdate data-updated="true">Apr 28<span>th</span>, 2009</time>
+        
+         | <a href="/2009/04/28/would-you-pay-for-flex-builder-on-linux/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The current <a href="http://labs.adobe.com/downloads/flexbuilder_linux.html">alpha version</a> of Flex Builder on Linux doesn&#8217;t have feature parity with the Windows and Mac versions of Flex Builder.  It is scheduled to timeout on December 1, 2009 and current development <a href="http://gruchalski.com/2009/04/22/flex-builder-3-for-linux-on-hold/">seems to be on hold</a>.  If you would like to see Adobe create a full version of Flex Builder for Linux then please go vote for <a href="http://bugs.adobe.com/jira/browse/FB-19053">feature request #FB-19053</a>!  Thanks!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2009/04/23/ubuntu-904-desktop-edition-review-what-works-what-doesnt/">Ubuntu 9.04 Desktop Edition Review - What Works. What Doesn&#8217;t.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-23T08:47:27-06:00" pubdate data-updated="true">Apr 23<span>rd</span>, 2009</time>
+        
+         | <a href="/2009/04/23/ubuntu-904-desktop-edition-review-what-works-what-doesnt/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Since the days when I installed Slackware Linux via a stack of 3.5&#8221; floppies, Linux has been a <em>nearly</em> suitable desktop for me.  With some tinkering and with VMWare to run Windows when I need it I&#8217;ve been able to use Linux as my primary desktop OS for around 15 years.  As computers and software have evolved Linux has had to keep up.  In some areas it&#8217;s done exceptionally well and in others it has struggled.  But based on the improvements in Ubuntu Jaunty I believe the pace of improvement is accelerating.  This means that many of the niche oddities and problems with Linux should soon be ironed out.</p>
+
+<p>With the <a href="http://www.ubuntu.com/news/ubuntu-9.04-desktop">recent release of Ubuntu 9.04</a> aka Jaunty I wanted to give a brief overview of what works for me and what doesn&#8217;t.  My requirements for an operating system are not the same as everyone else&#8217;s.  So some of these may not matter to others.  First let me describe what I primarily use my computer for.  I travel frequently so things like battery life, suspend, and 3G connectivity are important.  My employer uses Exchange so being able to access my email, contacts, and calendar while offline is essential.  I do development on Java and Flex so those development platforms must work.  I regularly present at conferences and user groups so connecting to external displays and solid presentation tools are essential.  So let&#8217;s see how Jaunty does in these areas:</p>
+
+<p><strong>Battery Life</strong></p>
+
+<p>The 9-cell battery on my Lenovo W500 now lasts four to five hours!  This is a significant improvement!  In the past I was never able to get more than about two hours.  Also tools such as PowerTOP help me identify which processes are waking up the processor most frequently.</p>
+
+<p><strong>Suspend</strong></p>
+
+<p>I never hibernate to disk so I&#8217;m not sure if that works.  But suspend now regularly works when using the Intel video card (my laptop has both Intel and ATI).  The only problem with suspend is that my F3507g doesn&#8217;t come back after I resume.  I&#8217;m not sure if there is a bug for this yet other than <a href="https://bugs.launchpad.net/ubuntu/+source/network-manager/+bug/287893/comments/16">a comment</a> on another bug.</p>
+
+<p><strong>3G</strong></p>
+
+<p>Sometimes 3G dial-up works.  My F3507g card for some reason is a lot slower than using a PCMCIA 3G card.  But strangely I can only get my PCMCIA card to connect occasionally.  I&#8217;m not sure if there are bugs for either of these issues.  Overall NetworkManager has led to significant improvements in 3G connection handling.  And more improvements are expected with NetworkManager 0.8, which will include ModemManger.</p>
+
+<p><strong>Email</strong></p>
+
+<p>Using Evolution for my personal email via IMAP has always worked fine.  However using Evolution for my work email has been hit and miss over the past few years.  It used to work sometimes before my email account was switched to Exchange 2007.  Since then it has pretty much not worked at all.  I could use IMAP but then I wouldn&#8217;t be able to access my contacts and calendar.  So unfortunately I&#8217;ve been using Outlook via VMWare.  I do have hope though that the evolution-mapi support will soon stabilize and I can ditch Outlook.  Right now there are a number of <a href="https://bugs.launchpad.net/ubuntu/+source/evolution-mapi/+bug/338982">evolution-mapi bugs</a>, some of them crashers.</p>
+
+<p><strong>Display</strong></p>
+
+<p>After a number of problems with my ATI card (performance, suspend, Xrandr, etc.) I gave up and switched over to my Intel card.  So far things have worked much better than they ever have with display drivers on Linux.  Xrandr now actually works to mirror my display when I plug into an external monitor.  However I continue to have problems with gnome-display-properties and compiz.</p>
+
+<p><strong>Boot Performance</strong></p>
+
+<p>One of the best improvements with Jaunty is boot performance.  My W500 now boots from the Grub menu to GDM in 16 seconds!  Hopefully the next release of Ubuntu (Karmic Koala) will incorporate the kernel mode setting stuff to trim the boot time down even further.</p>
+
+<p><strong>Office Productivity</strong></p>
+
+<p>For some people OpenOffice is a viable alternative to Office, but unfortunately not for me.  The PowerPoint and Word conversions are not 100% perfect.  The reviewing / tracking changes mode in Office is still second to none.  So I&#8217;ve been trying to use online solutions like <a href="http://www.acrobat.com">Buzzword</a> and <a href="http://www.sliderocket.com">SlideRocket</a> more.  Once these new platforms support full offline editing I think I&#8217;ll be able to mostly stop using Office.  But for now I&#8217;m stuck with Office via Windows on VMWare.</p>
+
+<p><strong>Screen Sharing</strong></p>
+
+<p>I frequently use <a href="http://acrobat.com">Adobe Acrobat Connect</a> to do remote presentations.  However there isn&#8217;t a presenter plugin for Linux so this is another thing that keeps me using Windows.  Please <a href="https://na5.brightidea.com/ct/ct_a_view_idea.bix?c=8FBBEA8F-D8E6-4E34-A7C1-7C74FB3B4EFA&amp;idea_id=3F96AA68-9F30-41F3-8727-399E8AA5BD9E">go vote for this</a> on the Acrobat.com Ideas website.</p>
+
+<p><strong>Accelerometer</strong></p>
+
+<p>My laptop has an accelerometer and although the hdaps module is supposed to make it work the module won&#8217;t load.  There is an <a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/57315">open bug</a> for this one.</p>
+
+<p><strong>Overall</strong></p>
+
+<p>Overall Jaunty is a solid release that moves Linux closer to being my full-time desktop.  For the first time I can see on the horizon the day when I no longer have to use Windows (dual-booted or via VMWare).  Thank you Ubuntu and everyone else who builds this great stack of open source software!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2009/04/20/video-connecting-flex-to-a-soap-webservice/">Video - Connecting Flex to a SOAP Webservice</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-20T09:39:17-06:00" pubdate data-updated="true">Apr 20<span>th</span>, 2009</time>
+        
+         | <a href="/2009/04/20/video-connecting-flex-to-a-soap-webservice/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://tv.adobe.com">Adobe TV</a> has published a video I did recently about connecting Flex to a SOAP Webservice.  Check it out and let me know what you think.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2009/04/16/flex-paint-2/">Flex Paint 2.0 With Source Code</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-16T11:54:07-06:00" pubdate data-updated="true">Apr 16<span>th</span>, 2009</time>
+        
+         | <a href="/2009/04/16/flex-paint-2/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>UPDATE: I&#8217;ve created a <a href="http://www.jamesward.com/2010/03/22/flex-paint-updated-to-flex-4/">new version of Flex Paint</a> with Flex 4.</p>
+
+<p>It&#8217;s surprising and somewhat humbling to find out which of my blog posts are the most popular.  There are some posts that I spend days on and they end up only being read by a few people.  Then there are others that are simple, short, and to be honest kinda boring that end up being read by tons of people.  My original <a href="http://www.jamesward.com/blog/2006/08/16/flex-paint-flex-display-object-to-png/">Flex Paint blog</a> is one of those simple, short but highly viewed blogs.  I would never have thought that out of all my blog posts that one would be read by so many.  Since it&#8217;s almost two years old and presumably being used as a reference by many people, I thought it would be useful to update it to use the new Flash Player 10 <a href="http://livedocs.adobe.com/flex/3/langref/flash/net/FileReference.html">FileReference API</a> to eliminate the need to send the image to the server.</p>
+
+<p>Here is the new version:</p>
+
+<p>(<a href="/demos/FlexPaint2/srcview/index.html">source code</a>)</p>
+
+<p>Saving the drawn image with Flash Player 10 is as simple as:</p>
+
+<pre><code>        var bd:BitmapData = new BitmapData(canvas.width,canvas.height);
+        bd.draw(canvas);
+
+        var ba:ByteArray = (new PNGEncoder()).encode(bd);
+
+        (new FileReference()).save(ba, "doodle.png");
+</code></pre>
+
+<p>This reads the image client-side, encodes it, and then initiates a save dialog.  Pretty simple stuff.  The only downside is that using this new code I&#8217;ll no longer get to see the amazing things that people are drawing.  Here are some of the most interesting drawings people made with the old version:</p>
+
+<p><img src="/demos/FlexPaint/1229473134284.png" alt="" /></p>
+
+<p><img src="/demos/FlexPaint/1231944828597.png" alt="" /></p>
+
+<p><img src="/demos/FlexPaint/1232093014444.png" alt="" /></p>
+
+<p><img src="/demos/FlexPaint/1232118713440.png" alt="" /></p>
+
+<p><img src="/demos/FlexPaint/1232336233020.png" alt="" /></p>
+
+<p><img src="/demos/FlexPaint/1234263678780.png" alt="" /></p>
+
+<p><img src="/demos/FlexPaint/1234597589351.png" alt="" /></p>
+
+<p><img src="/demos/FlexPaint/1238344083132.png" alt="" /></p>
+
+<p>Let me know what you think about the new version!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2009/04/16/java-user-group-tour-portland-and-cincinnati/">Java User Group Tour: Portland and Cincinnati</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-16T11:19:51-06:00" pubdate data-updated="true">Apr 16<span>th</span>, 2009</time>
+        
+         | <a href="/2009/04/16/java-user-group-tour-portland-and-cincinnati/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Next week I&#8217;m off to a few more Java User Groups to talk about Flex and Java integration:</p>
+
+<ul>
+<li><p><a href="http://www.pjug.org/">Portland - April 21st</a></p></li>
+<li><p><a href="http://www.cinjug.org/">Cincinnati - April 23rd</a></p></li>
+</ul>
+
+
+<p>Also while I&#8217;m in Portland I&#8217;ll be speaking on April 22nd at the PDX RIA User Group about &#8221;<a href="http://groups.adobe.com/posts/ab210e915d">Super fast, multi-threaded, number crunching in Flash</a>&#8221;.</p>
+
+<p>I hope to see some of you along the way!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2009/04/14/java-posse-interview-at-devoxx-2008-with-chet-haase/">Java Posse Interview at Devoxx 2008 With Chet Haase</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-14T15:10:57-06:00" pubdate data-updated="true">Apr 14<span>th</span>, 2009</time>
+        
+         | <a href="/2009/04/14/java-posse-interview-at-devoxx-2008-with-chet-haase/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>While at Devoxx 2008 <a href="http://graphics-geek.blogspot.com/">Chet Haase</a> and I sat down with <a href="http://javaposse.com">The Java Posse</a> for an interview about Flex, integrating Flex with Spring, Flex Gumbo, and various other topics.  You can listen to the interview via The Java Posse Podcast - <a href="http://javaposse.com/index.php?post_id=453671#">episode #242</a>, watch it on <a href="http://www.parleys.com/display/PARLEYS/Home#talk=28016650;slide=1;title=Chet%20Haase%20and%20James%20Ward%20Devoxx%20Interview">parleys.com</a> (perhaps even using their awesome AIR app) or watch it right here.  Let me know what you think.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2009/04/07/video-drunk-on-software-with-matt-raible/">Video - Drunk on Software With Matt Raible</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-07T11:36:15-06:00" pubdate data-updated="true">Apr 7<span>th</span>, 2009</time>
+        
+         | <a href="/2009/04/07/video-drunk-on-software-with-matt-raible/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://raibledesigns.com/">Matt Raible</a> is a legend in the world of Java web applications.  In the <a href="http://www.drunkonsoftware.com/2009/04/05/episode-11-matt-raible/">latest episode</a> of <a href="http://www.drunkonsoftware.com">Drunk on Software</a> <a href="http://www.ectropic.com">Jon Rose</a> and I sit down with Matt, have a few beers, and talk geek stuff.  Matt has a lot of great insight into where software is going.  In the video we asked him what the future looks like for web frameworks.  Matt&#8217;s response brought into question the future of component frameworks.  Jon and I were pretty surprised by his response.  You will have to watch the video to get the whole story.  :)  Let us know what you think.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2009/04/06/download-the-flex-and-spring-integration-refcard/">Download the Flex and Spring Integration Refcard</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-06T08:43:16-06:00" pubdate data-updated="true">Apr 6<span>th</span>, 2009</time>
+        
+         | <a href="/2009/04/06/download-the-flex-and-spring-integration-refcard/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><strong>UPDATE: There is a new version of the Refcard available:
+<a href="http://www.jamesward.com/2010/06/14/flex-4-hibernate-3-and-spring-3-integration/">Flex 4, Hibernate 3, and Spring 3 Integration</a></strong></p>
+
+<p><a href="http://refcardz.dzone.com/refcardz/flex-spring-integration"><img src="http://refcardz.dzone.com/sites/all/files/refcardz/covers/9247.png" alt="" /></a>DZone has just published a new Refcard &#8221;<a href="http://refcardz.dzone.com/refcardz/flex-spring-integration">Flex &amp; Spring Integration</a>&#8221; written by <a href="http://www.ectropic.com">Jon Rose</a> and me.  This is the second Refcard I&#8217;ve written.  The first was &#8221;<a href="http://refcardz.dzone.com/refcardz/very-first-steps-flex">Very First Steps in Flex</a>,&#8221; which was a few chapters from <a href="http://www.firststepsinflex.com">First Steps in Flex</a> written by Bruce Eckel and me.  Working on the Flex &amp; Spring Integration Refcard was fun because I was able to learn more about the new <a href="http://www.springsource.org/spring-flex">Spring BlazeDS Integration</a> project from SpringSource.  I&#8217;ve been really impressed with how easy it is to integrate Flex and Spring together.  Another great resource for learning how to integrate Flex and Spring is Christophe Coenraets&#8217; <a href="http://coenraets.org/blog/2009/03/springblazeds-integration-test-drive-m2-update-available/">Spring BlazeDS Integration Test Drive</a>.  It contains a bunch of great examples that will help you better understand how to get everything set up and working.</p>
+
+<p>Let me know what you think about the Refcard.  I hope it&#8217;s useful for you!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2009/04/03/portable-rias-gaining-traction/">Portable RIAs Gaining Traction</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-03T12:44:48-06:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2009</time>
+        
+         | <a href="/2009/04/03/portable-rias-gaining-traction/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>It&#8217;s great to see the concept of <a href="http://www.jamesward.com/blog/portable-rias-tutorial/">Portable RIAs</a> beginning to crop up in real world applications.  The latest one I&#8217;ve seen is on ESPN - allowing the user to check out the latest March Madness updates from within a PDF.  Check it out:</p>
+
+<p><a href="http://promo.espn.go.com/espn/specialsection/adobe/"><img src="http://www.jamesward.com/blog/wp-content/uploads/2009/04/portable_ria_espn.jpg" alt="Portable RIA - ESPN" /></a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/page/16/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/page/14/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App&#8217;s HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

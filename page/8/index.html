@@ -1,0 +1,703 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="Last week I did an eSeminar on AS34J - ActionScript 3 for Java Developers. This was originally a presentation that Chet Haase and I did at Devoxx. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/page/8">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2010/05/17/watch-as34j-actionscript-3-for-java-developers/">Watch AS34J - ActionScript 3 for Java Developers</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-05-17T09:49:13-06:00" pubdate data-updated="true">May 17<span>th</span>, 2010</time>
+        
+         | <a href="/2010/05/17/watch-as34j-actionscript-3-for-java-developers/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Last week I did an eSeminar on <a href="http://seminars.adobe.acrobat.com/p69179960/">AS34J - ActionScript 3 for Java Developers</a>.  This was originally a presentation that <a href="http://graphics-geek.blogspot.com/">Chet Haase</a> and I did at <a href="http://www.devoxx.com">Devoxx</a>.  Later Chet also published the presentation as a two part article on JavaWorld (<a href="http://www.javaworld.com/javaworld/jw-02-2009/jw-02-actionscript1.html">Part 1</a> and <a href="http://www.javaworld.com/javaworld/jw-03-2009/jw-03-actionscript2.html">Part 2</a>).  Check out the <a href="http://seminars.adobe.acrobat.com/p69179960/">eSeminar</a> and let me know what you think.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2010/05/07/flex-and-java-differences-getters-setters/">Flex and Java Differences: Getters & Setters</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-05-07T07:57:37-06:00" pubdate data-updated="true">May 7<span>th</span>, 2010</time>
+        
+         | <a href="/2010/05/07/flex-and-java-differences-getters-setters/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In Java it has become a standard practice to use a getter &amp; setter notation to provide a consistent interface to an object&#8217;s properties.  There is a reason why we don&#8217;t do the following in Java:</p>
+
+<pre><code>public String fullName;
+</code></pre>
+
+<p>The code above essentially creates an interface (or contract) between the class and the implementors of this class that does not allow us to change the underlying implementation of what gets returned when the fullName property is accessed on an instance of the class.  So if someone has Java code that accesses the fullName property:</p>
+
+<pre><code>blah = obj.fullName;
+</code></pre>
+
+<p>Or sets the fullName property:</p>
+
+<pre><code>obj.fullName = "blah";
+</code></pre>
+
+<p>Then in Java there is no way to change the behavior of getting or setting the fullName property.  If the author of the class wanted to change the underlying behavior of the getting or setting they would have to change how the implementors of the class interact with the class.  That is obviously not ideal so in Java we typically hide properties with get and set functions.  The Java language doesn&#8217;t yet have Java properties so we use methods to hide the implementation.  So our Java class instead would be:</p>
+
+<pre><code>private String fullName;
+
+public String getFullName() {
+    return fullName;
+}
+
+public void setFullName(String fullName) {
+    this.fullName = fullName;
+}
+</code></pre>
+
+<p>This allows the class author to change the behavior of getting and setting the fullName property without changing the external interface.</p>
+
+<p>In Flex it is not usually necessary to create the wrapper getter and setting functions on an object because ActionScript supports properties.  This means that you can usually just create public properties like:</p>
+
+<pre><code>public var fullName:String;
+</code></pre>
+
+<p>If the internal implementation of getting or setting the fullName property needs to change, then the class can be adapted to have getter and setter functions without changing the external interface of the class:</p>
+
+<pre><code>private var _fullName:String;
+
+public function get fullName():String {
+    return _fullName;
+}
+
+public function set fullName(_fullName:String):void {
+    this._fullName = _fullName;
+}
+</code></pre>
+
+<p>To the class implementor the property fullName could still be get and set through the normal notations:</p>
+
+<pre><code>// getters
+blah = obj.fullName;
+blah = obj['fullName'];
+// setters
+obj.fullName = "blah";
+obj['fullName'] = "blah";
+</code></pre>
+
+<p>Getting or setting the property would call the getter and setter functions instead of accessing the property directly.  This allows the interface of the object to stay the same even if the underlying implementation of getting and setting the property changes.  This also allows a class to dispatch events when properties change (this is how Data Binding works internally in Flex).</p>
+
+<p>I see a lot of Java developers who are wary of public properties on ActionScript classes.  Don&#8217;t be!  ActionScript supports real properties so you shouldn&#8217;t ever need property getters and setters unless you are doing something out of the ordinary.  And you can switch to getters and setters without changing the interface to the object.</p>
+
+<p>If you would like to learn more about the differences between ActionScript and Java check out my <a href="http://www.adobe.com/cfusion/event/index.cfm?event=detail&amp;id=1489921&amp;loc=en_us&amp;sdid=EUQZQ">AS34J: ActionScript 3 for Java Developers eSeminar</a> next week!</p>
+
+<p>UPDATE: Watch the <a href="http://www.jamesward.com/2010/05/17/watch-as34j-actionscript-3-for-java-developers/"> recording of my eSeminar presentation</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2010/04/27/emerging-technologies-for-the-enterprise-podcast/">Emerging Technologies for the Enterprise Podcast</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-04-27T09:09:27-06:00" pubdate data-updated="true">Apr 27<span>th</span>, 2010</time>
+        
+         | <a href="/2010/04/27/emerging-technologies-for-the-enterprise-podcast/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>While I was at the Emerging Technologies for the Enterprise <a href="http://phillyemergingtech.com/">conference</a> in Philly I was able to participate in a <a href="http://chariottechcast.libsyn.com/index.php?post_id=605733">very fun podcast</a>.  The casual chat was hosted by <a href="http://www.rimple.com/tech">Ken Rimple</a> of <a href="http://chariotsolutions.com/">Chariot Solutions</a>.  Participating in the podcast were <a href="http://www.twitter.com/adamcoomes">Adam Coomes</a> of Infegy, <a href="http://www.twitter.com/edburns">Ed Burns</a> of Oracle, <a href="http://twitter.com/cote">Cote</a> of Redmonk, and myself.  Topics ranged from cheesesteaks to turbo buttons.  Give <a href="http://chariottechcast.libsyn.com/index.php?post_id=605733">it a listen</a> and let me know what you think!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2010/04/26/flex-at-the-austin-jug-and-stir-trek-in-columbus/">Flex at the Austin JUG and Stir Trek in Columbus</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-04-26T15:07:10-06:00" pubdate data-updated="true">Apr 26<span>th</span>, 2010</time>
+        
+         | <a href="/2010/04/26/flex-at-the-austin-jug-and-stir-trek-in-columbus/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Tomorrow night I&#8217;ll be in Austin, Texas speaking at the Java User Group about <a href="http://www.austinjug.org/index.jsp?p=events-20100427">Better Software with Java and Flex</a> (Try the <a href="http://74.125.155.132/search?q=cache:QJI7olGFWdoJ:www.austinjug.org/index.jsp%3Fp%3Devents-20100427+http://www.austinjug.org/index.jsp%3Fp%3Devents-20100427&amp;hl=en&amp;gl=us&amp;strip=1">Google Cache Page</a> in case the site is not working).  And then next week I&#8217;ll be at Stir Trek in Columbus, Ohio presenting about <a href="http://stirtrek.com/Sessions.aspx">Flex and the Cloud</a>.  I hope to see some of you at these events!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2010/04/20/flex-3-sdk-in-flash-builder-4/">Flex 3 SDK in Flash Builder 4</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-04-20T08:23:46-06:00" pubdate data-updated="true">Apr 20<span>th</span>, 2010</time>
+        
+         | <a href="/2010/04/20/flex-3-sdk-in-flash-builder-4/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The <a href="http://opensource.adobe.com/wiki/display/flexsdk/Flex+SDK">Flex 4 SDK</a> has some great new features but for existing Flex 3 apps upgrading might not yet be an option.  Luckily Adobe&#8217;s professional tooling for Flex, now called Flash Builder 4, is abstracted from the underlying SDK.  This means that you can take advantage of many of the new <a href="http://www.adobe.com/products/flashbuilder/?view=topnew">Flash Builder 4 features</a> while still using the Flex 3 SDK.  I recently recorded a screencast showing how to use Flash Builder 4 with Flex 3 projects.  Check out &#8221;<a href="http://www.adobe.com/devnet/flex/articles/flexbuilder3_to_flashbuilder4.html">Moving projects from Flex Builder 3 to Flash Builder 4</a>&#8221; by <a href="http://www.ashorten.com/">Andrew Shorten</a> to see my screencast.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2010/04/12/drunk-on-software-23-ie28099d-give-it-a-4-5-out-of-10/">Drunk on Software #23 &#8220;I’d Give It a 4.5 Out of 10&#8221;</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-04-12T17:03:27-06:00" pubdate data-updated="true">Apr 12<span>th</span>, 2010</time>
+        
+         | <a href="/2010/04/12/drunk-on-software-23-ie28099d-give-it-a-4-5-out-of-10/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In <a href="http://www.drunkonsoftware.com/2010/04/02/episode-23-id-give-it-a-4-5-out-of-10/">Episode 23</a> we chat with <a href="http://adamflater.blogspot.com/">Adam Flater</a> and <a href="http://www.robrusher.com/">Rob Rusher</a> about some very controversial topics. Adam points out James’ wishful thinking when we discuss what defines something being a “Flex application”. <a href="http://www.ectropic.com">Jon</a> gets the award for best quote of the episode when we discuss Flex and its community. Things get fun as we discuss Silverlight and Flex differences. As we wrap up Jon rates the wonderful scotch we were drinking an 8 out of 10.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2010/04/01/video-build-your-first-desktop-application-with-flash-builder/">Video: Build Your First Desktop Application With Flash Builder</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-04-01T06:47:35-06:00" pubdate data-updated="true">Apr 1<span>st</span>, 2010</time>
+        
+         | <a href="/2010/04/01/video-build-your-first-desktop-application-with-flash-builder/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In this video I walk through the basics of building Adobe AIR desktop applications in Flash Builder 4 using the Flex 4 SDK.  Let me know what you think.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2010/03/23/upcoming-flex-presos-cincinnati-philly-houston-and-dallas/">Upcoming Flex Presos: Cincinnati, Philly, Houston, and Dallas</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-03-23T17:02:31-06:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2010</time>
+        
+         | <a href="/2010/03/23/upcoming-flex-presos-cincinnati-philly-houston-and-dallas/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Here are some upcoming presentations I&#8217;ll be doing about Flex:</p>
+
+<ul>
+<li><p>Cincinnati March 24 - cincyFlex - <a href="http://groups.adobe.com/posts/5d28b426a4">What&#8217;s new in the world of Flex?</a></p></li>
+<li><p>Cincinnati March 25 - CinJUG - <a href="http://cinjug.org/meetings/index.html">Flex in the Cloud</a></p></li>
+<li><p>Philly April 8 - Emerging Technologies for the Enterprise - <a href="http://phillyemergingtech.com/sessions/building-client-server-2-0-apps-with-flex">Building Client/Server 2.0 Apps with Flex</a></p></li>
+<li><p>Houston April 13 - <a href="http://groups.adobe.com/index.cfm?event=post.display&amp;postid=17615">Houston Adobe User Group</a> and <a href="http://groups.adobe.com/index.cfm?event=post.display&amp;postid=17640">Space City Flex Users Group</a></p></li>
+<li><p>Dallas April 14 - JavaMUG - <a href="http://javamug.org/mainpages/2010Meetings.html#Apr">Using Flex and Java to Build Rich and Highly Interactive Software</a></p></li>
+</ul>
+
+
+<p>I hope to see you at one of these events!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2010/03/22/flex-paint-updated-to-flex-4/">Flex Paint Updated to Flex 4</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-03-22T12:29:13-06:00" pubdate data-updated="true">Mar 22<span>nd</span>, 2010</time>
+        
+         | <a href="/2010/03/22/flex-paint-updated-to-flex-4/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>One of my <a href="http://www.jamesward.com/2009/04/16/flex-paint-2/">most viewed blogs</a> is one of the most simple demo apps I&#8217;ve built.  It&#8217;s a simple Flex app that lets the user draw with their mouse and then lets them save their drawing.  I&#8217;ve updated the Flex Paint demo to Flex 4.  Check it out:</p>
+
+<p>(<a href="/demos/FlexPaint4/srcview/index.html">View the source code</a>)</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/2010/03/21/flex-4-is-here-go-forth-and-build-better-software/">Flex 4 Is Here! Go Forth and Build Better Software!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-03-21T21:25:54-06:00" pubdate data-updated="true">Mar 21<span>st</span>, 2010</time>
+        
+         | <a href="/2010/03/21/flex-4-is-here-go-forth-and-build-better-software/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://www.adobe.com/products/flex/">Flex 4</a> and its counterpart, <a href="http://www.adobe.com/go/try_flashbuilder">Flash Builder 4</a>, are now publicly available!  We&#8217;ve also launched a new <a href="http://flex.org">flex.org</a> and added a ton of new Flex 4 samples in <a href="http://flex.org/tour">Tour de Flex</a>!</p>
+
+<p>Rich Internet Applications are the next generation of software.  For the first time in the history of software the goal is not to simply collect or interpret data, but to make those tasks productive and simple.  RIAs move us up the hierarchy of user and business needs.  It is unproductive to change technologies and create the same old stuff.  We change technologies because they provide new value like closing more deals, reducing task completion time, or gaining customer loyalty.</p>
+
+<p>I got into Flex 1.0 about six years ago because I could more easily deliver usable software with Flex than I could with any other technology.  A key aspect to creating more usable software is working with designers.  The new Spark component model in Flex 4 sets the foundation for developers and designers to work more closely together using tools such as Adobe Creative Suite and Flash Catalyst.  This is what sets Adobe apart in the RIA landscape.  Designers use Adobe&#8217;s creative products.  The key to building better software is creating ways for designers to more easily work with developers.</p>
+
+<p>By bringing together designers and developers, Flex 4 enables a world of better software!  I&#8217;m truly excited to see the amazing things you will build with Flex!</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/page/9/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/page/7/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App&#8217;s HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
