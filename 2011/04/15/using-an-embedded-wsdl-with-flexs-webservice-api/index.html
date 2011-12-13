@@ -1,0 +1,415 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Using an Embedded WSDL with Flex's WebService API - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="Recently I was helping a customer figure out how to use an embedded WSDL with Flex&#8217;s WebService API. One scenario in which this is needed is &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2011/04/15/using-an-embedded-wsdl-with-flexs-webservice-api">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Using an Embedded WSDL With Flex's WebService API</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-15T07:42:53-06:00" pubdate data-updated="true">Apr 15<span>th</span>, 2011</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Recently I was helping a customer figure out how to use an embedded WSDL with Flex&#8217;s WebService API.  One scenario in which this is needed is when the actual WSDL is not available at runtime.  In this case the application must contain the WSDL instead of request it at runtime.  The Flex WebService API today only supports loading the WSDL over the network at runtime.  Beginning in Flash Builder 4 the Service wizard generate code that internally use the WebService API.  So no matter how you integrate with a SOAP Web Service in Flex, you need the WSDL accessible via a URL at runtime.  This wasn&#8217;t possible for the customer I was working with so we figured out a way to actually embed the WSDL into the application.  Here is what we did&#8230;</p>
+
+<p>I used my <a href="http://www.jamesward.com/census2">Census</a> SOAP Service as a simple service to test this with.  In this case, my WSDL is publicly available at: <a href="http://www.jamesward.com/census2-tests/services/CensusSOAPService?wsdl">http://www.jamesward.com/census2-tests/services/CensusSOAPService?wsdl</a></p>
+
+<p>First, I created a new Flex project and saved the WSDL into the src dir of the project.  I built a simple test program using the WebService API directly:</p>
+
+<pre><code>&lt;s:application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"&gt;
+
+    &lt;fx:declarations&gt;
+        &lt;s:webservice wsdl="http://www.jamesward.com/census2-tests/services/CensusSOAPService?wsdl" id="ws"&gt;&lt;/s:webservice&gt;
+    &lt;/fx:declarations&gt;
+
+    &lt;s:applicationcomplete&gt;
+        ws.getElements(0, 50);
+    &lt;/s:applicationcomplete&gt;
+
+    &lt;s:datagrid width="100%" dataprovider="{ws.getElements.lastResult}" height="100%"&gt;&lt;/s:datagrid&gt;
+
+&lt;/s:application&gt;
+</code></pre>
+
+<p>Then I ran the application in Chrome with the Network view open in the Chrome Developer Tools panel.  This indicated that, just as expected, the WSDL is used at runtime:
+<img src="http://www.jamesward.com/wp/uploads/2011/04/flex_wsdl_webservice.png" alt="" /></p>
+
+<p>Next I had a look around the <em>WebService</em> source code (available in <FLEX_SDK>/frameworks/projects/rpc/src/mx/rpc/soap) and discovered there is a <em>loadWSDL</em> method that can be overwritten to handle the embedded loading of the WSDL instead of the default network loading of the WSDL.  So I created a new class that extends the base <em>WebService</em> class, embeds the WSDL file, and overrides the <em>loadWSDL</em> method:</p>
+
+<pre><code>package
+{
+    import mx.core.ByteArrayAsset;
+    import mx.core.mx_internal;
+    import mx.rpc.events.WSDLLoadEvent;
+    import mx.rpc.soap.mxml.WebService;
+    import mx.rpc.wsdl.WSDL;
+
+    use namespace mx_internal;
+
+    public dynamic class MyWebService extends WebService
+    {
+        [Embed(source="CensusSOAPService.xml", mimeType="application/octet-stream")]
+        private static const WSDL_CLASS:Class;
+
+        public function MyWebService(destination:String=null)
+        {
+            super(destination);
+            loadWSDL();
+        }
+
+        override public function loadWSDL(uri:String=null):void
+        {
+            var thing:Object = new WSDL_CLASS();
+            var baa:ByteArrayAsset = (thing as ByteArrayAsset);
+            var xml:String = baa.readUTFBytes(baa.length);
+
+            deriveHTTPService();
+
+            var wsdlLoadEvent:WSDLLoadEvent = WSDLLoadEvent.createEvent(new WSDL(new XML(xml)));
+            wsdlHandler(wsdlLoadEvent);
+        }
+    }
+}
+</code></pre>
+
+<p>In the regular <em>WebService</em> class, setting the <em>wsdl</em> property will trigger the <em>loadWSDL</em> method, but since we are embedding the WSDL, we must manually call the <em>loadWSDL</em> method.  I do that in the constructor.</p>
+
+<p>Embedded assets become a class, so first an instance of that class must be instantiated as a <em>ByteArrayAsset</em> (the default type for files embedded with the application/octet-stream mimeType).  Then the instance is read into a string.  Then the <em>deriveHTTPService</em> method is called to set up the underlying <em>HTTPService</em>&#8217;s channel information.  Finally, we create a <em>WSDL</em> object from the <em>XML</em> that was read from the <em>ByteArrayAsset</em>, create a new <em>WSDLLoadEvent</em> with the <em>WSDL</em>, and call the <em>wsdlHandler</em> method, passing it the <em>wsdlLoadEvent</em>.  This essentially is doing the same thing as the original <em>WebService</em> class, but now doing it without the network request.</p>
+
+<p>I can now switch my test application to use my extension to WebService instead of the original one:</p>
+
+<pre><code>    &lt;fx:declarations&gt;
+        &lt;local:mywebservice xmlns:local="*" id="ws"&gt;&lt;/local:mywebservice&gt;
+    &lt;/fx:declarations&gt;
+</code></pre>
+
+<p>Now when I run the application and monitor the network activity I no longer see the WSDL being requested at runtime!  So everything works when using the <em>WebService</em> API directly.  However, the customer I was working with was using the Service wizard in Flash Builder.  So we needed to figure out how to get the generated code to use the new <em>WebService</em> extension instead of the original <em>WebService</em> class.  I went through the Data Wizards and had it generate the client-side stubs for my Census SOAP Service.  This created a <em>CensusSOAPService</em> class that extends the generated <strong>Super_CensusSOAPService<em> class.  The </em>CensusSOAPService_ is intended to give us a place to make modifications to the generated stuff, while the </strong>Super_CensusSOAPService<em> class is not supposed to be modified because it will be overwritten if we refresh the service.  Looking in the __Super_CensusSOAPService</em> class I discovered that the <em>WebService</em> instance is being created directly in the constructor:</p>
+
+<pre><code>    public function _Super_CensusSOAPService()
+    {
+        // initialize service control
+        _serviceControl = new mx.rpc.soap.mxml.WebService();
+
+        // rest of method omitted
+    }
+</code></pre>
+
+<p>These are the kinds of things that really make you wish the Flex framework used dependency injection because we need to set <strong>serviceControl<em> from the </em>CensusSOAPService_ class.  So we thought&#8230;  Alright, this is not ideal but we can just copy the contents of the </strong>Super_CensusSOAPService<em>&#8217;s constructor into </em>CensusSOAPService<em>&#8217;s constructor, replace the line that instantiates the </em>WebService<em>, have it instantiate </em>MyWebService<em> instead, and then just not call </em>super()<em>.  We gave it a try and for some reason kept getting __serviceControl</em> set as a <em>WebService</em> not <em>MyWebService</em>.  WTF?  It made no sense until we found this little gem in the <a href="http://help.adobe.com/en_US/flex/using/WS2db454920e96a9e51e63e3d11c0bf67eed-7fff.html">Flex docs</a>:
+<em>&#8220;If you define the constructor, but omit the call to super(), Flex automatically calls super() at the beginning of your constructor.&#8221;</em>
+Now it all made sense!  Since we didn&#8217;t call <em>super()</em>, Flex conveniently inserted a <em>super()</em> call for us!  Fun.  So we had to figure out a way to convince the Flex compiler that we were going to call <em>super()</em>, but then not call it.</p>
+
+<pre><code>if (0)
+{
+    super();
+}
+</code></pre>
+
+<p>Voila!  Now the <em>CensusSOAPService</em>&#8217;s constructor sets <strong>serviceControl<em> to a new instance of </em>MyWebService_ and </strong>Super_CensusSOAPService_ doesn&#8217;t get the chance to mess that up.</p>
+
+<p>We tested the new <em>CensusSOAPService</em> and everything worked perfectly!</p>
+
+<p>I hope that helps some of you who are using the Flex WebService API.  Let me know if you have any questions.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-15T07:42:53-06:00" pubdate data-updated="true">Apr 15<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/flex/'>Flex</a>, <a class='category' href='/categories/soap/'>SOAP</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2011/04/15/using-an-embedded-wsdl-with-flexs-webservice-api/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2011/04/15/using-an-embedded-wsdl-with-flexs-webservice-api/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2011/04/11/tour-de-mobile-flex-on-ios/" title="Previous Post: Tour de Mobile Flex on iOS">&laquo; Tour de Mobile Flex on iOS</a>
+      
+      
+        <a class="basic-alignment right" href="/2011/04/26/introducing-mixing-loom-runtime-actionscript-bytecode-modification/" title="next Post: Introducing Mixing Loom - Runtime ActionScript Bytecode Modification">Introducing Mixing Loom - Runtime ActionScript Bytecode Modification &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

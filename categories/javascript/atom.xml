@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: JavaScript | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Getting Started with Node.js on The Cloud]]></title>
+    <link href="http://jamesward.github.com/2011/06/21/getting-started-with-node-js-on-the-cloud/"/>
+    <updated>2011-06-21T10:21:22-06:00</updated>
+    <id>http://jamesward.github.com/2011/06/21/getting-started-with-node-js-on-the-cloud</id>
+    <content type="html"><![CDATA[<p>In my new job at salesforce.com I'm incredibly exited about getting into <a href="http://www.heroku.com">Heroku</a>, a Platform as a Service provider / Cloud Application Platform.  In a future blog post I'll provide more details on what Heroku is and how it works.  But if you are like me the first thing you want to do when learning a new technology is to take it for a test drive.  I decided to take my Heroku test drive using the <a href="http://devcenter.heroku.com/articles/node-js">recently announced Node.js support</a>.  I'm new to Node.js, but at least I know JavaScript.  Heroku also offers Ruby / Rails support but I don't know Ruby - yet.  So let me walk you through the steps I took (and that you can follow) to get started with Node.js on the Heroku Cloud.</p>
+
+<p>(If you have already signed up for Heroku, installed the heroku command line client, and installed git then skip ahead to Step 6.)</p>
+
+<p>Step 1) <a href="http://www.heroku.com/signup">Sign up for Heroku</a></p>
+
+<p>Step 2) Install the heroku command line client</p>
+
+<p>All of the Heroku management tasks are exposed through a RESTful API.  The easiest way to call those APIs is using the <a href="https://github.com/heroku/heroku">heroku open source command line</a> Ruby app.  To install the heroku command line I first had to install Ruby.  I'm on Ubuntu Linux so this process will be slightly different if you are on Windows or Mac but the <a href="http://devcenter.heroku.com/articles/quickstart">Heroku Dev Center</a> provides more information on how to do this on Windows and Mac.  On Ubuntu you can install Ruby with apt-get (or various other tools):</p>
+
+<pre><code>sudo apt-get install ruby
+</code></pre>
+
+<p>Now <a href="http://rubygems.org/pages/download">download RubyGems</a>, unpack, and then install it:</p>
+
+<pre><code>sudo ruby setup.rb
+</code></pre>
+
+<p>This installs the gem utility at /usr/bin/gem1.8 but I also created a symlink to it so I can run it with just the "gem" command:</p>
+
+<pre><code>sudo ln -s /usr/bin/gem1.8 /usr/bin/gem
+</code></pre>
+
+<p>Now the heroku gem can be installed:</p>
+
+<pre><code>sudo gem install heroku
+</code></pre>
+
+<p>Heroku should now run from the command line:</p>
+
+<pre><code>heroku
+</code></pre>
+
+<p>You should see something like:</p>
+
+<pre><code>Usage: heroku COMMAND [--app APP] [command-specific-options]
+
+Primary help topics, type "heroku help TOPIC" for more details:
+
+  auth      # authentication (login, logout)
+  apps      # manage apps (create, destroy)
+  ps        # manage processes (dynos, workers)
+  run       # run one-off commands (console, rake)
+  addons    # manage addon resources
+  config    # manage app config vars
+  releases  # view release history of an app
+  domains   # manage custom domains
+  logs      # display logs for an app
+  sharing   # manage collaborators on an app
+
+Additional topics:
+
+  account      # manage heroku account options
+  db           # manage the database for an app
+  help         # list commands and display help
+  keys         # manage authentication keys
+  maintenance  # toggle maintenance mode
+  pg           # manage heroku postgresql databases
+  pgbackups    # manage backups of heroku postgresql databases
+  plugins      # manage plugins to the heroku gem
+  ssl          # manage ssl certificates for an app
+  stack        # manage the stack for an app
+  version      # display version
+</code></pre>
+
+<p>Step 3) Login to Heroku via the command line</p>
+
+<p>You can verify that everything is setup correctly by logging into Heroku through the heroku command line.  This will save an API key into a ~/.heroku/credentials file.  That key will be used for authenticating you on subsequent requests. Just run the following command and enter your Heroku credentials:</p>
+
+<pre><code>heroku auth:login
+</code></pre>
+
+<p>Step 4) Install git</p>
+
+<p>The git tool is used to transfer apps to Heroku.  On Ubuntu I installed it by doing:</p>
+
+<pre><code>sudo apt-get install git
+</code></pre>
+
+<p>Step 5) Setup your SSH key</p>
+
+<p>Heroku uses SSH keys to authenticate you when you push files through git.  If you don't already have a SSH key then you will need to generate one (I used ssh-keygen).</p>
+
+<p>Step 6) Create an app on Heroku</p>
+
+<p>A new app needs to be provisioned on Heroku.  Since Heroku supports multiple application provisioning stacks you will need to tell it the stack you want to use, unless it's the default.  For Node.js we need to use the "cedar" stack which is not the default since it's still in beta.  To do that run:</p>
+
+<pre><code>heroku create -s cedar
+</code></pre>
+
+<p>A default / random app name is automatically assigned to your app.  It will be somethingunique.herokuapp.com.  You can change the name either through the <a href="https://api.heroku.com/myapps">Heroku web admin</a> or via the command line:</p>
+
+<pre><code>heroku apps:rename --app somethingunique hellofromnodejs
+</code></pre>
+
+<p>When the app was created your SSH key should have also been uploaded to Heroku for git access.  You can manage the keys associated with an app using the "heroku keys" commands.  Check out "heroku help keys" for more details.</p>
+
+<p>Now that the app is provisioned it needs something to actually run!  So lets build a Node.js app and then upload it to Heroku.</p>
+
+<p>Step 7) Install Node.js</p>
+
+<p>On Ubuntu I installed Node.js through apt-get.  But first I had to add a PPA so that I could get the latest version.</p>
+
+<pre><code>sudo apt-add-repository ppa:jerome-etienne/neoip
+sudo apt-get update
+sudo apt-get install nodejs
+</code></pre>
+
+<p>For other platforms, check out the <a href="http://nodejs.org/#download">Node.js Download page</a>.</p>
+
+<p>Step 8) Create a Node.js app</p>
+
+<p>I started by building a very simple "hello, world" Node.js app.  In a new project directory I created two new files.  First is the package.json file which specifies the app metadata and dependencies:</p>
+
+<pre><code>{
+  "name": "heroku_hello_world",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "2.2.0"
+  }
+}
+</code></pre>
+
+<p>Then the actual app itself contained in a file named web.js:</p>
+
+<pre><code>var express = require('express');
+
+var app = express.createServer(express.logger());
+
+app.get('/', function(request, response) {
+  response.send('hello, world');
+});
+
+var port = process.env.PORT || 3000;
+console.log("Listening on " + port);
+
+app.listen(port);
+</code></pre>
+
+<p>This app simply maps requests to "/" to a function that sends a simple string back in the response.  You will notice that the port to listen on will first try to see if it has been specified through an environment variable and then fallback to port 3000.  This is important because Heroku can tell our app to run on a different port just by giving it an environment variable.</p>
+
+<p>Step 9) Install the Node.js app dependencies</p>
+
+<p>My simple Node.js app requires the <a href="http://expressjs.com/">Express Node.js library</a>.  In order to install Express, the <a href="http://npmjs.org/">Node Package Manager</a> (npm) is required.  Installing npm on Ubuntu was a bit trickey because I didn't feel the regular method followed good security practices.  So I followed the alternative install instructions by just cloning npm from github and then installed it from source:</p>
+
+<pre><code>git clone git://github.com/isaacs/npm.git
+cd npm
+sudo make install
+</code></pre>
+
+<p>Now we can install the node dependencies into the local project directory.  Just run:</p>
+
+<pre><code>npm install .
+</code></pre>
+
+<p>This uses the package.json to figure out what dependencies the app needs and then copies them into a "node_modules" directory.</p>
+
+<p>Step 10) Try to run the app locally</p>
+
+<p>From the command line run:</p>
+
+<pre><code>node web.js
+</code></pre>
+
+<p>You should see "Listening on 3000" to indicate that the Node.js app is running!  Try to open it in your browser:
+<a href="http://localhost:3000/">http://localhost:3000/</a></p>
+
+<p>Hopefully you will see "hello, world".</p>
+
+<p>Step 11) Create a Procfile</p>
+
+<p>Heroku uses a "Procfile" to determine how to actually run your app.  Here I will just use a Procfile to tell Heroku what to run in the "web" process.  But the Procfile is really the foundation for telling Heroku how to run your stuff.  I won't go into detail here since Adam Wiggins has done a great <a href="http://blog.heroku.com/archives/2011/6/20/the_new_heroku_1_process_model_procfile/">blog post about the purpose and use of a Procfile</a>.  Create a file named "Procfile" in the project directory with the following contents:</p>
+
+<pre><code>web: node web.js
+</code></pre>
+
+<p>This will instruct Heroku to run the web app using the node command and the web.js file as the main app.  Heroku can also run workers (non-web apps) but for now we will just deal with web processes.</p>
+
+<p>Note: Once you have a Procfile you can <a href="http://devcenter.heroku.com/articles/procfile#developing_locally_with_foreman">run your application locally using Foreman</a>.  This allows you to simulate locally how Heroku will run your app based on your Procfile.</p>
+
+<p>Step 12) Store the project files in a local git repo</p>
+
+<p>In order to send the app to Heroku the files must be in a local git repository.  Of course you can also put them in a remote git repo (like github.com).  To create the local git repo run the following inside of your project directory:</p>
+
+<pre><code>git init
+</code></pre>
+
+<p>Now add the three files you've created to the git repo:</p>
+
+<pre><code>git add package.json Procfile web.js
+</code></pre>
+
+<p>Note: Make sure you don't add the node_modules directory to the git repo!  You can have git ignore it by creating a .gitignore file containing just "node_modules".</p>
+
+<p>And commit the files to the local repo:</p>
+
+<pre><code>git commit -m "initial commit"
+</code></pre>
+
+<p>Step 13) Push the project files to Heroku</p>
+
+<p>Now we need to tell git about the remote repository on Heroku which we will push the app to.  When you provisioned the app on Heroku it gave you a web URL and a git URL.  If you don't have the git URL anymore you can determine it either by running the "heroku apps" command or by navigating to the <a href="https://api.heroku.com/myapps">app on heroku.com</a>.  The git URL will be something like "git@heroku.com:somethingunique.git" where the "somethingunique" is your app's name on Heroku.  Once you have the git URL add the remote repo:</p>
+
+<pre><code>git remote add heroku git@heroku.com:somethingunique.git
+</code></pre>
+
+<p>Note: If we had created the git repo before creating the Heroku app then the heroku command line client would have automatically added the remote repo to your git configuration.</p>
+
+<p>Now you can push your app to Heroku!  Just run:</p>
+
+<pre><code>git push heroku master
+</code></pre>
+
+<p>You should see something like:</p>
+
+<pre><code>Counting objects: 6, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (6/6), 617 bytes, done.
+Total 6 (delta 0), reused 6 (delta 0)
+
+-----&gt; Heroku receiving push
+-----&gt; Node.js app detected
+-----&gt; Vendoring node 0.4.7
+-----&gt; Installing dependencies with npm 1.0.8
+       express@2.2.0 ./node_modules/express 
+       ├── mime@1.2.2
+       ├── connect@1.4.4
+       └── qs@0.1.0
+       Dependencies installed
+-----&gt; Discovering process types
+       Procfile declares types -&gt; web
+-----&gt; Compiled slug size is 3.1MB
+-----&gt; Launching... done, v4
+       http://somethingunique.herokuapp.com deployed to Heroku
+
+To git@heroku.com:somethingunique.git
+ * [new branch]      master -&gt; master
+</code></pre>
+
+<p>Now you should be able to connect to your app in the browser!  You can also get some diagnostic information out of the heroku command line.  To see your app logs (provisioning, management, scaling, and system out messages) run:</p>
+
+<pre><code>heroku logs
+</code></pre>
+
+<p>To see your app processes run:</p>
+
+<pre><code>heroku ps
+</code></pre>
+
+<p>And best of all, if you want to add more Dynos* just run:</p>
+
+<pre><code>heroku scale web=2
+</code></pre>
+
+<ul>
+<li>Dynos are the isolated containers that run your web and other processes.  They are managed by the Heroku Dyno Manifold.  <a href="http://devcenter.heroku.com/articles/dynos">Learn more about Dynos</a>.</li>
+</ul>
+
+
+<p>That increases the number of Dynos running the app from one to two.  Automatically Heroku will distribute the load across those two Dynos, detect dead Dynos, restart them, etc!  That is seriously easy app scalability!</p>
+
+<p>There is much more to Heroku and I'll be continuing to write about it here.  But in the meantime, check out all of the great docs in the <a href="http://devcenter.heroku.com/">Heroku Dev Center</a>.  And please let me know if you have any questions or problems.  Thanks!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[amf.js - A Pure JavaScript AMF Implementation]]></title>
+    <link href="http://jamesward.github.com/2010/07/07/amf-js-a-pure-javascript-amf-implementation/"/>
+    <updated>2010-07-07T08:34:06-06:00</updated>
+    <id>http://jamesward.github.com/2010/07/07/amf-js-a-pure-javascript-amf-implementation</id>
+    <content type="html"><![CDATA[<p>I just finished the first version of a new pure <a href="http://github.com/jamesward/JSAMF">JavaScript library for AMF</a>.  I've wanted to do this for a while but didn't think it was possible since JavaScript doesn't have a ByteArray.  But then I came across this: "<a href="http://www.adamia.com/blog/high-performance-javascript-port-of-actionscript-byteArray">High Performance JavaScript Port of ActionScript's ByteArray</a>".  That became the basis for <a href="http://github.com/jamesward/JSAMF">amf.js</a>.  Before I get into the gory details of how this works, check out some developer eye candy:
+<a href="http://www.jamesward.com/demos/JSAMF/censusTest.html">http://www.jamesward.com/demos/JSAMF/censusTest.html</a></p>
+
+<p>Ok, hopefully that worked for you.  I've tested this in the latest Chrome, Firefox, Safari, and IE and they all seem to work.  It should also work on your iPad, iPhone, or Android device.</p>
+
+<p>Now for those gory details...  AMF is a protocol initially created in Flash Player as a way to serialize data for storage on disk or transfer over a network.  Typically in web apps we use text-based serialization protocols (like JSON or RESTful XML) for data transfer.  But there are some advantages to using binary protocols - primarily <a href="http://www.jamesward.com/2009/06/17/blazing-fast-data-transfer-in-flex/">much better performance</a>.  There are two versions of the AMF protocol, <a href="http://download.macromedia.com/pub/labs/amf/amf0_spec_121207.pdf">AMF0</a> and <a href="http://opensource.adobe.com/wiki/download/attachments/1114283/amf3_spec_05_05_08.pdf">AMF3</a>.  Both are publicly documented by Adobe and numerous server-side implementations of AMF exist.  AMF is just a serialization technology, not a transport.  So you can put AMF encoded data into any transport (like HTTP / HTTPS).  Typically Flash Player is the client that reads / writes AMF data.</p>
+
+<p>I recently had a conversation with <a href="http://twitter.com/Stephan007">Stephan Janssen</a> who runs <a href="http://parleys.com">Parleys.com</a> (an amazing Flex app), which started me on this fun project. The Parleys.com PC-profile web client and the Adobe AIR desktop client both use BlazeDS and AMF as the primary serialization protocol for moving data between client and server.  This is a great choice for those clients because it makes the apps snappy.  But for the HTML5 client Stephan wants to reuse his AMF endpoints.  This is where amf.js comes in.</p>
+
+<p>Flash Player has a ByteArray API that can be used for a lot of amazing things.  One of those things is to read and write AMF.  If you have an object in Flash Player and you create a new ByteArray and then call "byteArray.writeObject(myObject)" you will get a ByteArray with the AMF representation of that object.  Likewise if you get some AMF and you call "byteArray.readObject()" you get the object(s) from the AMF.  In Flex there are high level APIs (like RemoteObject, Consumer, etc.) that use this native AMF support in Flash Player.</p>
+
+<p>To create a pure JavaScript AMF library the first thing that is needed is a pure JavaScript ByteArray library since JavaScript doesn't natively have one.  I used one from <a href="http://www.adamia.com/blog/high-performance-javascript-port-of-actionscript-byteArray">adamia.com</a> since it was similar to the ByteArray in Flash Player, seemed fast, and seemed to parse floats correctly.  This ByteArray has some of the basic functions like readByte, readFloat, etc.  But what about that cool readObject function?  Well, that has to be built from scratch.  And it should support both AMF0 and AMF3.</p>
+
+<p>Using the AMF specs and code from BlazeDS &amp; pyamf as a reference I was able to add the other functions to the ByteArray.  But there was a problem.  Using XMLHttpRequest as the method of getting the AMF was not working right.  Some bytes were incorrect.  It turns out XMLHttpRequest uses UTF-8 and that screws up some of the bytes above 128.  I tried other charsets and each one would change some range of bytes.  That is not good because I need the bytes to be exactly what the server sent.  Then I came across <a href="http://web.archive.org/web/20061114143134/http://mgran.blogspot.com/2006/08/downloading-binary-streams-with.html">this gem</a>:</p>
+
+<pre><code>//XHR binary charset opt by Marcus Granado 2006 [http://mgran.blogspot.com]
+req.overrideMimeType('text/plain; charset=x-user-defined');
+</code></pre>
+
+<p>Using the "x-user-defined" charset left the bytes alone.  Perfect!  Except that IE doesn't support the req.overrideMimeType function.  But IE does actually have a real ByteArray available in req.responseBody via VBScript.  For now in IE I just change the ByteArray into a string (like req.responseText in the other browsers) although a lot of optimization could be done to just use the VBScript ByteArray directly.</p>
+
+<p>Right now amf.js is just a basic JavaScript library for reading AMF data.  It doesn't support using a BlazeDS MessageBrokerServlet yet because I need to be able to assemble a AMF object in JavaScript and send that in the HTTP request to the servlet.  But it works fine with a custom servlet that uses BlazeDS's AMF library to just write AMF into the HTTP response.  It should also work with pyamf, AMFPHP, and other AMF server libraries.</p>
+
+<p>To use amf.js start by dumping some AMF into an HTTP response.  In Java with BlazeDS I did this:</p>
+
+<pre><code>public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+{
+    response.setHeader("Content-Type", "application/x-amf;charset=x-user-defined");
+    ServletOutputStream out = response.getOutputStream();
+    ActionMessage requestMessage = new ActionMessage(MessageIOConstants.AMF3);
+    MessageBody amfMessage = new MessageBody();
+    amfMessage.setData(someSerializableObject);
+    requestMessage.addBody(amfMessage);
+    AmfMessageSerializer amfMessageSerializer = new AmfMessageSerializer();
+    amfMessageSerializer.initialize(SerializationContext.getSerializationContext(), out, new AmfTrace());
+    amfMessageSerializer.writeMessage(requestMessage);
+    out.close();
+}
+</code></pre>
+
+<p>In a HTML web page add the amf.js script:</p>
+
+<pre><code>&lt;script src="amf.js" type="text/javascript"&gt;&lt;/script&gt;
+</code></pre>
+
+<p>In JavaScript make a XHR request for some data:</p>
+
+<pre><code>var url = "TestServlet";
+var req;
+
+function getAMF()
+{
+    if (window.ActiveXObject)
+    {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    else if (window.XMLHttpRequest)
+    {
+        req = new XMLHttpRequest();
+        //XHR binary charset opt by Marcus Granado 2006 [http://mgran.blogspot.com]
+        req.overrideMimeType('text/plain; charset=x-user-defined');
+    }
+    req.onreadystatechange = processReqChange;
+    req.open("GET", url, true);
+    req.send(null);
+}
+</code></pre>
+
+<p>And when the response comes back decode the AMF:</p>
+
+<pre><code>function processReqChange()
+{
+    if (req.readyState == 4)
+    {
+        if (req.status == 200)
+        {
+            var o = decodeAMF(req.responseText).messages[0].body;
+        }
+        else
+        {
+            alert("There was a problem retrieving the data:\n" + req.statusText);
+        }
+    }
+}
+</code></pre>
+
+<p>For details on how to support IE, check out the source code for <a href="http://www.jamesward.com/demos/JSAMF/censusTest.html">censusTest.html</a>.</p>
+
+<p>While amf.js works in my tests there is more work to be done.  I need to add the write functions so that AMF can be sent to the server.  Then supporting BlazeDS's MessageBrokerServlet should be pretty straightforward.  I'd also like to create pure JavaScript implementations of Flex's RemoteObject, Consumer, and Producer APIs.  Also, I need people to test amf.js with their AMF to make sure that I've implemented things correctly.  All of the <a href="http://github.com/jamesward/JSAMF">code is on github.com</a> so go ahead and fork it!  Let me know what you think.</p>
+]]></content>
+  </entry>
+  
+</feed>

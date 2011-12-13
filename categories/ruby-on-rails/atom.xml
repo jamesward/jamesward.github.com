@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ruby on Rails | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/ruby-on-rails/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Flex and The Cloud]]></title>
+    <link href="http://jamesward.github.com/2010/01/19/flex-and-the-cloud-2/"/>
+    <updated>2010-01-19T15:49:53-07:00</updated>
+    <id>http://jamesward.github.com/2010/01/19/flex-and-the-cloud-2</id>
+    <content type="html"><![CDATA[<p>The combination of Flex and The Cloud is quickly becoming an IT and paradigm changing combination.  Here are a number of recently published resources for learning more about this :</p>
+
+<ul>
+<li><p>An article I wrote has been published on the online Flash &amp; Flex Developer's Magazine: <a href="http://ffdmag.com/download-1-2010">Flex and The Cloud: Is this really just Client/Server 2.0?</a></p></li>
+<li><p>I'll be speaking on <a href="http://ria5280.org/calendar/event/2010/2/18/163821">Thursday, February 18 2010 at the Denver Flex User Group</a> about Flex and The Cloud</p></li>
+<li><p>The <a href="http://www.adobe.com/cfusion/event/index.cfm?event=list&amp;loc=en_us&amp;type=ondemand_seminar&amp;product=&amp;interest=int_rich_internet_applications&amp;audience=&amp;sdid=EGMQU">recording of a webinar</a> I co-hosted on the new Salesforce.com Cloud platform for developers has been posted</p></li>
+<li><p>Jeff Douglas has posted <a href="http://blog.jeffdouglas.com/2010/01/11/developing-apps-with-the-stratus-framework/">a video walk through</a> showing how to use the new Salesforce.com Flash Builder 4 extension for Flex + Cloud apps</p></li>
+</ul>
+
+
+<p>Exciting stuff!  Let me know what you think!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Matt Raible Compares Flex, GWT, Rails and Grails]]></title>
+    <link href="http://jamesward.github.com/2009/12/13/matt-raible-compares-flex-gwt-rails-and-grails/"/>
+    <updated>2009-12-13T16:27:26-07:00</updated>
+    <id>http://jamesward.github.com/2009/12/13/matt-raible-compares-flex-gwt-rails-and-grails</id>
+    <content type="html"><![CDATA[<p>At the Rich Web Experience 2009 conference, <a href="http://raibledesigns.com/">Matt Raible</a> presented <a href="http://raibledesigns.com/rd/entry/comparing_kick_ass_web_frameworks">a very insightful comparison of "kick-ass" web frameworks</a> including Flex, Google Web Toolkit (GWT), Ruby on Rails and Grails.  I appreciate his "right tool for the job" approach which moves beyond technology dogma towards real solutions.  He includes some very revealing charts comparing jobs posts, <a href="http://www.stackoverflow.com">StackOverflow</a> posts, mailing list traffic and other stats.  Check out the slides from his presentation:</p>
+]]></content>
+  </entry>
+  
+</feed>

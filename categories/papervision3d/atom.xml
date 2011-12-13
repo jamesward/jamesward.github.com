@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Papervision3D | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/papervision3d/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Video: Building Turbulent AIR Applications on Linux]]></title>
+    <link href="http://jamesward.github.com/2008/04/14/video-building-turbulent-air-applications-on-linux/"/>
+    <updated>2008-04-14T13:40:22-06:00</updated>
+    <id>http://jamesward.github.com/2008/04/14/video-building-turbulent-air-applications-on-linux</id>
+    <content type="html"><![CDATA[<p>Adobe recently released an alpha version of <a href="http://labs.adobe.com/downloads/air_linux.html">Adobe AIR for Linux</a> and a updated alpha 3 version of <a href="http://labs.adobe.com/downloads/flexbuilder_linux.html">Flex Builder for Linux</a>.  I wanted to show everyone how easy it is to build and run desktop RIAs with Flex and Adobe AIR so I recorded a quick video.  In the video I use Papervision3D and a component I created called "TurbulentApplication" to turn an ordinary AIR Application into an application which pitches and rolls in response to the accelerometer values on my Ubuntu laptop.  While most AIR applications work on Windows, Mac, and Linux, this one only works on Linux because as far as I know Windows and Mac don't have a way to read the accelerometer values from a file, like Linux.  If you have Linux (and an accelerometer) and want to run the application you can download it <a href="http://www.jamesward.org/videoTurbulence.air">here</a>.  If you want to download the source code for the TurbulentApplication component, you can get it <a href="http://www.jamesward.org/turbulence.zip">here</a>.</p>
+
+<p>Check out the video (and let me know what you think!):</p>
+]]></content>
+  </entry>
+  
+</feed>

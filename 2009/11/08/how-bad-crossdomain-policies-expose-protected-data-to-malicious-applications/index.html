@@ -1,0 +1,366 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>How Bad Crossdomain Policies Expose Protected Data to Malicious Applications - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="The web&#8217;s success has been partially due to the sandbox it provides users. Users do not generally have to entirely trust every website they &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2009/11/08/how-bad-crossdomain-policies-expose-protected-data-to-malicious-applications">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">How Bad Crossdomain Policies Expose Protected Data to Malicious Applications</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-11-08T03:15:22-07:00" pubdate data-updated="true">Nov 8<span>th</span>, 2009</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>The web&#8217;s success has been partially due to the sandbox it provides users.  Users do not generally have to entirely trust every website they visit because malicious web sites should be sandboxed from doing the user harm.  One way that web sites are sandboxed is through a same-origin policy.  By default any code that runs inside a web browser can only access data from the domain in which the code originated from.  So if code (JavaScript, Flash, etc) loads from the foo.com domain then it can&#8217;t access data on the bar.com domain.  The code may be able to make requests to bar.com but the code from foo.com shouldn&#8217;t be able to read or access the results of those requests.</p>
+
+<p>Since Rich Internet Applications built with Flex, Silverlight, etc usually try to do more on the client side, for example mash-up data from multiple sites, the same-origin policy presents a problem.</p>
+
+<p>In most cases Flash Player sticks with the typical browser sandbox concepts.  But there are a few places where it goes outside this boundary such as with microphone and webcam access.  Another area is by allowing opt-in to cross-domain communication bypassing the browser&#8217;s regular same-origin policy.  Other plugins such as Silverlight and JavaFX also do this.  This cross-domain capability is powerful but also <a href="http://tech.slashdot.org/story/09/11/05/1552204/Facebook-and-MySpace-Backdoors-Found-Fixed">very dangerous</a>.  The primary reason it&#8217;s dangerous is that a malicious application can potentially make requests on behalf of the user and access data from domains that the application didn&#8217;t originate from.  To protect against these types of attacks Flash Player and other plugins have implemented a cross-domain policy system.  This policy system is one of the most misunderstood aspects of web security.</p>
+
+<p>To illustrate the problem I&#8217;ve create a few demos.  Let&#8217;s say that I&#8217;m building an application for www.jamesward.com that will fetch <a href="http://www.firststepsinflex.com/data.php">some data</a> from the www.firststepsinflex.com site.</p>
+
+<p><a href="http://www.jamesward.com/demos/crossdomainDashboard/crossdomainDashboard.html">Here&#8217;s that application</a> on www.jamesward.com - open it in a new window.</p>
+
+<p>The application correctly pulled the data from the <a href="http://www.firststepsinflex.com">www.firststepsinflex.com</a> site but in order to allow the request I blindly put a <a href="http://www.firststepsinflex.com/crossdomain.xml">crossdomain.xml policy file</a> on www.firststepsinflex.com that looks like this:</p>
+
+<pre><code>&lt;cross-domain-policy&gt;
+    &lt;site-control permitted-cross-domain-policies="master-only"&gt;&lt;/site-control&gt;
+    &lt;allow-access-from domain="*"&gt;&lt;/allow-access-from&gt;
+&lt;/cross-domain-policy&gt;
+</code></pre>
+
+<p>What this policy file does is instruct Flash Player to allow requests from any website to get around the same-origin policy and make requests to www.firststepsinflex.com - on behalf of the user.  Sounds harmless, right?  At this point it is, as long as all of the data on www.firststepsinflex.com is publicly available data.  But let&#8217;s suppose that not all of the data should be publicly available.  Perhaps I&#8217;m protecting access to some data though cookie authentication or HTTP basic authentication.  In this case I am (for the purpose of the demo).</p>
+
+<p>See the protected data by opening up <a href="http://www.firststepsinflex.com/private/bankaccounts.html">http://www.firststepsinflex.com/private/bankaccounts.html</a> using &#8220;username&#8221; and &#8220;password&#8221; (without quotes) for the user name and password.</p>
+
+<p>Now imagine that someone starts posting Twitter links (obfuscated through a URL shortener) phishing for people to open a <a href="http://www.drunkonsoftware.com/crossdomainHacker/crossdomainHacker.html">malicious application</a> (open it in a new window - I promise it doesn&#8217;t do anything bad).</p>
+
+<p>So let&#8217;s recap&#8230;  There is a <a href="http://www.firststepsinflex.com/private/bankaccounts.html">protected resource</a> that only you should be able to see in your browser.  Other applications should NOT be able to see that data.  But a <a href="http://www.drunkonsoftware.com/crossdomainHacker/crossdomainHacker.html">malicious application</a> was able to load that same data and do whatever it wants with it.  Scary.</p>
+
+<p>Here&#8217;s how it works&#8230;  The malicious application requests the <a href="http://www.firststepsinflex.com/private/bankaccounts.html">protected page</a>.  It was able to make the request because you were authenticated already.  And the malicious application can now read the data contained in the page and do whatever it wants with it (probably send it back to a server somewhere).</p>
+
+<p>OK.  Now do you understand why crossdomain.xml policy files are dangerous?  Imagine if Facebook, MySpace, or YouTube had a misconfigured policy file on their servers!  Well they have - but they&#8217;ve since been fixed.  Imagine if your bank or a corporate intranet had a misconfigured policy file.  There are some very serious ramifications to these types of attacks.</p>
+
+<p>There are also some great uses of crossdomain policy files.  For instance, api.flickr.com has an <a href="http://api.flickr.com/crossdomain.xml">open crossdomain.xml policy file</a>.  This allows applications loaded from anywhere to access Flickr data and it&#8217;s safe because api.flickr.com doesn&#8217;t use cookies or basic auth - they use web service tokens, which are not automatically transmitted by the browser and are only known to the application that performed the authentication.</p>
+
+<p>I often hear from Flex / Flash developers that when they run into security sandbox issues the first thing they try is to open things up with a global (i.e. &#8220;*&#8221;) policy file.  I hope this article discourages that practice.  Developers should understand why the security error is happening and consider alternatives before blindly opening up their website to the possible attacks.  One alternative is to leverage a server proxy.  A server proxy can be configured so that an application doesn&#8217;t violate the same-origin policy.  For instance, if an application on foo.com needs data from bar.com then a proxy can be configured such that requests to foo.com/bar are forwarded on the server to the bar.com site.  This helps avoid attacks because users&#8217; cookies (or basic auth tokens) will not be sent to bar.com since all requests are actually being made to the foo.com site.  But be careful not to expose intranet servers through proxies.  Here is a sample Apache config for setting up a forward proxy:</p>
+
+<pre><code>  ProxyRemote  /bar/*  http://bar.com/
+  ProxyPass /bar http://bar.com
+  ProxyPassReverse /bar http://bar.com
+</code></pre>
+
+<p><a href="http://opensource.adobe.com/blazeds">BlazeDS</a> also includes a proxy service.</p>
+
+<p>If you really need to use a crossdomain policy file then be very careful!  NEVER put a crossdomain policy file on a site that uses cookie or basic auth and NEVER put a crossdomain policy file on an intranet site - unless you really know what you are doing.  To learn how to safely use crossdomain policy files here are some great resources:</p>
+
+<ul>
+<li><p><a href="http://www.adobe.com/devnet/flashplayer/articles/fplayer9_security.html">Policy file changes in Flash Player 9 and Flash Player 10</a></p></li>
+<li><p><a href="http://www.adobe.com/devnet/articles/crossdomain_policy_file_spec.html">Cross-domain policy file specification</a></p></li>
+</ul>
+
+
+<p>I hope this helps create better understanding of web security.  Please let me know if you have any questions.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-11-08T03:15:22-07:00" pubdate data-updated="true">Nov 8<span>th</span>, 2009</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/flash-player/'>Flash Player</a>, <a class='category' href='/categories/flex/'>Flex</a>, <a class='category' href='/categories/security/'>Security</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2009/11/08/how-bad-crossdomain-policies-expose-protected-data-to-malicious-applications/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2009/11/08/how-bad-crossdomain-policies-expose-protected-data-to-malicious-applications/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2009/11/06/drunk-on-software-at-adobe-max-2009/" title="Previous Post: Drunk on Software at Adobe MAX 2009">&laquo; Drunk on Software at Adobe MAX 2009</a>
+      
+      
+        <a class="basic-alignment right" href="/2009/11/10/my-upcoming-flex-presentations-dallas-soa-ug-texflex-flex-camp-wall-street-web-2-0-and-dreamforce/" title="next Post: My Upcoming Flex Presentations: Dallas SOA UG, TexFlex, Flex Camp Wall Street, Web 2.0, and Dreamforce">My Upcoming Flex Presentations: Dallas SOA UG, TexFlex, Flex Camp Wall Street, Web 2.0, and Dreamforce &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

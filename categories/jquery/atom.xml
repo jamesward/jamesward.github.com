@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: jQuery | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/jquery/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku]]></title>
+    <link href="http://jamesward.github.com/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/"/>
+    <updated>2011-12-11T19:20:42-07:00</updated>
+    <id>http://jamesward.github.com/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku</id>
+    <content type="html"><![CDATA[<p>If you are a Java developer then you really need to give <a href="http://www.playframework.org">Play Framework</a> a try.  It is really refreshing to take a few minutes, step out of the legacy-feeling world of traditional Java web app development and into something modern and fun.  I want to walk you through a very simple tutorial where we will build a web application with Play Framework.  The application will use JPA for persistence and expose access to the data through a JSON over HTTP interface.  The client-side of the application will be built with <a href="http://jquery.com/">jQuery</a>.  Lets get started.</p>
+
+<p><strong>Step 1)</strong> Download and install <a href="http://download.playframework.org/releases/play-1.2.3.zip">Play Framework 1.2.3</a></p>
+
+<p><strong>Step 2)</strong> Create a new Play app from the command line and then move to the new directory:</p>
+
+<pre><code>play new playbars
+cd playbars
+</code></pre>
+
+<p><strong>Optional Step 3)</strong> If you want to work in an IDE then you can run one of the following commands and then open the generated project in your IDE:</p>
+
+<pre><code>play idealize
+
+
+
+
+
+
+play eclipsify
+</code></pre>
+
+<p>I won't walk though the IDE specific steps here, but you can refer to the <a href="http://www.playframework.org/documentation/1.2/ide">Play documentation on IDE integration</a> if you want to get that setup.  Note that IntelliJ IDEA has great support for Play Framework with a console right in the IDE.</p>
+
+<p><strong>Step 4)</strong> Start the Play server from the new project's directory :</p>
+
+<pre><code>play run --%test
+</code></pre>
+
+<p>This starts Play in test mode which will automatically recompile any changes we make to the application.  No packaging, redeploying, or restarting servers will be needed.</p>
+
+<p><strong>Step 5)</strong> Open the application in your browser:
+<a href="http://localhost:9000">http://localhost:9000</a></p>
+
+<p>The default page provides you with great Play documentation on how to get started.  But we will soon be changing that page.  If you want to view the documentation locally after we change the page you can use these links:</p>
+
+<ul>
+<li><p><a href="http://localhost:9000/@documentation/home">Documentation</a></p></li>
+<li><p><a href="http://localhost:9000/@api/index.html">Play JavaDoc</a></p></li>
+</ul>
+
+
+<p><strong>Step 6)</strong> Lets start by creating a new JPA entity.  Keeping it very simple, lets create a new "app/models/Bar.java" file containing:</p>
+
+<pre><code>package models;
+
+import play.db.jpa.Model;
+
+import javax.persistence.Entity;
+
+@Entity
+public class Bar extends Model {
+
+    public String name;
+
+}
+</code></pre>
+
+<p>This entity uses the standard JPA Entity annotation but also extends the Play Model class which provides some nice conveniences which you can read more about <a href="http://www.playframework.org/documentation/1.2.3/jpa">in the Play JPA docs</a>.  I'm using just a plain public property on this class but you can also use the Java Bean getter/setter stuff in you like.</p>
+
+<p><strong>Step 7)</strong> Create a simple unit / integration test for this Bar object by creating a "test/BarTest.java" file with the following contents:</p>
+
+<pre><code>import org.junit.*;
+import java.util.*;
+import play.test.*;
+import models.*;
+
+public class BarTest extends UnitTest {
+
+    @Test
+    public void integrationTest() {
+        Bar bar = new Bar();
+        bar.name = "a new bar";
+        bar.save();
+        assertNotNull(bar.id);
+        assertTrue(Bar.findAll().size() &gt;= 1);
+        bar.delete();
+        assertTrue(Bar.findAll().size() == 0);
+    }
+
+}
+</code></pre>
+
+<p><strong>Step 8)</strong> Setup the default database by editing the "conf/application.conf" file and uncommenting the following line:</p>
+
+<pre><code># db=mem
+</code></pre>
+
+<p>This sets up the default database to be an in-memory database.</p>
+
+<p><strong>Step 9)</strong> Run the application's tests by opening the following URL in your browser:
+<a href="http://localhost:9000/@tests">http://localhost:9000/@tests</a></p>
+
+<p>Select "BarTest" and then click the "Start!" button.  The test should pass.</p>
+
+<p><strong>Step 10)</strong> Add the following two methods to the "app/controllers/Application.java" file:</p>
+
+<pre><code>    public static void addBar(Bar bar) {
+        bar.save();
+        index();
+    }
+
+    public static void listBars() {
+        renderJSON(Bar.findAll());
+    }
+</code></pre>
+
+<p>The <em>addBar</em> method takes a <em>Bar</em>, saves it, and then redirects back to the index page.  Play will automatically parse request parameters and populate the <em>Bar</em> object.  The <em>listBars</em> method queries for all of the Bars in the database and then outputs then as serialized JSON.</p>
+
+<p><strong>Step 11)</strong> Play has a very flexible model for mapping URLs to controllers.  Lets setup two new routes that will map URLs to the new methods we've added to the Application controller.  Add the following lines to the "conf/routes" file but make sure you either add them above the "Catch all" or simply remove the "Catch all" route:</p>
+
+<pre><code>POST    /                                       Application.addBar
+GET     /bars.json                              Application.listBars
+</code></pre>
+
+<p>The first route handles HTTP POST requests to the "/" URL and handles them with the <em>Application.addBar</em> method.  The second route handles requests to the "/bars.json" URL and handles them with the <em>Application.listBars</em> method.</p>
+
+<p><strong>Step 12)</strong> Lets add a <a href="http://www.playframework.org/documentation/1.2.4/test#Functionaltest">FunctionalTest</a> that will actually make requests to the Controller and test that our new routes and controller methods are working.  Add the following method to the "test/ApplicationTest.java" file:</p>
+
+<pre><code>    @Test
+    public void barTest() {
+        Response addBarResponse = POST("/", APPLICATION_X_WWW_FORM_URLENCODED, "bar.name=foo");
+        assertStatus(302, addBarResponse);
+        Response listBarsResponse = GET("/bars.json");
+        assertIsOk(listBarsResponse);
+    }
+</code></pre>
+
+<p>This test adds a new <em>Bar</em> by doing an HTTP POST to "/" and passing it some form encoded data.  Then a request is made to "/bars.json" and the response is checked to make sure there wasn't an error.  Since there isn't a DELETE method (which could easily be added) there isn't a good way to clean up what this test does.</p>
+
+<p>Run the <em>ApplicationTest</em> Functional Test in the Play Framework Web Test Runner:
+<a href="http://localhost:9000/@tests?select=ApplicationTest.class">http://localhost:9000/@tests?select=ApplicationTest.class</a></p>
+
+<p>Because the test didn't clean up after itself you can now see the JSON from "/bars.json" in your browser by visiting:
+<a href="http://localhost:9000/bars.json">http://localhost:9000/bars.json</a></p>
+
+<p><strong>Step 13)</strong> Now it is time to create the actual web UI for this application.  A combination of plain HTML (via Play's Groovy templates) and jQuery will be used.  Play Framework uses a convention to render the HTML from the "app/views/Application/index.html" template when <em>Application.index</em>'s render method is called.  In the "index.html" file and you will see:</p>
+
+<pre><code>#{extends 'main.html' /}
+#{set title:'Home' /}
+
+#{welcome /}
+</code></pre>
+
+<p>You can also take a look at the referenced "app/views/main.html" file to see what the base template looks like.  It does the standard HTML page stuff and then inserts the body of the "index.html" page into the "#{doLayout /}" section.  The "main.html" template also loads jQuery and provides a way to insert some JavaScript into the <em>head</em> section of the page.  In the "index.html" file, replace the "#{welcome /}" line with a form that will allow users to create new bars:</p>
+
+<pre><code>#{form @addBar()}
+    &lt;input type="text" name="bar.name"&gt;&lt;/input&gt;
+    &lt;input type="submit"&gt;&lt;/input&gt;
+#{/form}
+</code></pre>
+
+<p>The "#{form @addBar()}" syntax is Groovy that creates a form tag and sets the form action to the URL that corresponds to the <em>Application.addBar</em> method.  You can test this out by loading this page in your browser:
+<a href="http://localhost:9000/">http://localhost:9000/</a></p>
+
+<p>The form should be functional now.  Enter the name of a bar and click the submit button.  Because the "addBar" method calls the "index" method, after the POST, the browser is redirected back to the index page.  You can verify that the data is being saved by loading the <a href="http://localhost:9000/bars.json">bars.json</a> page again.</p>
+
+<p>Now lets add some Ajax / jQuery to the "index.html" page that will get the JSON data and display it in the page.  Add an empty <em>ul</em> tag with an <em>id</em> of "bars":</p>
+
+<pre><code>&lt;ul id="bars"&gt;
+
+&lt;/ul&gt;
+</code></pre>
+
+<p>Now we will insert the JavaScript into the correct place in the page by setting the "moreScripts" variable:</p>
+
+<pre><code>#{set 'moreScripts'}
+&lt;script type="text/javascript"&gt;
+    $(function() {
+        $.get("bars.json", function(data) {
+            $.each(data, function(index, item) {
+                $("#bars").append("&lt;li&gt;Bar " + item.name + "&lt;/li&gt;");
+            });
+        });
+    });
+&lt;/script&gt;
+#{/set}
+</code></pre>
+
+<p>Using jQuery this bit of JavaScript adds a function handler for when the page is loaded, then in that function it makes a get request to "bars.json".  That request has a function handler for when the result comes back from the Ajax request.  Inside that function handler the data is iterated through and each "bar" is appended into the page element with the id of "bars" - the <em>ul</em> tag.</p>
+
+<p>Try out the application and make sure that you can still add new bars and see the list of all the bars in the database.</p>
+
+<p>Now that everything works locally, lets deploy the app on the cloud using Heroku.</p>
+
+<p><strong>Step 1)</strong> <a href="http://heroku.com/signup">Create an account on Heroku.com</a>, install the <a href="http://toolbelt.heroku.com">Heroku Toolbelt</a> and <a href="http://git-scm.org">git</a> and then login to Heroku from the command line:</p>
+
+<pre><code>heroku login
+</code></pre>
+
+<p>If this is the first time you've done this then new ssh keys for git will be created and associated with your Heroku account.</p>
+
+<p><strong>Step 2)</strong> Each application on Heroku has a Postgres database for testing.  To use that database when running on Heroku we need to configure it.  Play applications on Heroku run in "prod" mode.  To set the database to use the Heroku database add the following lines to the "conf/application.conf" file:</p>
+
+<pre><code>%prod.db=${DATABASE_URL}
+%prod.jpa.dialect=org.hibernate.dialect.PostgreSQLDialect
+%prod.jpa.ddl=update
+</code></pre>
+
+<p>The default way to provide database (and other resource) connection strings to an application on Heroku, is through environment variables.  The <em>DATABASE_URL</em> environment variable will contain the database host, name, username, and password.  Play Framework knows how to handle that information and setup the JDBC connections.</p>
+
+<p><strong>Step 3)</strong> Heroku uses <em>git</em> as a means to uploading applications.  Whether or not you use <em>git</em> for your SCM tool you can use <em>git</em> as the tool to upload an app to Heroku.  In the root directory of your project create <em>git</em> repo, add the files to it, and then commit the files:</p>
+
+<pre><code>git init
+git add app conf public test
+git commit -m init
+</code></pre>
+
+<p>Note: Instead of doing a selective "git add" you can create a ".gitignore" file containing the files to not add to the git repo.</p>
+
+<p><strong>Step 4)</strong> Now we will provision a new application on Heroku using the Heroku CLI.  Each application you create gets 750 free "<a href="http://devcenter.heroku.com/articles/dynos">dyno</a>" hours per month.  So as a developer you can use Heroku for free and only pay when you need to scale beyond one dyno.  On the command line create a new application using the "cedar" stack:</p>
+
+<pre><code>heroku create -s cedar
+</code></pre>
+
+<p>This creates an HTTP endpoint and a git endpoint for your application.  You can also use a custom name and point your own domain names at the application.</p>
+
+<p><strong>Step 5)</strong> The application is ready to be deployed to the cloud.  From a command line do a "git push" to the master branch on Heroku:</p>
+
+<pre><code>git push heroku master
+</code></pre>
+
+<p>Once the files have been received by Heroku, Play Framework's precompiler will be run, Heroku will assemble a "slug file", and then the "slug" will be deployed onto a dyno.</p>
+
+<p><strong>Step 6)</strong> You can now open the application in your browser by navigating to the domain outputted following the "heroku create" or by simply running:</p>
+
+<pre><code>heroku open
+</code></pre>
+
+<p>You've built a Play Framework application with JPA, JSON, &amp; jQuery and then deployed that application on the cloud with Heroku!  Now <a href="https://github.com/jamesward/playbars">get the code </a> and <a href="http://vivid-sunset-6133.heroku.com/">check out a demo</a> on Heroku.  Let me know if you have any questions.</p>
+]]></content>
+  </entry>
+  
+</feed>

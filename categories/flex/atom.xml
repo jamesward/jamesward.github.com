@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Flex | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/flex/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Flex AOP and Puzzlers at Flash Camp Italy]]></title>
+    <link href="http://jamesward.github.com/2011/09/14/flex-aop-and-puzzlers-at-flash-camp-italy/"/>
+    <updated>2011-09-14T09:02:32-06:00</updated>
+    <id>http://jamesward.github.com/2011/09/14/flex-aop-and-puzzlers-at-flash-camp-italy</id>
+    <content type="html"><![CDATA[<p>Next week I'll be speaking at the <a href="http://www.flex-developers.org/2011/08/flash-camp-italy-23-sept-2011/">Flex Camp in Rimini, Italy</a>.  On September 23, Mike Labriola and I will be doing two sessions.  First is "Planet of the AOPs" where we will show how Aspect Oriented Programming can be implemented in Flex using runtime bytecode modification.  Mike and I will also be doing a little "Flex Puzzlers" session where you will discover some very peculiar things about Flex and Flash Player.  It's going to be a blast and I hope to see you there!  Also, there will be a raffle for a copy of Creative Suite 5.5 and a Playbook.  So go <a href="http://flashcampitaly.eventbrite.com/">sign up NOW</a>!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Seattle Force.com Developer Meetup on June 22]]></title>
+    <link href="http://jamesward.github.com/2011/06/15/seattle-force-com-developer-meetup-on-june-22/"/>
+    <updated>2011-06-15T08:58:34-06:00</updated>
+    <id>http://jamesward.github.com/2011/06/15/seattle-force-com-developer-meetup-on-june-22</id>
+    <content type="html"><![CDATA[<p>UPDATE: This event has been canceled!  Sorry!</p>
+
+<p>Next week I'll be presenting in Seattle at my first <a href="http://www.developerforce.com/events/seattle_developer_meetup/registration.php?d=70130000000G4WO">Force.com Developer Meetup</a>!  It starts at 6pm on Wednesday, June 22.  My session will be on Flex Mobile Development. Other sessions include Force.com Platform Basics, Native iOS Development using JavaScript, and a Force.com Hands-On Lab.  It's going to be a fun evening, so if you are in the Seattle area, then I hope to see you there!</p>
+
+<p><a href="http://www.developerforce.com/events/seattle_developer_meetup/registration.php?d=70130000000G4WO">Get more details and register!</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[New Adventures on The Cloud]]></title>
+    <link href="http://jamesward.github.com/2011/06/05/new-adventures-on-the-cloud/"/>
+    <updated>2011-06-05T17:47:25-06:00</updated>
+    <id>http://jamesward.github.com/2011/06/05/new-adventures-on-the-cloud</id>
+    <content type="html"><![CDATA[<p>When I started doing professional software development almost 15 years ago I was focused on the server-side.  I started with Perl / CGI web apps - some of which are still in production today.  Then I dove into Java web development with Java Web Server 1.0, Struts, JBoss, Tomcat and many other game changing technologies.</p>
+
+<p>In 2004 I started getting into Macromedia Flex.  I was amazed at how easy it was to retrieve and nicely render data from a Java back-end.  In 2005 I began evangelizing Flex + Java.  Following the acquisition of Macromedia by Adobe, Flex has really flourished.  Adobe Flex is now the dominant RIA technology and it has been so fun to be a part of that!</p>
+
+<p>Over the past seven years I've had so many great adventures on the client-side, but when a new opportunity on the server-side came my way I couldn't pass it up.  Starting June 6th I'll be stepping back into the Java world to evangelize the Cloud for Salesforce.com.  I'm excited to dive into some of the emerging Java/JVM technologies like Scala, Play Framework, and Clojure!</p>
+
+<p>This change is certainly bittersweet for me.  Flex continues to make app development easier.  With things like Android support in Flex 4.5 and iOS support coming soon, the future of Flex is bright.  I've been very privileged to be a part of the Flex community for the past seven years. This group of passionate and creative developers have taught me so many new things.  Learning how to do runtime bytecode modification and co-creating <a href="http://www.jamesward.com/2011/04/26/introducing-mixing-loom-runtime-actionscript-bytecode-modification/">Mixing Loom</a> has certainly been one of the highlights!</p>
+
+<p>As I begin this new adventure on the Cloud I'm excited about what lies ahead for Flex and for the Cloud.  Both continue to help us developers build better software.  I've hopefully helped you learn how to build great UIs with Flex.  Now I will help you learn how to build solid and scalable back-ends on the Cloud!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Extending AIR for Android]]></title>
+    <link href="http://jamesward.github.com/2011/05/11/extending-air-for-android/"/>
+    <updated>2011-05-11T08:06:36-06:00</updated>
+    <id>http://jamesward.github.com/2011/05/11/extending-air-for-android</id>
+    <content type="html"><![CDATA[<p>None</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing Mixing Loom - Runtime ActionScript Bytecode Modification]]></title>
+    <link href="http://jamesward.github.com/2011/04/26/introducing-mixing-loom-runtime-actionscript-bytecode-modification/"/>
+    <updated>2011-04-26T08:54:03-06:00</updated>
+    <id>http://jamesward.github.com/2011/04/26/introducing-mixing-loom-runtime-actionscript-bytecode-modification</id>
+    <content type="html"><![CDATA[<p>At this year's <a href="http://www.360flex.com/">360|Flex</a> conference in Denver, <a href="http://www.digitalprimates.net/author/codeslinger/">Mike Labriola</a> and I unveiled a new project we've been working on called <a href="http://github.com/MixingLoom">Mixing Loom</a>.  Our presentation was called "Planet of the AOPs" because Mixing Loom lays the foundation for true Aspect Oriented Programming (AOP) on the Flash Platform.  Mixing Loom provides Flex and ActionScript applications the hooks they need to do bytecode modification either before runtime or at runtime.  Through bytecode modification an application can apply a behavior across hierarchies of objects.  There are a number of behaviors in a typical Flex application (such as logging, security, application configuration, accessibility, and styling) that could be represented as Aspects.  Today these behaviors must either be included in every class that needs them or included way down the object hierarchy (i.e. UIComponent).  With Mixing Loom a compiled SWF can be modified (applying necessary behaviors) after it's been compiled or as it's starting up.</p>
+
+<p>If you are building Flex apps and want to take advantage of AOP then Mixing Loom is probably a bit lower level than what you need.  Mixing Loom combined with <a href="http://www.as3commons.org/as3-commons-bytecode/index.html">AS3 Commons Bytecode</a> provides the foundation for AOP systems to be built on top of.  We hope that by providing developers the hooks to modify bytecode that frameworks will emerge that provide application developers higher level APIs based on AOP.  As Mike says, "Mixing Loom kicks off the Summer of AOP."</p>
+
+<p>If you are one of those developers who likes getting dirty with bytecode modification then you might want to check out the slides from the "Planet of the AOPs" session:</p>
+
+<p>If you are still following along and looking for more details on how to use Mixing Loom, then keep reading.  Flex applications are broken into at least two pieces.  The first piece is the thing that displays the loading / progress bar.  That is located on the first "frame" of an application's SWF file.  The rest of the application is on the second frame of the main SWF and possibly in other SWF files like Modules and/or Runtime Shared Libraries (RSLs).  Mixing Loom provides two ways to modify the bytecode of a running application.  First, using a custom preloader an application can modify its second frame and/or any Flex Modules before they are loaded into the VM.  The second way is to use LoomApplication and a custom preloader, which allows an application to modify its second frame, modules, and/or RSLs (even the signed Flex Framework RSLs).  Let's walk through a simple example of an application that uses a custom preloader to modify a string that exists in its second frame.</p>
+
+<p>Let's take a simple object Foo that has a getBar method, which returns a string "a bar":</p>
+
+<pre><code>package blah
+{
+public class Foo
+{
+  public function getBar():String
+  {
+      return "a bar";
+  }
+}
+}
+</code></pre>
+
+<p>And here is a simple application that just displays the results of calling an instance of Foo's getBar method:</p>
+
+<pre><code>&lt;s:application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"&gt;
+
+  &lt;fx:script&gt;
+    import blah.Foo;
+  &lt;/fx:script&gt;
+
+  &lt;s:applicationcomplete&gt;
+     var foo:Foo = new Foo();
+     l.text = foo.getBar();
+  &lt;/s:applicationcomplete&gt;
+
+  &lt;s:label id="l"&gt;&lt;/s:label&gt;
+
+&lt;/s:application&gt;
+</code></pre>
+
+<p>If you were to run this application as is then the Label would display "a bar" - as expected.  But to give you an idea of how to do runtime bytecode modification let's change the "a bar" string to something else.  (BTW: If you are following along then you will need to pull down the <a href="https://github.com/MixingLoom/mixingloom-core">mixingloom-core</a> code from github and compile it on your own because we haven't published a SWC for Mixing Loom yet.)  The thing in Mixing Loom that actually does the bytecode modification is called a "Patcher" so we will need to create one of those that searches the bytecode for a string and then replaces that string.  Before we do that, let me explain how a SWF file is structured.  Every SWF file is a series of "tags".  There are many different tag types but the types we are interested in for bytecode modification are the ones that actually contain the ActionScript ByteCode (ABC).  This is the DoABC tag - type 82.  For a full list of SWF tags and their structures check out the <a href="http://www.adobe.com/content/dam/Adobe/en/devnet/swf/pdf/swf_file_format_spec_v10.pdf">SWF Spec</a>.  One of the tag types indicates an executable boundary called a Frame.  As a SWF file is being loaded by Flash Player it is parsing it.  When Flash Player parses a "ShowFrame" tag it knows it can load and run the preceding tags.  The code doing the bytecode modification will be running on the first frame, which means that all of the tags to do the modification and those to display the Flex preloader will have already been loaded.  That means we can't modify those tags using this method at runtime.  But we can modify the tags on the second frame of the SWF, which will be passed to our Patcher before they have actually been loaded.</p>
+
+<p>Here is the code for the StringModifierPatcher:</p>
+
+<pre><code>package org.mixingloom.patcher
+{
+import flash.utils.ByteArray;
+
+import org.as3commons.bytecode.tags.DoABCTag;
+import org.as3commons.bytecode.util.AbcSpec;
+
+import org.mixingloom.SwfContext;
+import org.mixingloom.SwfTag;
+import org.mixingloom.invocation.InvocationType;
+import org.mixingloom.utils.ByteArrayUtils;
+
+public class StringModifierPatcher extends AbstractPatcher
+{
+    public var originalString:String;
+    public var replacementString:String;
+
+    public function StringModifierPatcher(originalString:String, replacementString:String)
+    {
+        this.originalString = originalString;
+        this.replacementString = replacementString;
+    }
+
+    override public function apply( invocationType:InvocationType, swfContext:SwfContext ):void
+    {
+        var searchByteArray:ByteArray = new ByteArray();
+        AbcSpec.writeStringInfo(originalString, searchByteArray);
+
+        var replacementByteArray:ByteArray = new ByteArray();
+        AbcSpec.writeStringInfo(replacementString, replacementByteArray);
+
+        for each (var swfTag:SwfTag in swfContext.swfTags)
+        {
+            if (swfTag.type == DoABCTag.TAG_ID)
+            {
+                swfTag.tagBody = ByteArrayUtils.findAndReplaceFirstOccurrence(swfTag.tagBody, searchByteArray, replacementByteArray);
+            }
+        }
+
+        invokeCallBack();
+    }
+
+}
+}
+</code></pre>
+
+<p>The StringModifierPatcher extends the Mixing Loom AbstractPatcher and takes two parameters, the originalString and the replacementString.  The StringModifierPatcher has an apply method, which will be called by Mixing Loom during application startup.  In the apply method the StringModifierPatcher creates a search ByteArray and a replacement ByteArray from the provided strings.  Then it loops through each tag from the second frame of the SWF being loaded (ignoring everything that is not a DoABC tag) and then uses Mixing Loom's ByteArrayUtils.findAndReplaceFirstOccurrence utility to replace the first occurrence of the search ByteArray with replacement ByteArray.  Finally it notifies Mixing Loom that it is all done by calling the invokeCallBack method.  So that is the simple example of actually modifying the application, but we still need to set the hooks in the main application so that Mixing Loom can do its thing.</p>
+
+<p>Since this example only modifies frame 2 tags (no RSLs), we can just use a custom preloader to set up the Mixing Loom hooks.  Here is the StringModifierPatcherPreloader:</p>
+
+<pre><code>package preloader {
+import org.mixingloom.managers.IPatchManager;
+import org.mixingloom.patcher.StringModifierPatcher;
+import org.mixingloom.preloader.AbstractPreloader;
+
+public class StringModifierPatcherPreloader extends AbstractPreloader {
+    override protected function setupPatchers(manager:IPatchManager):void {
+        super.setupPatchers(manager);
+        manager.registerPatcher( new StringModifierPatcher("a bar", "not really a bar") );
+    }
+}
+}
+</code></pre>
+
+<p>The StringModifierPatcherPreloader extends Mixing Loom's AbstractPreloader and uses the setupPatchers method to register a new patcher.  In this case the only patcher is an instance of the StringModifierPatcher that will search for the default "a bar" string and replace it with the "not really a bar" string.</p>
+
+<p>The last thing to make this all work is to tell the main application to use the new preloader:</p>
+
+<pre><code>&lt;s:application xmlns:fx="http://ns.adobe.com/mxml/2009" preloader="preloader.StringModifierPatcherPreloader" xmlns:s="library://ns.adobe.com/flex/spark"&gt;
+</code></pre>
+
+<p>Here is the result:</p>
+
+<p>Exciting!  Our application code just modified itself at startup!  Now this is obviously a very trivial example but I hope it provides a basic understanding of how to use Mixing Loom as the foundation for AOP.  Let's walk through some other examples that are more exciting (and complex).</p>
+
+<p>For the next example let's do something a little more AOP-ish.  There will be an XML configuration file that is loaded on startup that will specify some classes and methods to apply interceptors to.  An interceptor is simply a method call injected into the body of a method.  First, here is the FooInterceptor class:</p>
+
+<pre><code>package
+{
+import mx.core.FlexGlobals;
+
+public class FooInterceptor
+{
+    public static function interceptAll():void
+    {
+        FlexGlobals.topLevelApplication.setStyle("backgroundColor", Math.random() * 0xffffff);
+    }
+}
+}
+</code></pre>
+
+<p>For demo purposes this interceptor is very simple - it just changes the application's background color.  Here is the XML configuration file that the application will load on startup to determine where to apply the interceptor:</p>
+
+<pre><code>&lt;interceptors&gt;
+    &lt;interceptor&gt;
+        &lt;swftag&gt;blah/Foo&lt;/swftag&gt;
+        &lt;methodentryinvoker&gt;
+            &lt;classname&gt;FooInterceptor&lt;/classname&gt;
+            &lt;methodname&gt;interceptAll&lt;/methodname&gt;
+        &lt;/methodentryinvoker&gt;
+    &lt;/interceptor&gt;
+&lt;/interceptors&gt;
+</code></pre>
+
+<p>In this case it is saying to only apply the interceptor to the SWF tag with the name "blah/Foo".  In a debug version of the application the Foo class from above will be in its own SWF tag named "blah/Foo".  The reason that the SWF tag is specified in this case is because by doing this the application won't need to deserialize and reserialize every class.  The downside to doing things this way is that it won't work if we create an optimized SWF where all of the frame 2 classes are contained in one SWF tag.  With some more work in AS3 Commons Bytecode we could optimize things for this kind of use case.  Volunteers?  :)  The methodEntryInvoker simply specifies the class and method name to call on method entry.  This interceptor will be added to every method, on every class in the SWF tag with the name "blah/Foo".</p>
+
+<p>Now for the fun part...  Here is the patcher that loads the XML config file, parses it, and then applies the interceptor:</p>
+
+<pre><code>package patcher {
+import flash.events.Event;
+import flash.events.TimerEvent;
+import flash.net.URLLoader;
+import flash.net.URLLoaderDataFormat;
+import flash.net.URLRequest;
+import flash.utils.ByteArray;
+
+import org.as3commons.bytecode.abc.AbcFile;
+import org.as3commons.bytecode.abc.InstanceInfo;
+import org.as3commons.bytecode.abc.LNamespace;
+import org.as3commons.bytecode.abc.MethodInfo;
+import org.as3commons.bytecode.abc.Op;
+import org.as3commons.bytecode.abc.QualifiedName;
+import org.as3commons.bytecode.abc.enum.Opcode;
+import org.as3commons.bytecode.io.AbcSerializer;
+
+import org.mixingloom.SwfContext;
+import org.mixingloom.SwfTag;
+import org.mixingloom.invocation.InvocationType;
+import org.mixingloom.patcher.AbstractPatcher;
+
+import org.as3commons.bytecode.io.AbcDeserializer;
+
+public class SampleXMLPatcher extends AbstractPatcher {
+
+    public var url:String;
+
+    private var swfContext:SwfContext;
+
+    public function SampleXMLPatcher(url:String) {
+        this.url = url;
+    }
+
+    override public function apply( invocationType:InvocationType, swfContext:SwfContext ):void {
+        if (invocationType.type == InvocationType.FRAME2) {
+
+            this.swfContext = swfContext;
+
+            var urlLoader:URLLoader = new URLLoader();
+            urlLoader.dataFormat = URLLoaderDataFormat.TEXT;
+            urlLoader.addEventListener(Event.COMPLETE, handleXMLLoad);
+            urlLoader.load(new URLRequest(url));
+        }
+        else {
+            invokeCallBack();
+        }
+    }
+
+    private function handleXMLLoad(event:Event):void {
+        var xmlData:XML = new XML((event.currentTarget as URLLoader).data as String);
+
+        var swfTagName:String = xmlData.interceptor.swfTag;
+        var methodEntryInvokerClassName:String = xmlData.interceptor.methodEntryInvoker.className;
+        var methodEntryInvokerMethodName:String = xmlData.interceptor.methodEntryInvoker.methodName;
+
+        var methodEntryInvokerClassQName:QualifiedName = new QualifiedName(methodEntryInvokerClassName, LNamespace.PUBLIC);
+        var methodEntryInvokerMethodQName:QualifiedName = new QualifiedName(methodEntryInvokerMethodName, LNamespace.PUBLIC);
+
+        for each (var swfTag:SwfTag in swfContext.swfTags) {
+            if (swfTag.name == swfTagName) {
+
+                // skip the flags
+                swfTag.tagBody.position = 4;
+
+                var abcStartLocation:uint = 4;
+                while (swfTag.tagBody.readByte() != 0) {
+                    abcStartLocation++;
+                }
+                abcStartLocation++; // skip the string byte terminator
+
+                swfTag.tagBody.position = 0;
+
+                var abcDeserializer:AbcDeserializer = new AbcDeserializer(swfTag.tagBody);
+
+                var abcFile:AbcFile = abcDeserializer.deserialize(abcStartLocation);
+
+                for each (var instanceInfo:InstanceInfo in abcFile.instanceInfo) {
+
+                    for each (var methodInfo:MethodInfo in instanceInfo.methodInfo) {
+                        var startIndex:uint = 0;
+                        for each (var op:Op in methodInfo.methodBody.opcodes) {
+                            startIndex++;
+                            if (op.opcode === Opcode.pushscope) {
+                                break;
+                            }
+                        }
+
+                        var findOp:Op = new Op(Opcode.findpropstrict, [methodEntryInvokerClassQName]);
+                        var getOp:Op = new Op(Opcode.getproperty, [methodEntryInvokerClassQName]);
+                        var callOp:Op = new Op(Opcode.callproperty, [methodEntryInvokerMethodQName, 0]);
+
+                        methodInfo.methodBody.opcodes.splice(startIndex, 0, findOp, getOp, callOp, new Op(Opcode.pop));
+                    }
+                }
+
+                var abcSerializer:AbcSerializer = new AbcSerializer();
+                var modifiedBytes:ByteArray = new ByteArray();
+                modifiedBytes.writeBytes(swfTag.tagBody, 0, abcStartLocation);
+                modifiedBytes.writeBytes(abcSerializer.serializeAbcFile(abcFile));
+
+                swfTag.tagBody = modifiedBytes;
+            }
+        }
+
+        invokeCallBack();
+    }
+}
+}
+</code></pre>
+
+<p>The constructor for this patcher takes a URL, which is used to specify the XML config file.  Then in the apply method, if the invocation type is "FRAME2" (meaning the patcher is being applied to the SWF tags on the second frame of the loading SWF) then it uses URLLoader to load the XML config file.  Notice that URLLoader is used, not HTTPService.  That is because anything that goes into a patcher is put on the first frame of the SWF and if HTTPService was used here, then there would be a ton of additional classes (dependencies) that would need to also be moved to the first frame.  While technically this would work, it's not a good practice because the more that is on the first frame, the longer the user has to wait before the preloader shows up (remember: all of the frame must be transferred across the network before the frame is loaded into the VM).  If the invocation type is not "FRAME2" then the invokeCallBack method is called to tell Mixing Loom that this patcher is done with the current invocation.  Side note: patchers can block for as long as they want.  Nothing moves forward in Mixing Loom until a patcher calls the invokeCallBack method.</p>
+
+<p>When the data for the XML file arrives it is parsed using the E4X library.  Then new QualifiedName instances are created based on the interceptor's class and method names.  Now the SWF tag with the name specified in the XML file is processed.  First it is deserialized by AS3 Commons Bytecode.  This provides an object representation of the underlying ABC code contained in the SWF tag.  Then for every class and method the interceptor is applied at the beginning of the method.  Kinda.  There are a few operations that must happen at the very beginning of the method.  For each method being intercepted we need to move past the "pushscope" opcode before we can insert new opcodes.  Then four new opcodes are spliced into the array of opcodes for the method: findpropstrict, getproperty, callproperty, and pop.  Those four opcodes are the ABC equivalent of calling the static method on the specified interceptor class.  In this case the rest of the opcodes in the method will be left alone.  Finally the ABC is recreated using AS3 Commons Bytecode and the original SWF tag is overwritten and the invokeCallBack method is called.</p>
+
+<p>Just like before we need a custom preloader to register the patchers:</p>
+
+<pre><code>package preloader {
+import org.mixingloom.managers.IPatchManager;
+import org.mixingloom.preloader.AbstractPreloader;
+
+import patcher.SampleXMLPatcher;
+
+public class SampleXMLPatcherPreloader extends AbstractPreloader {
+
+        override protected function setupPatchers(manager:IPatchManager):void {
+            super.setupPatchers(manager);
+            manager.registerPatcher( new SampleXMLPatcher("interceptors.xml"));
+        }
+    }
+}
+</code></pre>
+
+<p>Notice that a new instance of the SampleXMLPatcher is created and given the URL to the interceptor XML file.  Here is a little test application containing a button that calls Foo's getBar method every time it's clicked:</p>
+
+<pre><code>&lt;s:application xmlns:fx="http://ns.adobe.com/mxml/2009" preloader="preloader.SampleXMLPatcherPreloader" xmlns:s="library://ns.adobe.com/flex/spark"&gt;
+
+    &lt;fx:script&gt;
+        import blah.Foo;
+        import FooInterceptor; FooInterceptor;
+    &lt;/fx:script&gt;
+
+
+    &lt;s:button top="20" horizontalcenter="0" fontsize="32" label="call foo.getBar()"&gt;
+        &lt;s:click&gt;
+                var foo:Foo = new Foo();
+                foo.getBar();
+        &lt;/s:click&gt;
+    &lt;/s:button&gt;
+
+&lt;/s:application&gt;
+</code></pre>
+
+<p>Notice that since there wasn't a reference anywhere else to the FooInterceptor we had to include one manually otherwise it will not exist in the compiled SWF.  Here is a demo of that application:</p>
+
+<p>Well, that was fun!  And I hope you can see how Mixing Loom can be the foundation for doing AOP in Flex / ActionScript!  But before I let you go I want to show you one more crazy thing we can do with Mixing Loom.  Patchers can do just about anything they want since Mixing Loom provides hooks to modify the second frame, RSLs, and Modules.  For instance, say there is a private method or property in the Flex framework that you need access to.  One option is to use Monkey Patching to replace that class with one that you maintain.  This is not a very maintainable way to get access to something that is private.  Using Mixing Loom you can simply patch the class at runtime.  Here is a simple (but impractical) example...  The spark.components.Application class has a private method called "debugTickler" on it.  Using the <a href="https://github.com/MixingLoom/mixingloom-patchers/tree/master/RevealPrivatesPatcher">RevealPrivatesPatcher</a> from Mixing Loom we can make that method public at runtime.  First extend the base RevealPrivatesPatcher class and tell it only to apply the patcher on the "spark_" RSL:</p>
+
+<pre><code>package {
+import org.mixingloom.SwfContext;
+import org.mixingloom.invocation.InvocationType;
+import org.mixingloom.patcher.RevealPrivatesPatcher;
+
+public class MyRevealPrivatesPatcher extends RevealPrivatesPatcher {
+
+    override public function apply( invocationType:InvocationType, swfContext:SwfContext ):void {
+        if ((invocationType.type == InvocationType.RSL) &amp;&amp; (invocationType.url.indexOf("spark_") &gt;= 0)) {
+            super.apply(invocationType, swfContext);
+        }
+        else {
+            invokeCallBack();
+        }
+    }
+}
+}
+</code></pre>
+
+<p>Then create a custom preloader that registers a new instance of MyRevealPrivatesPatcher and tells it to reveal the "spark.components:Application" class and the "debugTickler" method:</p>
+
+<pre><code>package preloader {
+import org.mixingloom.managers.IPatchManager;
+import org.mixingloom.preloader.AbstractPreloader;
+
+    public class RevealPrivatesPatcherPreloader extends AbstractPreloader {
+
+        override protected function setupPatchers( manager:IPatchManager ):void {
+            super.setupPatchers( manager );
+            manager.registerPatcher( new MyRevealPrivatesPatcher("spark.components:Application", "debugTickler") );
+        }
+
+    }
+}
+</code></pre>
+
+<p>Finally, use the LoomApplication and the custom preloader in order to have the hooks to patch RSLs:</p>
+
+<pre><code>&lt;ml:loomapplication preloader="preloader.RevealPrivatesPatcherPreloader" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:ml="library://ns.mixingloom.org/flex/spark" xmlns:s="library://ns.adobe.com/flex/spark"&gt;
+
+    &lt;ml:applicationcomplete&gt;
+            try {
+                this['debugTickler']();
+                l.text = "Yeah.  We just modified an RSL at runtime.";
+            } catch (e:Error) {
+                l.text = "booo";
+            }
+    &lt;/ml:applicationcomplete&gt;
+
+    &lt;s:label text="nothing happened." id="l"&gt;&lt;/s:label&gt;
+
+&lt;/ml:loomapplication&gt;
+</code></pre>
+
+<p>Notice that we can't use the dot syntax "this.debugTickler()" to call the method since the compiler won't let us do that.  Instead we have to use the object key syntax "this<a href="">'debugTickler'</a>" in order to make the method call.  Now watch as Mixing Loom's magic wand modifies a signed Flex Framework RSL right before your very eyes:</p>
+
+<p>Fun stuff!!!  And there is more to come!  We are working on ways to also modify the first frame of the SWF and to modify a SWF pre-runtime.  But now it's your turn!  All of the code for everything you've seen here, as well as some other demos, and goodies is <a href="https://github.com/MixingLoom">all on github</a>.  We'd love to see the community create some interesting and useful patchers!  So fork away and have fun!  Let me know if you have any questions.</p>
+]]></content>
+  </entry>
+  
+</feed>

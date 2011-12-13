@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Debug Flex & Java Together in Flex Builder 2 - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="I recently conducted an eSeminar on building enterprise applications with Flex Builder and Flex Data Services. You can view the recording of that &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2006/07/05/debug-flex-java-together-in-flex-builder-2">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Debug Flex & Java Together in Flex Builder 2</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2006-07-05T01:40:33-06:00" pubdate data-updated="true">Jul 5<span>th</span>, 2006</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I recently conducted an eSeminar on building enterprise applications with Flex Builder and Flex Data Services.  You can view the recording of that presentation at: <a href="http://seminars.breezecentral.com/p24622178/">http://seminars.breezecentral.com/p24622178/</a></p>
+
+<p>In my session I promised that I would formally document the process for debugging Flex &amp; Java together in Flex Builder.  So finally, here is that documentation.</p>
+
+<p>If you haven&#8217;t already done so, the first thing you will need to do is install Flex Builder 2 as an Eclipse Plugin and Flex Data Services with integrated JRun.  You can get these products on the <a href="http://www.adobe.com/cfusion/tdrc/index.cfm?product=flex">Adobe website</a>.  I use FDS with JRun for this example, but you could easily use Tomcat or any other app server.  A few steps may change slightly, but the general concepts would be the same.</p>
+
+<p>Now just follow along.</p>
+
+<p>1) Start Flex Builder &amp; Flex Data Services</p>
+
+<p>2) Create a new Flex Project in Flex Builder
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/1a.png" alt="" /></p>
+
+<p>2.1) Specify that the application will use Flex Data Services and that the application should be compiled on the server
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/2a.png" alt="" /></p>
+
+<p>2.2) Click Next
+2.3) Locate the root folder of your FDS samples application; mine is E:\fds2\jrun4\servers\default\samples
+2.4) Change the root URL to be the URL to the samples application; mine is http://localhost:8700/samples/
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/2-5a.png" alt="" /></p>
+
+<p>2.5) Click Next
+2.4) Lets name the project crm
+2.5) Uncheck the &#8220;Use default location&#8221; box
+2.6) Specify the Folder as <your_fds_samples_application>\dataservice\crm for instance mine is: E:\fds2\jrun4\servers\default\samples\dataservice\crm
+2.7) Specify the Main application file as mini.mxml
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/3a.png" alt="" /></p>
+
+<p>2.8) Select Finish</p>
+
+<p>3) Test everything by right-clicking on the mini.mxml file in the Eclipse Navigator, then Run As -> Flex Application
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/4a.png" alt="" /></p>
+
+<p>3.1) Your browser should load the mini application and look like:
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/5a.png" alt="" /></p>
+
+<p>4) Now back to Flex Builder where we will create another new project, but this time a Java Project
+4.1) Name the project samples_server
+4.2) Create the project from existing source, specifying the WEB-INF folder of the samples application, in my case: E:\fds2\jrun4\servers\default\samples\WEB-INF
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/6a.png" alt="" /></p>
+
+<p>4.3) Select Next
+4.4) Go to the Libraries tab and select &#8220;Add External JARs&#8221;
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/7a.png" alt="" /></p>
+
+<p>4.5) Select the jrun.jar file located in <your_fds_install>\jrun4\lib
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/8a.png" alt="" /></p>
+
+<p>4.6) Also add the flex-services.jar located in <your_fds_install>\jrun4\servers\lib
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/9a.png" alt="" /></p>
+
+<p>4.7) Select Finish</p>
+
+<p>5) Setup Java Debugging
+5.1) Shutdown Flex Data Services
+5.2) In the Eclipse Navigator browse to the src/samples.crm/EmployeeDAO.java class
+5.3) Right-click on the EmployeeDAO.java file and select Debug As -> Debug&#8230;
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/10a.png" alt="" /></p>
+
+<p>5.4) Select Java_Application then New
+5.5) Specify the name as &#8220;JRun_Debug&#8221;
+5.6) Check the box &#8220;Include libraries when searching for a main class&#8221;
+5.7) Enter the Main class: jrunx.kernel.JRun
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/11a.png" alt="" />
+5.8) Select the Arguments tab and enter &#8220;-start default&#8221; for the program arguments and &#8220;-Xms32m -Xmx384m -Dsun.io.useCanonCaches=false&#8221; for the VM arguments
+5.9) Select the Apply button
+5.10) Select the Debug button
+5.11) Insure that Flex Data Services started
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/12a.png" alt="" /></p>
+
+<p>6) Set a breakpoint in EmployeeDAO.java in the findEmployeesByCompany method
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/13a.png" alt="" /></p>
+
+<p>7) Set a breakpoint in mini.mxml in the fill function
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/14a.png" alt="" /></p>
+
+<p>8) Right-click on mini.mxml in the Eclipse Navigator and select Debug As -> Flex Application
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/15a.png" alt="" /></p>
+
+<p>9) You should hit the breakpoint in the mini Flex application, then select Resume in the debugger
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/16a.png" alt="" /></p>
+
+<p>10) You should hit the breakpoint in the Java backend
+<img src="http://www.cayambe.com/wordpress/wp-content/uploads/2006/06/17a.png" alt="" /></p>
+
+<p>11) Now jump up and down with joy saying &#8220;I can actually debug web applications!&#8221;</p>
+
+<p>I hope this is helpful for you.  It&#8217;s sure helped me figure out just where things in my applications were going wrong.</p>
+
+<p>-James</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2006-07-05T01:40:33-06:00" pubdate data-updated="true">Jul 5<span>th</span>, 2006</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/flex/'>Flex</a>, <a class='category' href='/categories/java/'>Java</a>, <a class='category' href='/categories/ria/'>RIA</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2006/07/05/debug-flex-java-together-in-flex-builder-2/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2006/07/05/debug-flex-java-together-in-flex-builder-2/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2006/02/19/bye-bye-plog/" title="Previous Post: Bye, Bye plog">&laquo; Bye, Bye plog</a>
+      
+      
+        <a class="basic-alignment right" href="/2006/08/16/flex-paint-flex-display-object-to-png/" title="next Post: Flex Paint - Flex Display Object to PNG">Flex Paint - Flex Display Object to PNG &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

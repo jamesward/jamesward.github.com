@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: BEA | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/bea/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Flex and Seam at JavaOne 2008]]></title>
+    <link href="http://jamesward.github.com/2008/05/02/flex-and-seam-at-javaone-2008/"/>
+    <updated>2008-05-02T10:57:43-06:00</updated>
+    <id>http://jamesward.github.com/2008/05/02/flex-and-seam-at-javaone-2008</id>
+    <content type="html"><![CDATA[<p>There will be numerous mini-sessions happening this year at the Adobe booth at JavaOne 2008.  I'll be doing a "Building High Performance RIAs" session and a "The Open Source RIA Stack" session.  <a href="http://graphics-geek.blogspot.com/">Chet Haase</a> will be doing a "Filthy Rich [Flex] Clients" session.  Bob Tierney will be doing a "LiveCycle Data Services" session and a "LiveCycle and BEA" session.  <a href="http://technoracle.blogspot.com/">Duane Nickull</a> will also be doing sessions.  We also have one guest presenter, Igor Polevoy from <a href="http://exadel.com/">Exadel</a>, who will be demonstrating Flex and Seam integration with <a href="http://flamingo.exadel.com/">Flamingo</a>.  Igor's session will be at 1pm on Tuesday.  Other session times are TBD - so stop by the booth on Tuesday to pickup a schedule.  Also, make sure that you come to the Filthy Rich [Flex] Clients session with Stephan Jansen (of <a href="http://www.parleys.com/display/V21Beta/Home">Parleys.com</a> and <a href="http://javapolis.com">JavaPolis</a>), Chet Haase, and myself which precedes the Adobe party on Wednesday night.  Stop by the booth to pickup an invite.  See you there!</p>
+
+<p><strong><em>  Quick Update: Duane will also be doing a hands-on Flex and AIR session at CommunityOne on Monday at noon.  I'll be doing a Lightning Talk at noon and hanging out with the RedMonk folks at CommunityOne.  </em></strong></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Around the World with Flex and Adobe AIR]]></title>
+    <link href="http://jamesward.github.com/2008/03/25/around-the-world-with-flex-and-adobe-air/"/>
+    <updated>2008-03-25T13:02:03-06:00</updated>
+    <id>http://jamesward.github.com/2008/03/25/around-the-world-with-flex-and-adobe-air</id>
+    <content type="html"><![CDATA[<p>Over the next few months I'll be going around the world (literally) speaking about Flex and Adobe AIR.  Here's a quick rundown on where I'll be:</p>
+
+<p>Wednesday March 25 in Las Vegas: <a href="http://javasymposium.techtarget.com/lasvegas/persistence.html#JWardRIA">TheServerSide Java Symposium</a> - Co-presenting with Eddie O'Neil from BEA</p>
+
+<p>Thursday March 26 in Philadelphia: <a href="http://www.phillyemergingtech.com/abstracts.php#ward2">Emerging Technologies for the Enterprise</a> - Porting from Web 1.0 to RIA in the Enterprise</p>
+
+<p>Thursday April 3 in Bangalore, India: <a href="http://adoberiarch.eventbrite.com/">Adobe RIA Architect Summit 2008</a> - Best Practices for Building Flex/AIR applications</p>
+
+<p>Tuesday April 15 in Atlanta: <a href="http://dev2dev.bea.com/techdays/americas.html">BEA Dev2Dev TechDays</a> - Developing a Rich UI with Flex in Eclipse &amp; Connecting a Flex UI to the back-end SOA (The <a href="http://dev2dev.bea.com/techdays/">Dev2Dev Tour</a> is also going around the world with many other great Adobe speakers.)</p>
+
+<p>Wednesday April 16 in New York: <a href="http://www.salesforce.com/events/tourdeforce/">Salesforce.com's Tour de Force</a> (Also going around the world with other Adobe speakers.)</p>
+
+<p>Friday April 18 in New York: <a href="http://www.flexcampwallstreet.com/">Flex Camp Wall Street</a> - Offline Reporting in Rich Internet Applications &amp; From Tags to Riches with <a href="http://www.oreillynet.com/pub/au/2799">Shashank Tiwari</a></p>
+
+<p>May 5 in San Francisco: <a href="http://developers.sun.com/events/communityone/">CommunityOne</a> - Hanging out with my <a href="http://www.redmonk.com">Redmonk</a> friends and possibly a session</p>
+
+<p>May 6 - 9 in San Francisco: <a href="http://java.sun.com/javaone/sf/">JavaOne</a> - On Wednesday <a href="http://graphics-geek.blogspot.com/">Chet Haase</a> and I will be doing a late afternoon session at the Metreon followed by drinks and pool at Julian's.  Also you won't want to miss Stephan Janssen's presentation "<a href="https://www28.cplan.com/cc191/session_details.jsp?isid=294798&amp;ilocation_id=191-1&amp;ilanguage=english">Parleys.com: An Adobe Flex/AIR and JavaFX™ Case Study</a>"</p>
+
+<p>June 25 in Zurich, Switzerland: <a href="http://jazoon.com/jazoon08/en/conference/presentationdetails.html?type=sid&amp;detail=5100">Jazoon 08</a> - Rich Internet Applications with Flex and Java</p>
+
+<p>There are also a number of other great events going on that other Adobe people will be speaking at, but unfortunately I couldn't fit into my schedule:</p>
+
+<p><a href="http://onair.adobe.com/">onAIR Europe Tour</a></p>
+
+<p><a href="http://www.360flex.com/360Flex_Europe/2007/11/about-360flex-europe.html">360|Flex Europe</a> April 7-9, 2008 in Milan, Italy</p>
+
+<p><a href="http://www.adobe.com/products/flex/events/">And others...</a></p>
+
+<p>I hope to see you somewhere along the way!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Screencast: BEA Workshop + Adobe Flex Builder]]></title>
+    <link href="http://jamesward.github.com/2008/01/31/screencast-bea-workshop-adobe-flex-builder/"/>
+    <updated>2008-01-31T06:29:48-07:00</updated>
+    <id>http://jamesward.github.com/2008/01/31/screencast-bea-workshop-adobe-flex-builder</id>
+    <content type="html"><![CDATA[<p>Pieter Humphrey of BEA has posted <a href="http://dev2dev.bea.com/pub/e/1165">a great screencast</a> about using the BEA Workshop / Flex Builder bundle.  He goes through a very in-depth demonstration of using all the great features of Workshop and Flex to build a RIA front-end for the Medrec Patient Application.  Definitely worth watching!  Thanks Pieter for posting that!</p>
+
+<p><a href="http://dev2dev.bea.com/pub/e/1165"><img src="http://www.jamesward.org/wordpress/wp-content/uploads/2008/01/med_rec.jpg" alt="med_rec.jpg" /></a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Using Flex, BEA Workshop, and BlazeDS for Enterprise RIAs]]></title>
+    <link href="http://jamesward.github.com/2008/01/08/using-flex-bea-workshop-and-blazeds-for-enterprise-rias/"/>
+    <updated>2008-01-08T13:39:35-07:00</updated>
+    <id>http://jamesward.github.com/2008/01/08/using-flex-bea-workshop-and-blazeds-for-enterprise-rias</id>
+    <content type="html"><![CDATA[<p>One of the most exciting Flex-related announcements in 2007 was the BEA Workshop and Flex Builder bundle.  In case you missed it you can find coverage <a href="http://www.infoworld.com/article/07/09/11/bea-adobe_1.html">here</a>, <a href="http://www.informationweek.com/news/showArticle.jhtml?articleID=201805630">here</a>, <a href="http://www.bea.com/framework.jsp?CNT=pr01850.htm&amp;FP=/content/news_events/press_releases/2007">here</a>, and a bunch of other places.  It was big news!  This was further validation that Flex is the standard for Enterprise Rich Internet Applications.</p>
+
+<p><a href="http://www.adobe.com/devnet/flex/articles/bea_workshop.html"><img src="http://www.jamesward.org/wordpress/wp-content/uploads/2008/01/flex_bea-6a_small.jpg" alt="" /></a>As a long-time Java developer I've always respected BEA.  They build solid software that is the backbone of many large and mission critical systems.  Their stuff just works.  And their development tools are no different.</p>
+
+<p>When we first began meeting with BEA about Flex it became evident very quickly how well the two technology sets fit together.</p>
+
+<p>Flex Builder + Workshop = Amazing tooling for Enterprise RIAs</p>
+
+<p>With BlazeDS the stack gets even better.</p>
+
+<p>BlazeDS + Weblogic = Solid back-end for Enterprise RIAs</p>
+
+<p>But how do you fit all these pieces together?  An article I wrote was recently published on just this:</p>
+
+<p><a href="http://www.adobe.com/devnet/flex/articles/bea_workshop.html">Using BEA Workshop Studio and Java to create Flex-based RIAs</a></p>
+
+<p>(Note: I used Tomcat instead of Weblogic in the article so that there wasn't one more prerequisite for readers to download.  However the steps to use Weblogic are identical - just setup a Weblogic server instead of a Tomcat server.)</p>
+
+<p>Also if you would like to purchase the Workshop and Flex Bundle check out <a href="http://dev2dev.bea.com/blog/phumphrey/archive/2008/01/workshop_and_fl.html">Pieter Humphrey's Blog</a> for an amazing promo discount code.</p>
+
+<p>I hope that this combination of technologies allows you to build some amazing applications!  Let me know how it goes.</p>
+]]></content>
+  </entry>
+  
+</feed>

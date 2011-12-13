@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Flex and AIR: The New Standard for Business Application UIs - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="Last week I attended Dreamforce, salesforce.com&#8217;s annual developer conference. It was exciting to see all the innovation going on with business &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2007/09/26/flex-and-air-the-new-standard-for-business-application-uis">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Flex and AIR: The New Standard for Business Application UIs</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2007-09-26T09:42:58-06:00" pubdate data-updated="true">Sep 26<span>th</span>, 2007</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Last week I attended Dreamforce, salesforce.com&#8217;s annual developer conference.  It was exciting to see all the innovation going on with business applications.  Much of that innovation is centered around Flex and Adobe AIR.  In fact 18 of the 32 companies in the salesforce.com incubator are using Flex and AIR!  Does that give you an idea of where the momentum is for companies building business applications?</p>
+
+<p>At the Dreamforce Day 2 keynote, Workday CEO Dave Duffield gave a demo of the new Flex-based interface to their ERP software.  Duffield said multiple times that they have standardized on Flex as their UI platform!  A while back I was in early meetings with Workday that focused on their possible use of Flex.  I showed them my <a href="/census">Census RIA Benchmark</a> and some of the other amazing things they could do with Flex.  I&#8217;m really glad they have decided to fully embrace Flex for their UI.  Compared with the other technologies they were considering, I&#8217;m sure their developers and their customers will be much more pleased with their experience.</p>
+
+<p>I met so many people at Dreamforce who were building RIAs with Flex, salesforce.com, and the <a href="/wordpress/2007/04/17/the-open-source-flex-and-apollo-toolkit-for-salesforcecom/">Flex Toolkit for Apex</a> that it was somewhat overwhelming.  The toolkit, which started as one of my airplane projects, has been the catalyst for bringing together Flex and salesforce.com.  Thanks to a lot of help from Seth Hodgson, Dave Carroll, Ron Hess, Adam Gross, and many others we have  built a great platform for Rich Internet Business Application development - great user experiences on the front end and a solid infrastructure on the back end.  It&#8217;s no wonder so many companies are building their business applications on this stellar combination of technologies.</p>
+
+<p>It is hard to keep track of all the innovative business applications being built with Flex, AIR, and salesforce.com.  <a href="http://www.modelmetrics.com/">Model Metrics</a>, for example, is building applications that allow you to take your data offline.  Their first app is targeted at pharmaceutical sales reps. It allows them to sync their salesforce.com data to a tablet or laptop, then go to a doctor&#8217;s office and record all the information about their visit.  When back online they can automatically sync all that information back into salesforce.com.  It&#8217;s a great app built entirely with Flex, AIR and salesforce.com.  Another great application is <a href="http://www.sliderocket.com/">SlideRocket</a>. This Flex-based PowerPoint-like application hooks into salesforce.com so that you can easily send your presentations to your salesforce.com contacts and see when your contacts viewed them.  <a href="http://www.demandbase.com/">DemandBase</a> has a very nice Flex application for finding sales leads.  When you purchase leads they are automatically inserted into your salesforce.com account!  Check out <a href="http://demandbase.demandbase.com/">the DemandBase application</a> for yourself.  One last company to highlight is Ribbit. <a href="http://www.goribbit.com/">Ribbit</a> has built a great voice/phone communication application that provides services like automatic voicemail transcription - and  it can live inside of salesforce.com.  All of these applications show where the cutting edge is for business applications.  It&#8217;s all about great user experiences with Flex and AIR - built on great infrastructure like salesforce.com.</p>
+
+<p>If you are building Flex, AIR, and salesforce.com applications please let me know!  You can email me at jaward <at> adobe <dot> com or just leave a comment here.  Thanks!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2007-09-26T09:42:58-06:00" pubdate data-updated="true">Sep 26<span>th</span>, 2007</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/adobe-air/'>Adobe AIR</a>, <a class='category' href='/categories/flex/'>Flex</a>, <a class='category' href='/categories/salesforce-com/'>Salesforce.com</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2007/09/26/flex-and-air-the-new-standard-for-business-application-uis/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2007/09/26/flex-and-air-the-new-standard-for-business-application-uis/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2007/09/25/flash-9-now-at-933-adoption/" title="Previous Post: Flash 9 Now at 93.3% Adoption">&laquo; Flash 9 Now at 93.3% Adoption</a>
+      
+      
+        <a class="basic-alignment right" href="/2007/10/02/flex-builder-for-linux/" title="next Post: Flex Builder for Linux!!!">Flex Builder for Linux!!! &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

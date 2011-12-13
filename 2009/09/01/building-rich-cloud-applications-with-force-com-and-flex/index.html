@@ -1,0 +1,540 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Building Rich Cloud Applications with Force.com and Flex - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="Combining the power of the cloud and the client allows developers to have the best of both worlds - easy deployment and full client capabilities. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2009/09/01/building-rich-cloud-applications-with-force-com-and-flex">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Building Rich Cloud Applications With Force.com and Flex</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-09-01T19:00:59-06:00" pubdate data-updated="true">Sep 1<span>st</span>, 2009</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Combining the power of the cloud and the client allows developers to have the best of both worlds - easy deployment and full client capabilities.  Salesforce.com&#8217;s cloud platform, called Force.com, and the Flash Platform are two proven and reliable choices for building these types of Rich Cloud Applications.  Last week I co-hosted a webinar called &#8220;Developing Rich User Interfaces on Force.com Using Adobe Flex&#8221; in which Ryan Marples (from Salesforce.com) and I walked through the two platforms and how to use them together to build great software.  If you didn&#8217;t have the chance to join the webinar then please go watch <a href="https://admin.acrobat.com/_a13852757/p23759608/">the recording</a> and let us know what you think.</p>
+
+<p>In the webinar we didn&#8217;t have a chance to walk through all of the details of building Rich Cloud Applications with Force.com and Flex so here is a tutorial and the <a href="/demos/CarIncident.zip">source code</a> for the highly desired car insurance demo.</p>
+
+<p><strong>Overview</strong></p>
+
+<p>With Rich Cloud Applications the back-end and front-end are distinctly different pieces.  The first step when building these types of applications is to identify the domain model that will be used on the back-end for longterm persistence.  Force.com will take care of all the details around scalability, reliability, disaster recovery, constraints, security, etc.  All we need to do is describe the model in Force.com.  In this case the model is for a piece of the insurance demo I frequently do.  Here is a screenshot:</p>
+
+<p><img src="http://www.jamesward.com/blog/wp-content/uploads/2009/09/insuricorp.jpg" alt="insuricorp" /></p>
+
+<p>The information we need to store for this demo is the coordinates of all four cars and the coordinates of the crash indicator.  In the next section we will describe that data model on Force.com.</p>
+
+<p>Since the front-end will be built with Flex you will need either <a href="http://www.adobe.com/go/flex_trial">Flex Builder</a> (60 day trial available) or the <a href="http://opensource.adobe.com">open source Flex SDK</a>.  This tutorial will assume you are using Flex Builder.  Flex contains many out-of-the-box components but the car dragging UI used in the insurance demo is not one of them.  The section about building the front-end will walk through some of the Flex code used to create that UI.  If you want to learn more about creating custom components in Flex there is great documentation on the <a href="http://www.adobe.com/devnet/flex/components.html">Adobe Developer Connection</a>.  Also if you want to see the components that are available in Flex then check out <a href="http://flex.org/tour">Tour de Flex</a>.</p>
+
+<p>Once the Flex application has been built, this tutorial will walk through the steps to put it up on the Force.com cloud.</p>
+
+<p><strong>Setting up the Back-end</strong></p>
+
+<p>To begin setting up the back-end on Force.com you will need a <a href="http://developer.force.com">developer account</a>.  Once logged in you can go into the Setup mode by clicking on the &#8220;Setup&#8221; link at the top of the page.  Setup mode is where you will configure the back-end data model on Force.com and deploy the Flex application after it&#8217;s built.  On the left side of the Setup page you will see a section titled App Setup and underneath that a link titled &#8220;Create&#8221;.  Click that link and then click the &#8220;Objects&#8221; link which will now appear in the list. This is where custom objects on Force.com are created and configured.</p>
+
+<p>Add a new custom object titled &#8220;AccidentReport&#8221;.  Then on that object create a few custom fields:</p>
+
+<ul>
+<li><p>Date_of_Accident  -  The type is Date.  This field will store the date the accident happened.</p></li>
+<li><p>IncidentX  -  The type is Number.  This field will store the X coordinate of the crash indicator.</p></li>
+<li><p>IncidentY  -  The type is Number.  This field will store the Y coordinate of the crash indicator.</p></li>
+</ul>
+
+
+<p>Next create another custom object titled &#8220;IncidentCar&#8221;.  On that object create these custom fields:</p>
+
+<ul>
+<li><p>StartX  -  The type is Number.  This field will store the X coordinate of the starting car&#8217;s position.</p></li>
+<li><p>StartY  -  The type is Number.  This field will store the Y coordinate of the starting car&#8217;s position.</p></li>
+<li><p>EndX  -  The type is Number.  This field will store the X coordinate of the ending car&#8217;s position.</p></li>
+<li><p>EndY  -  The type is Number.  This field will store the Y coordinate of the ending car&#8217;s position.</p></li>
+<li><p>AccidentReport  -  This is a Master-Detail Relationship where the relationship is to the AccidentReport.</p></li>
+</ul>
+
+
+<p>The data model has now been configured on Force.com and is ready for use.  You may want to add a few fake records (an AccidentReport with two cars) manually to test the data model.</p>
+
+<p><strong>Building the Flex Client</strong></p>
+
+<p>Now that the Force.com back-end is configured we can begin building the Flex client.  The client can run in three ways:</p>
+
+<ol>
+<li><p>Embedded in a Force.com page</p></li>
+<li><p>On your own server</p></li>
+<li><p>As a desktop application using Adobe AIR</p></li>
+</ol>
+
+
+<p>In this tutorial we will use option 1.  The details for deploying the application will be covered in the next section.</p>
+
+<p>In order to connect to Force.com we need to download the <a href="http://developer.force.com/flextoolkit">Force.com Toolkit for Adobe AIR and Flex</a>.</p>
+
+<p>Start by creating a new Flex Project in Flex Builder.  Then copy the force-flex.swc file from the Toolkit into the project&#8217;s libs folder.  In your application start with something simple like:</p>
+
+<pre><code>&lt;mx:application xmlns:salesforce="http://www.salesforce.com/" xmlns:mx="http://www.adobe.com/2006/mxml"&gt;
+
+  &lt;mx:script&gt;
+    import com.salesforce.AsyncResponder;
+    import com.salesforce.objects.LoginRequest;
+    import com.salesforce.results.LoginResult;
+    import com.salesforce.results.QueryResult;
+  &lt;/mx:script&gt;
+
+  &lt;mx:applicationcomplete&gt;
+    var lr:LoginRequest = new LoginRequest();
+      lr.username = "YOUR USER NAME";
+      lr.password = "YOUR PASSWORD";
+      lr.callback = new AsyncResponder(
+        function(result:LoginResult):void {
+          conn.query("Select Id, IncidentX__c, IncidentY__c, Date_of_Accident__c from AccidentReport__c",
+            new AsyncResponder(function(result:QueryResult):void {
+              dg.dataProvider = result.records;
+            }));
+      });
+      conn.login(lr);
+  &lt;/mx:applicationcomplete&gt;
+
+  &lt;salesforce:connection id="conn"&gt;&lt;/salesforce:connection&gt;
+
+  &lt;mx:datagrid id="dg"&gt;&lt;/mx:datagrid&gt;
+
+&lt;/mx:application&gt;
+</code></pre>
+
+<p>Give it a try by running the application.  This simply logs in, fetches the AccidentReports and displays them in a DataGrid.  Make sure that you have some sample data on Force.com before you run this.  Otherwise you will get an error.  That is a simple read-only view of some data on the Force.com cloud!  However the full Car Incident application requires quite a bit more code.  You can <a href="/demos/CarIncident.zip">download the code</a> and then copy and paste the files into your project.</p>
+
+<p>Let&#8217;s walk through the application requirements:</p>
+
+<ol>
+<li><p>Retrieve a list of AccidentReports</p></li>
+<li><p>Allow the user to select an AccidentReport</p></li>
+<li><p>Retrieve the IncidentCars for the selected AccidentReport</p></li>
+<li><p>Allow the user to create a new AccidentReport</p></li>
+<li><p>Allow the user to position the crash indicator and cars in the AccidentReport</p></li>
+<li><p>Save the changes to Force.com</p></li>
+</ol>
+
+
+<p>When we started building our back-end we modeled the data in Force.com.  Now we need a client-side model of the data.  The two value objects for this purpose are AccidentReport.as and Car.as.  Those two value objects contains public properties corresponding to the values we need to hold once we get data back from Force.com.  They also have a constructor that can map the data format from Force.com to the value object&#8217;s properties.  For instance the Car value object&#8217;s constructor does the following:</p>
+
+<pre><code>    public function Car(o:Object=null)
+    {
+      if (o != null)
+      {
+        id = o.Id;
+        startX = o.StartX__c;
+        startY = o.StartY__c;
+        endX = o.EndX__c;
+        endY = o.EndY__c;
+      }
+    }
+</code></pre>
+
+<p>This simply sets the properties on an instance of Car to the data values retrieved from Force.com.  Later on you will see where those values come from and how we create new Car value objects.</p>
+
+<p>Now that the client-side data model has been created we need a central place that will hold our value objects.  The easiest way to do this is to create a Singleton called Model.  You can find it in the Model.as class.  The model contains properties which store information about the current state of the Flex application.  In this case the state properties our application needs are:</p>
+
+<ul>
+<li><p>statusMessage:String  -  Holds messages related to server communication</p></li>
+<li><p>loggedIn:Boolean  -  Specifies whether or not the user is logged in</p></li>
+<li><p>accidentReports:ArrayCollection  -  Stores all of the AccidentReports that get fetched from the server</p></li>
+<li><p>selectedAccidentReport:AccidentReport  -  The AccidentReport selected by the user (if any)</p></li>
+</ul>
+
+
+<p>Next we will setup a Controller that manages the communication to Force.com and updates the Model.  You can find the source code in the Controller.as class.  This class contains an instance of the Connection object from the Toolkit, which will actually do the communication to Force.com&#8217;s SOAP API.  It also contains a reference to the Singleton Model.  The controller exposes several public methods that support the requirements listed above.  These are:</p>
+
+<ul>
+<li><p>login(sessionId:String, serverUrl:String):void  -  A method that logs into Force.com based on the sessionId and serverUrl provided by the Force.com page.  Flex applications running outside of Force.com (on your own website or as a desktop application) will not have a sessionId so they will need to set the username and password instead.</p></li>
+<li><p>getAccidentReports():void  -  Does a query for the AccidentReports owned by the authenticated user.</p></li>
+<li><p>createAccidentReport():void  -  Creates a new AccidentReport.</p></li>
+<li><p>getAccidentReport(accidentReport:AccidentReport):void  -  Fetches the IncidentCars for a given AccidentReport.</p></li>
+<li><p>saveAccidentReport(accidentReport:AccidentReport):void  -  Updates an AccidentReport and its associated IncidentCars.</p></li>
+</ul>
+
+
+<p>All network requests in Flex happen asynchronously.  This means that all requests to Force.com also happen asynchronously; so while the methods listed above can make the request, other private functions are used to actually handle the server response and then update the Model.  For instance when the response from the query in getAccidentReports returns, the model is updated in the following way:</p>
+
+<pre><code>    private function getAccidentReportsResult(qr:QueryResult):void
+    {
+      model.accidentReports = new ArrayCollection();
+
+      // store AccidentReports
+      for each (var o:Object in qr.records)
+      {
+        model.accidentReports.addItem(new AccidentReport(o));
+      }
+    }
+</code></pre>
+
+<p>Notice that the records returned from the server are typed as Objects.  In the for loop we use the mapping in AccidentReport&#8217;s constructor to convert the Object to a typed AccidentReport.</p>
+
+<p>Now that the Model and Controller are setup the next task is to build the UI.  The UI is built with a number of components:</p>
+
+<ul>
+<li><p>CarShape.as  -  A class that draws a single car.</p></li>
+<li><p>DraggableCars.as  -  Has two CarShapes and draws a curved line between them.  Also has a Car value object which is used to position the CarShapes.  When the user drags a CarShape the underlying Car is updated.</p></li>
+<li><p>Accident.mxml  -  Has an AccidentReport value object, two DraggableCars, and a crash indicator.  The cars stored on the AccidentReport are passed to the DraggableCars.  When the crash indicator is moved the AccidentReport value object is updated.</p></li>
+<li><p>AccidentReportView.mxml  -  Contains the Controller, a DataGrid that displays the list of all AccidentReports, an Accident that is displayed when the user selects an item in the DataGrid, and buttons that allow the user to create, save, or close an AccidentReport.</p></li>
+<li><p>CarIncident.mxml  -  The main application that contains an AccidentReportView and does the login when the application loads.</p></li>
+</ul>
+
+
+<p>Describing how the custom UI components work is beyond the scope of this article.  However it&#8217;s important to describe how the Model, View, and Controller interact.  In the AccidentReportView the Accident uses data binding to setup an observer on the model.  When the observer observes a change it lets the view know so that it can refresh its view of the model.  The instance of the Accident uses data binding for two things:</p>
+
+<pre><code>&lt;cars:accident visible="{Model.getInstance().selectedAccidentReport != null}" accidentreport="{Model.getInstance().selectedAccidentReport}" id="accident"&gt;&lt;/cars:accident&gt;
+</code></pre>
+
+<p>First the accidentReport value object of the Accident is set to data bind to the Model&#8217;s selectedAccidentReport.  When that value changes the data binding observer will notify the Accident about the change.  Second, the Accident is only visible when the Model&#8217;s selectedAccidentReport is not null.</p>
+
+<p>The AccidentReportView also interacts with the controller by calling its public methods.  Here&#8217;s an example:</p>
+
+<pre><code>        &lt;mx:button label="Save"&gt;
+          &lt;mx:click&gt;
+            controller.saveAccidentReport(accident.accidentReport);
+
+            accidentReportDataGrid.selectedItem = null;
+            Model.getInstance().selectedAccidentReport = null;
+          &lt;/mx:click&gt;
+        &lt;/mx:button&gt;
+</code></pre>
+
+<p>When the user clicks the save button, the event handler calls the Controller&#8217;s saveAccidentReport method passing it the currently selected AccidentReport.  Since the components internally have made changes to the AccidentReport those changes are then propagated to Force.com by calling the Connection&#8217;s update method.  The save button&#8217;s event handler also deselects the currently selected item in the DataGrid and sets the selectedAccidentReport on the Model to null.</p>
+
+<p>Now that you have a fully functional Rich Cloud Application built with Force.com and Flex the next step is to make that application available on the cloud.</p>
+
+<p><strong>Deploying the Flex Client</strong></p>
+
+<p>When in the development phase it may be convenient to hard code your username and password into the application like we did in the simple example above.  However, you should never do that in a production application.  If you are deploying on a Force.com page then you can use the session_id.  Here is an example:</p>
+
+<pre><code>      conn.serverUrl = parameters.server_url;
+
+      var lr:LoginRequest = new LoginRequest();
+      lr.session_id = parameters.session_id;
+      lr.server_url = parameters.server_url;
+      lr.callback = new AsyncResponder(loginResult, loginFault);
+      conn.login(lr);
+</code></pre>
+
+<p>The parameters are available on the main Application and are passed into the application using the apex:flash VisualForce tag, which we will setup later.</p>
+
+<p>Once your application is set up to use the session_id then you will need to create a release build of the Flex project.  To do that follow the Export -> Flex -> Release Build wizard.  This will create a smaller SWF file (the application) that will later be uploaded to Force.com.</p>
+
+<p>To deploy the application go into the Force.com Setup mode, click on Develop under App Setup, and then click on Static Resources.  Create a new resource called &#8220;CarIncident&#8221; and upload the application&#8217;s SWF file found in the bin-release folder under the project.  Then under Develop, click Pages and add a new Page called &#8220;AccidentReport&#8221;.  Put the following code in the page:</p>
+
+<pre><code>&lt;apex:page&gt;
+    &lt;apex:pageblock&gt;
+        &lt;apex:flash src="{!$Resource.CarIncident}" height="500" flashvars="session_id={!$Api.Session_ID}&amp;server_url={!$Api.Partner_Server_URL_150}" width="500"&gt;&lt;/apex:flash&gt;
+    &lt;/apex:pageblock&gt;
+&lt;/apex:page&gt;
+</code></pre>
+
+<p>Save the page and then you should be able to access it by going to:
+<a href="https://na1.salesforce.com/apex/AccidentReport">https://na1.salesforce.com/apex/AccidentReport</a></p>
+
+<p>If my instructions are accurate then hopefully you will now see the CarIncident application on the cloud pulling data from Force.com like this screenshot:
+<img src="http://www.jamesward.com/blog/wp-content/uploads/2009/09/carincident.jpg" alt="carincident" /></p>
+
+<p>This is just a basic walk through of how to build Rich Cloud Applications with Force.com and Flex.  There are tons of additional features and configuration changes you can make on both the back-end and front-end.  But hopefully this helps you get started building Rich Cloud Applications with Force.com and Flex.  Let me know how it goes!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-09-01T19:00:59-06:00" pubdate data-updated="true">Sep 1<span>st</span>, 2009</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/flex/'>Flex</a>, <a class='category' href='/categories/salesforce-com/'>Salesforce.com</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2009/09/01/building-rich-cloud-applications-with-force-com-and-flex/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2009/09/01/building-rich-cloud-applications-with-force-com-and-flex/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2009/09/01/my-max-2009-sessions/" title="Previous Post: My MAX 2009 Sessions">&laquo; My MAX 2009 Sessions</a>
+      
+      
+        <a class="basic-alignment right" href="/2009/09/09/flex-and-java-in-chicago-and-ann-arbor/" title="next Post: Flex and Java in Chicago and Ann Arbor">Flex and Java in Chicago and Ann Arbor &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

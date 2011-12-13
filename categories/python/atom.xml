@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Python | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/python/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Need a QuickFix? Try Google App Engine, Adobe AIR, and Flex]]></title>
+    <link href="http://jamesward.github.com/2008/06/12/quickfix-google-app-engine-adobe-air-flex/"/>
+    <updated>2008-06-12T15:09:13-06:00</updated>
+    <id>http://jamesward.github.com/2008/06/12/quickfix-google-app-engine-adobe-air-flex</id>
+    <content type="html"><![CDATA[<p>Last week I spent a few hours with Dick Wall of the <a href="http://www.javaposse.com/">Java Posse</a> working on an application which combines Google App Engine, Adobe AIR, and Flex.  This was a fun experiment that turned into a pretty cool application.  The application, named QuickFix, sends an image to Google App Engine which does an "I'm Feeling Lucky" transformation on the image and sends it back.  Here's a screenshot of it fixing one of the photos I took at the Java Posse Roundup this past winter:
+<a href="http://airquickfix.appspot.com/"><img src="http://www.jamesward.com/wordpress/wp-content/uploads/2008/06/quickfix.png" alt="" /></a></p>
+
+<p>You can get the application by going to:
+<a href="http://airquickfix.appspot.com/">http://airquickfix.appspot.com/</a></p>
+
+<p>All of the source code can be found in the <a href="http://code.google.com/p/air-quick-fix/">air-quick-fix project</a> on Google Code.</p>
+
+<p>The division of work between Dick and I worked really well.  Dick worked on the back-end code in Python while I worked in Flex on the front-end.  We used PyAMF to connect the back-end to the front-end.  PyAMF made the whole process very easy.  The only challenge was in figuring out how to transform the data types correctly.  The first version of the application came together in a couple of hours.</p>
+
+<p>The back-end Python code is really simple.  Here is the method that is called from the client (trimmed down a bit):</p>
+
+<pre><code>def fiximage(data):
+
+  image_in = Image(str(data))
+  image_in.im_feeling_lucky()
+
+  image_out = ByteArray()
+  image_out.write(image_in.execute_transforms())
+
+  return image_out
+</code></pre>
+
+<p>In this code, the data which is passed to the method is just a ByteArray containing the image.  The data is turned into an Image, the im_feeling_lucky transform is specified, then run - taking the bytes and sending them back to the client.</p>
+
+<p>The front-end Flex code that sends the image to the back-end is also really simple:</p>
+
+<p>The RemoteObject (AMF networking API in Flex) is defined as:</p>
+
+<pre><code>&lt;mx:remoteobject destination="image" endpoint="http://airquickfix.appspot.com/image/" id="ro"&gt;
+</code></pre>
+
+<p>The function which actually makes the request to the back-end is:</p>
+
+<pre><code>var stream:FileStream = new FileStream();
+stream.open(startFile, FileMode.READ);
+var imageData:ByteArray = new ByteArray();
+stream.readBytes(imageData);
+ro.fiximage(imageData);
+</code></pre>
+
+<p>In this Flex code the image file is opened, read into a ByteArray, then sent to the fiximage method on the back-end.</p>
+
+<p>There is a bunch of other Flex code that creates the UI, handles selecting, saving, and dragging and dropping images but is all pretty straightforward.</p>
+
+<p>Dick and I really enjoyed creating this application together.  It shows off some of the strengths of each technology well and shows how easy it is to use the technologies together.  Let us know what you think about the application.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rich-Client Misconceptions & Adobe's Open Screen Project]]></title>
+    <link href="http://jamesward.github.com/2008/05/08/rich-client-misconceptions-adobes-open-screen-project/"/>
+    <updated>2008-05-08T07:10:49-06:00</updated>
+    <id>http://jamesward.github.com/2008/05/08/rich-client-misconceptions-adobes-open-screen-project</id>
+    <content type="html"><![CDATA[<p><a href="http://artima.com">Artima</a> recently posted two interviews with me which relate to Flex.  First is an interview about <a href="http://www.artima.com/forums/flat.jsp?forum=270&amp;thread=230045">Adobe's Open Screen Project</a>.  The second is called <a href="http://www.artima.com/lejava/articles/javaone_2008_james_ward.html">Rich-Client Misconceptions</a>.  Also Bruce Eckel recently posted a very interesting article on Artima called "<a href="http://www.artima.com/weblogs/viewpost.jsp?thread=230001">Concurrency with Python, Twisted, and Flex</a>".  Let me know what you think about those.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Upcoming Events: CodeMash, RIA Jam, Flex-TurboGears Jam]]></title>
+    <link href="http://jamesward.github.com/2007/12/18/upcoming-events-codemash-ria-jam-flex-turbogears-jam/"/>
+    <updated>2007-12-18T17:14:59-07:00</updated>
+    <id>http://jamesward.github.com/2007/12/18/upcoming-events-codemash-ria-jam-flex-turbogears-jam</id>
+    <content type="html"><![CDATA[<p>It's hard to believe that 2007 is almost over.  It's been an amazing year!  Thanks for reading and contributing.  I'm looking forward to another great year in 2008.  And it all begins when I hit the road the second week of January for <a href="http://www.codemash.org">CodeMash 2008</a>.  I went to CodeMash last year and really enjoyed the conference, especially the water slides.  :)  I'll be speaking again at CodeMash 2008 about Adobe AIR and Flex.</p>
+
+<p>The week following CodeMash there will be a <a href="http://www.mindviewinc.com/Conferences/RIAJam/Index.php">RIA Jam in Ann Arbor</a>.  The RIA Jam will be hosted by <a href="http://srtsolutions.com/">SRT Solutions</a> and <a href="http://www.mindview.net/">Bruce Eckel</a>.  My friend and co-RIA-conspirator, <a href="http://blogs.msdn.com/joshholmes/">Josh Holmes</a>, will also be there helping people learn Silverlight while I help people learn Flex and AIR.  In February Bruce will also be hosting another <a href="http://www.mindviewinc.com/Conferences/FlexTGJam/Index.php">Flex Jam in Crested Butte, Colorado</a>. The Jam in February will cover Flex, TurboGears, integrating the two and hopefully some exploratory work into integrating Flex with <a href="http://liftweb.net">Lift</a>, the new Scala based web framework.  I will be there helping people learn Flex and undoubtedly learning some new things myself.</p>
+
+<p>The Jam and Open Spaces style events that Bruce hosts are my favorite events of the year.  The events in Crested Butte are always so refreshing.  While most conferences keep me indoors for days at a time, Bruce's event encourage attendees to get outside, into open spaces.  For me this helps to relax my mind which makes it much easier to learn and focus.  At the Crested Butte events in the summer we hike for a few hours every day and in the winter we ski / snowshoe.  These events are also incredibly affordable since there isn't a high cost associated with putting them on.  And as a bonus attendees to the Jams will receive a free copy of Flex Builder 2.  If you are learning Flex, no matter what level, you will learn more in these few days than you will at any other conference.  They are hands-on events so you actually learn through experimentation and peer interaction.</p>
+
+<p>I'll be at many other events in 2008 and hope to see many of you somewhere along the way.  Until then have a happy and safe holiday season.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Flex and TurboGears at CodeMash - DisplayShelf Widget]]></title>
+    <link href="http://jamesward.github.com/2007/01/20/flex-and-turbogears-at-codemash-displayshelf-widget/"/>
+    <updated>2007-01-20T10:40:46-07:00</updated>
+    <id>http://jamesward.github.com/2007/01/20/flex-and-turbogears-at-codemash-displayshelf-widget</id>
+    <content type="html"><![CDATA[<p>This past week I spoke at the <a href="http://www.codemash.org">CodeMash</a> conference.  It was a really great event full of stimulating conversation.  Even more fun than <a href="http://video.google.com/videoplay?docid=-2676913860949129275&amp;hl=en">trying to surf in the wave machine</a> was an Open Spaces style session that <a href="http://www.blueskyonmars.com/">Kevin Dangoor</a> (creator of TurboGears) and I hosted.  We had planned to just sneak off into a corner and turn <a href="http://www.quietlyscheming.com/blog/">Ely Greenfield</a>'s <a href="http://www.quietlyscheming.com/blog/components/tutorial-displayshelf-component/">DisplayShelf component</a> into a <a href="http://www.turbogears.org">TurboGears</a> Widget.  However, word quickly spread that we were going to do this and everyone wanted to watch as we coded.  We had a bunch of fellow geeks huddled around every spare laptop and monitor we could find.  I shared my screen with VNC so that everyone could watch what Kevin and I were doing.  It was by far the best geek-out session I have had in a long time!  Check out a screenshot of the DisplayShelf widget in a TurboGears application, showing a picture of our geek-out session:</p>
+
+<p><img src="http://www.jamesward.org/wordpress/wp-content/uploads/2007/01/tg_pic.jpg" alt="" /></p>
+
+<p>Continue reading to learn more about what we built, how we built it, and how you can use it...</p>
+
+<p>The DisplayShelf is similar to the iTunes cover art display.  It's built with the free Flex SDK, open source, and MIT licensed.  Earlier in the week I made the DisplayShelf work with TurboGears, but it wasn't yet a reusable widget.  Kevin walked me through the process of converting my test application to a real widget.  In about twenty minutes we had most of the widget setup. To expedite the process we used an existing project to test the new widget. This particular project had previously been used to get the DisplayShelf running, sans-widget.  Very few times in my sixteen years of programming adventures have things with this many moving parts worked on the first try.  I coded the 3 lines nessecary to use the new widget, went to my browser and hit reload, one hundred percent convinced I would see an error message.  I saw the DisplayShelf, which I thought was actually still cached somewhere from my previous project.  I reloaded again, expecting to see an error.  No error.  I reloaded the TurboGears server, again expecting to see an error.  No error.  What is wrong?  Where is the error?  Surely this didn't work first try!  I viewed the source of the web page and sure enough it was using the new DisplayShelf widget!  Everyone (excluding Kevin) was pretty amazed.  I guess Kevin is accustomed to these types of successes with TurboGears.</p>
+
+<p>The next step was to upload the new widget to the <a href="http://cheeseshop.python.org/pypi/DisplayShelf/1.0">Cheese Shop</a>, a home for Python based widgets.  Kevin walked me though the process.  I expected this to be tedious...  Packaging things up in some strange way, navigating a difficult web site, uploading, etc.  Kevin again blew us away with the simplicity of doing this sort of thing.  Literally it was two commands to get our widget on the Cheese Shop.  Again everyone except Kevin is amazed.</p>
+
+<p>Now that the widget was built and posted in the Cheese Shop it was time to test using the widget from scratch.  I did this with Kevin's help, while someone else tired on their own computer.  Within a few minutes we both had applications which were using the new widget!  Again everyone except Kevin is amazed.  See the recurring theme?  Coming from a variety of backgrounds we couldn't believe how easy it was to build web applications and use widgets with TurboGears.  Kevin just smiled as we all had epiphanies.</p>
+
+<p>Using Flex for rich widgets in TurboGears applications is a great combination of technologies.  You get two great programming models and seamless interaction with both the <a href="http://labs.adobe.com/wiki/index.php/Flex_Framework:FABridge">FABridge</a> and with TurboGears's JSON support.  A few months ago Bruce Eckel and I recorded a <a href="http://www.jamesward.org/wordpress/2007/01/10/bruce-eckel-is-thinking-in-flex/">screencast</a> of us building an application with a Flex front-end and a TurboGears back-end.  The application we built used JSON to expose the TurboGears back-end to Flex.  We had really great success with this approach.  At CodeMash we took another approach and used the FABridge to pass objects from TurboGears to a Flex application.  Both approaches work really well and depending on what you are building, one may be more applicable than another.</p>
+
+<p>Now lets walk through how you can use the DisplayShelf component in your TurboGears applications.  This assumes that you already have TurboGears installed.</p>
+
+<p>1) Get the DisplayShelf component from the Cheese Shop:</p>
+
+<p><code>easy-install DisplayShelf</code></p>
+
+<p>2) Create a new TurboGears application using the quickstart wizard:</p>
+
+<p><code>tg-admin quickstart</code></p>
+
+<p>3) In the created project directory, start the TurboGears server with the created start script (your start script name is based on your package name):</p>
+
+<p><code>python start-dstest.py</code></p>
+
+<p>4) Add the DisplayShelf widget to your controllers.py file:</p>
+
+<p><code>from displayshelf.widgets import DisplayShelf</code></p>
+
+<p>5) Return the DisplayShelf widget in your default template:</p>
+
+<p><code>def index(self):
+return dict(shelf=DisplayShelf())</code></p>
+
+<p>6) Copy some images into the static/images directory.</p>
+
+<p>7) Replace the body of the welcome.kid file with the DisplayShelf (specify an array of the images in your static/images directory):</p>
+
+<p><code>${shelf(['static/images/1.jpg','static/images/2.jpg','static/images/3.jpg','static/images/4.jpg'],height='600')}
+</code></p>
+
+<p>8) Load <a href="http://localhost:8080/">http://localhost:8080/</a> in your browser.</p>
+
+<p>That's it!  You are now using the DisplayShelf in your TurboGears app! If you start the TurboGears toolbox and go to <a href="http://localhost:7654/widgets/">http://localhost:7654/widgets/</a> you will also find the DisplayShelf in the Widget Browser.</p>
+
+<p>It's that easy!  Thanks Kevin and <a href="http://compoundthinking.com/blog/">Mark</a> for all your help this past week getting me up-to-speed on TurboGears!  TurboGears truly is a world class web application framework!  And the widget system is by far the best I've ever seen!  Now lets get some more Flex based widgets created!  :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Bruce Eckel is Thinking in Flex!]]></title>
+    <link href="http://jamesward.github.com/2007/01/10/bruce-eckel-is-thinking-in-flex/"/>
+    <updated>2007-01-10T12:39:04-07:00</updated>
+    <id>http://jamesward.github.com/2007/01/10/bruce-eckel-is-thinking-in-flex</id>
+    <content type="html"><![CDATA[<p>Update: You can download the source code for this screencast <a href="/downloads/flex_and_tg-address_example.zip">here</a>.</p>
+
+<p>Recently Bruce Eckel and I had the chance to record a screencast of us pair programming with Flex &amp; TurboGears:
+<a href="http://www.adobe.com/devnet/flex/articles/eckel_video.html">http://www.adobe.com/devnet/flex/articles/eckel_video.html</a></p>
+
+<p>The results were great - a fantastic UI on top of a simple back-end!  Both Bruce and I learned a lot creating this screencast and I hope you will enjoy watching it.</p>
+]]></content>
+  </entry>
+  
+</feed>

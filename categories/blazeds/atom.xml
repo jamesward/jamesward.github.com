@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: BlazeDS | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/blazeds/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Time to Update to Flex SDK 3.5a]]></title>
+    <link href="http://jamesward.github.com/2010/02/12/time-to-update-to-flex-sdk-3-5a/"/>
+    <updated>2010-02-12T12:44:40-07:00</updated>
+    <id>http://jamesward.github.com/2010/02/12/time-to-update-to-flex-sdk-3-5a</id>
+    <content type="html"><![CDATA[<p>If you are using a Flex SDK before 3.5a then it's probably time to update.  Flex SDKs before 3.4 have a <a href="http://www.adobe.com/support/security/bulletins/apsb09-13.html">security vulnerability</a>.  I believe the problem is actually in the HTML template, so when you update make sure that you also update the HTML templates that you are using.  The Flex SDK 3.4 had the <a href="https://bugs.adobe.com/jira/browse/SDK-22883">double responder bug</a>.  And the initial release of Flex SDK 3.5 had a <a href="https://bugs.adobe.com/jira/browse/SDK-24766">bug with AIR's ApplicationUpdaterUI</a>.  If you overlay your own AIR SDK on top of the Flex SDK then be aware that you will actually be overwriting the ApplicationUpdaterUI fix (comments in the bug report discuss how to deal with that).</p>
+
+<p>So it's time to move to the <a href="http://opensource.adobe.com/wiki/display/flexsdk/Download+Flex+3">latest Flex SDK 3.5a</a>!</p>
+
+<p>Also, if you are using BlazeDS, LCDS, or FDS then it's time to update that as well due to <a href="http://www.adobe.com/support/security/bulletins/apsb10-05.html">a security vulnerability</a> that was published yesterday.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Flash Builder 4 Data Wizards with Java / Spring]]></title>
+    <link href="http://jamesward.github.com/2010/01/11/flash-builder-4-data-wizards-with-java-spring/"/>
+    <updated>2010-01-11T08:19:41-07:00</updated>
+    <id>http://jamesward.github.com/2010/01/11/flash-builder-4-data-wizards-with-java-spring</id>
+    <content type="html"><![CDATA[<p>UPDATE 1: Flash Builder 4, BlazeDS 4, and Spring 1.0.3 have all been release so you no longer have to use beta or nightly builds of these products.  Use the production versions!</p>
+
+<p>UPDATE 2: I've done a second part to this screencast that combines <a href="http://www.jamesward.com/2010/01/17/flex-4-and-java-spring-hibernate-in-flash-builder-4/">Flex 4, Flash Builder 4, Spring 3, BlazeDS 4, and Hibernate 3</a>.</p>
+
+<p>UPDATE 3: A Refcard on <a href="http://refcardz.dzone.com/refcardz/flex-4-and-spring-3">Integrating Spring 3 and Flex 4</a>, which I co-authored, is now available! It provides a step-by-step tutorial for setting up everything I show in the video below.</p>
+
+<p>Connecting a Flex 4 application to a Java / Spring back-end couldn't be easier in Flash Builder 4's new Data Wizards.  I've recorded a screencast that shows how to set up the web application project, configure Spring &amp; BlazeDS, and then build a Flex 4 application that connects to the Java / Spring back-end.  Check it out and let me know what you think.</p>
+
+<p>(<a href="http://www.jamesward.com/videos/flash_builder_4_data_wizards_java_spring.html">Open full-size video in a new window</a>)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[My Video from MAX 2009 - Introduction to BlazeDS and LCDS]]></title>
+    <link href="http://jamesward.github.com/2009/11/04/my-video-from-max-2009-introduction-to-blazeds-and-lcds/"/>
+    <updated>2009-11-04T09:25:23-07:00</updated>
+    <id>http://jamesward.github.com/2009/11/04/my-video-from-max-2009-introduction-to-blazeds-and-lcds</id>
+    <content type="html"><![CDATA[<p>Here is the video of my session from MAX 2009 - Introduction to BlazeDS and LCDS.  In this session I walk through the basics of connecting Flex applications to BlazeDS and LCDS.  Let me know what you think!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Upcoming Flex and Java Presentations in Zurich and Dallas]]></title>
+    <link href="http://jamesward.github.com/2009/10/27/upcoming-flex-and-java-presentations-in-zurich-and-dallas/"/>
+    <updated>2009-10-27T09:09:38-06:00</updated>
+    <id>http://jamesward.github.com/2009/10/27/upcoming-flex-and-java-presentations-in-zurich-and-dallas</id>
+    <content type="html"><![CDATA[<p>Here are a few upcoming Flex and Java presentations I'll be giving:</p>
+
+<ul>
+<li><p>Thursday October 29 in Zurich - <a href="http://www.jugs.ch/html/events/2009/flex.html">RIAs with Java, Spring, Hibernate, BlazeDS, and Flex</a></p></li>
+<li><p>Thursday November 12 in Dallas - <a href="http://www.soaug.net/">Java and Flex</a></p></li>
+<li><p>Friday November 13 in Plano, TX - <a href="http://texflex09.eventbrite.com/">Flex and the Cloud @ TexFlex09</a></p></li>
+</ul>
+
+
+<p>I hope to see you there!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[My MAX 2009 Sessions]]></title>
+    <link href="http://jamesward.github.com/2009/09/01/my-max-2009-sessions/"/>
+    <updated>2009-09-01T10:09:16-06:00</updated>
+    <id>http://jamesward.github.com/2009/09/01/my-max-2009-sessions</id>
+    <content type="html"><![CDATA[<p><a href="http://max.adobe.com/">MAX 2009</a> is coming fast!  It's going to be another great event with tons of great speakers and after party fun.  Here are my sessions this year:</p>
+
+<ul>
+<li><p><a href="http://max.adobe.com/scheduler/#view=1;session=38f90275-4f7f-4c9e-9456-a87ae4428a8a">Introduction to BlazeDS and LiveCycle Data Services</a></p></li>
+<li><p><a href="http://max.adobe.com/scheduler/#view=1;session=3ed8c7b5-d2fc-4572-b4fd-44e7ab9b4da6">Designing for Augmented Reality</a></p></li>
+<li><p><a href="http://max.adobe.com/scheduler/#view=1;session=51f7122b-42e8-4c10-ad75-d87e7a62aa98">Building Flex and Adobe AIR Service Clients 2009</a></p></li>
+<li><p><a href="http://max.adobe.com/scheduler/#view=1;session=536613cb-9409-4187-81ec-7d00607c2786">Flex and Adobe AIR Boot Camp</a></p></li>
+</ul>
+
+
+<p>Also <a href="http://www.drunkonsoftware.com">Drunk on Software</a> will be there filming some episodes.</p>
+
+<p>So this is certainly a MAX you don't want to miss!  I hope to see you there!</p>
+
+<p>Also check out the very cool MAX Widget (there are some funny facts about me in there):
+<img src="http://counters.gigya.com/wildfire/IMP/CXNID=2000002.0NXC/bT*xJmx*PTEyNTE4MjI2MTI4MzgmcHQ9MTI1MTgyMjYyMjY5NSZwPTc3NDM3MSZkPW1heDA5d2lkZ2V*Jmc9MyZvPTRhYTY5MWUyMDYwZjQ4MzFhNDEyNDg4ZWVlOTMyN2VjJnM9d2Via2l*Y2hlbi5iZSZvZj*w.gif" alt="" /></p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: .Net | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/-net/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[.Net Rocks! Podcast from CodeMash 2009 RIA Panel]]></title>
+    <link href="http://jamesward.github.com/2009/01/15/net-rocks-podcast-from-codemash-2009-ria-panel/"/>
+    <updated>2009-01-15T11:37:17-07:00</updated>
+    <id>http://jamesward.github.com/2009/01/15/net-rocks-podcast-from-codemash-2009-ria-panel</id>
+    <content type="html"><![CDATA[<p>At <a href="http://www.codemash.org">CodeMash 2009</a> I was able to participate in a panel discussion about Rich Internet Applications, Flex, Silverlight, and Ajax.  The panel was moderated by Richard and Carl from the <a href="http://www.dotnetrocks.com">.NET Rocks! podcast</a>.  Also on the panel was <a href="http://joshholmes.com/">Josh Holmes</a> and <a href="http://silverlight.net/blogs/jesseliberty/">Jesse Liberty</a> from Microsoft and <a href="http://www.fallenrogue.com/">Leon Gersing</a>.  It was a fun panel - especially since we enjoyed some fine whiskey during it! But also because it's great to see how we all have common goals - we all want software to be better no matter what the underlying technology is.</p>
+
+<p>In case you weren't at CodeMash you can <a href="http://www.dotnetrocks.com/default.aspx?ShowNum=412">listen to the recording from .Net Rocks!</a> and then let me know what you think.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[My Adobe MAX 2008 Talk]]></title>
+    <link href="http://jamesward.github.com/2008/07/09/my-adobe-max-2008-talk/"/>
+    <updated>2008-07-09T07:37:21-06:00</updated>
+    <id>http://jamesward.github.com/2008/07/09/my-adobe-max-2008-talk</id>
+    <content type="html"><![CDATA[<p>It's hard to believe that <a href="http://max.adobe.com/">Adobe MAX 2008</a> in the US is only 4 months away!  It's going to be another great MAX and I really hope that you can make it.  This year I have one session:
+<a href="http://www.adobe.com/go/maxexplorer"><img src="http://www.adobe.com/1to1_campaigns/2008_MAX/banners/MAX08_B125x125.jpg" alt="" /></a></p>
+
+<p><strong>Working with Data in Flex</strong>
+Explore various methods for accessing data in applications built with Flex 3. We’ll discuss how to connect with back ends such as ColdFusion, PHP, .NET, and Java using REST and XML, Web Services, Remoting, Messaging, and the LiveCycle Data Management Service. We’ll also discuss underlying formats such as XML and how to manipulate it using E4X, AMF3, and JSON.</p>
+
+<p>The session list is now <a href="http://max.adobe.com/na/sessions/browser/">online</a>.  So check it out and <a href="http://max.adobe.com/na/register/">go register</a> today!</p>
+]]></content>
+  </entry>
+  
+</feed>

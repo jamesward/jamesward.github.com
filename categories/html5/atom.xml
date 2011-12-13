@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: HTML5 | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/html5/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Integrating Flex/Flash with HTML5 APIs]]></title>
+    <link href="http://jamesward.github.com/2010/12/07/integrating-flexflash-with-html5-apis/"/>
+    <updated>2010-12-07T13:36:43-07:00</updated>
+    <id>http://jamesward.github.com/2010/12/07/integrating-flexflash-with-html5-apis</id>
+    <content type="html"><![CDATA[<p>Beyond the media hype about Flash <em>versus</em> HTML5 exists the reality of coexistence and cooperation.  This coexistence and cooperation makes the web a better place.  When developers combine the strengths of Flash with the strengths of HTML, users get the best possible experiences on the web.</p>
+
+<p>Both HTML and Flash are important foundations that Adobe builds its products on.  Here's a little secret about Adobe's business model...  When new versions of those platforms come out, so do new versions of the tools for building on them.  And guess what Adobe makes money on...  Tools.  So it is true that <a href="http://www.infoworld.com/d/developer-world/microsoft-adobe-proclaim-their-love-html5-775">Adobe loves Flash <strong>AND</strong> HTML5</a>.  :)</p>
+
+<p>In the world of coexistence and cooperation (that is the technical reality) we find some really exciting things.  One such thing is <a href="http://www.jangaroo.net/home/index.html">Jangaroo</a> an open source project that cross-compiles ActionScript to JavaScript.  This means that you can build applications in ActionScript (and eventually MXML) and cross-compile those applications to run in places where Flash doesn't exist.  And you can even use <a href="http://www.adobe.com/products/flashbuilder/">Adobe tools</a> to help you write that ActionScript.  :)</p>
+
+<p>Another quick example I whipped up is a proof-of-concept of how you can integrate Flex applications with the new HTML5 <a href="http://www.w3.org/TR/html5/history.html">session history and navigation APIs</a> (pushState, replaceState, and so on).  In a sufficiently modern browser (such as Chrome, Firefox 4, or Safari) open the following demo in a new tab / window:
+<a href="http://www.jamesward.com/demos/FlexReplaceState/app">http://www.jamesward.com/demos/FlexReplaceState/app</a></p>
+
+<p>As you click on tabs notice that the URL changes without page refresh and without resorting to the use of named anchors / hashes.  Also notice that page refresh, back, and forward all work.  Check out the <a href="https://github.com/jamesward/FlexReplaceState">source for the demo on github</a>.  That is the kind of cooperation and integration we will continue to see more of as HTML5 matures.  I'm excited to see the web become a better place as HTML and Flash both mature!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[HTML5 Live in New York and RIA Unleashed in Boston]]></title>
+    <link href="http://jamesward.github.com/2010/11/02/html5-live-in-new-york-and-ria-unleashed-in-boston/"/>
+    <updated>2010-11-02T06:33:01-06:00</updated>
+    <id>http://jamesward.github.com/2010/11/02/html5-live-in-new-york-and-ria-unleashed-in-boston</id>
+    <content type="html"><![CDATA[<p>I'll be speaking at two great events next week on the East Coast.  First up is <a href="http://html5live.org/html5-nyc-2010/">HTML5 Live</a> in New York on Tuesday November 9th.  At HTML5 Live I'll be talking about "<a href="http://html5live.org/html5-nyc-2010/presentation/Development+Tools+for+Building+HTML5+Content+%26+Applications">Development Tools for Building HTML5 Content &amp; Applications</a>".  Then on Friday November 12th I'll be at <a href="http://riaunleashed.com/">RIA Unleashed</a> in Boston talking about "<a href="http://riaunleashed.com/page.cfm/agenda">Flex 4.5 Hero</a>".  These two events will certainly be enlightening.  :)  I hope to see you there!</p>
+]]></content>
+  </entry>
+  
+</feed>

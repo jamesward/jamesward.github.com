@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Adobe AIR | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/adobe-air/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Extending AIR for Android]]></title>
+    <link href="http://jamesward.github.com/2011/05/11/extending-air-for-android/"/>
+    <updated>2011-05-11T08:06:36-06:00</updated>
+    <id>http://jamesward.github.com/2011/05/11/extending-air-for-android</id>
+    <content type="html"><![CDATA[<p>None</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[P2P in Desktop, Mobile, and Tablet Flex Apps]]></title>
+    <link href="http://jamesward.github.com/2010/12/06/p2p-in-desktop-mobile-and-tablet-flex-apps/"/>
+    <updated>2010-12-06T14:16:02-07:00</updated>
+    <id>http://jamesward.github.com/2010/12/06/p2p-in-desktop-mobile-and-tablet-flex-apps</id>
+    <content type="html"><![CDATA[<p>Using the open source Flex SDK, developers can easily build desktop, mobile, and tablet applications that use Peer to Peer (P2P) communication.  I've created a video that walks through demos and code illustrating how to use the P2P APIs in Adobe AIR applications.  Check it out:</p>
+
+<p>Grab the code for the demos in the video from <a href="http://github.com/jamesward">github</a>:</p>
+
+<ul>
+<li><p><a href="https://github.com/jamesward/P2Pong">P2Pong</a></p></li>
+<li><p><a href="https://github.com/jamesward/P2Hancock">P2Hancock</a> (Signature capture over P2P)</p></li>
+</ul>
+
+
+<p>Just as the video shows, it's incredibly easy to use the P2P APIs.  Here is a quick walk through.  First create a new NetConnection that is connected to "rtmfp:" like so:</p>
+
+<pre><code>localNc = new NetConnection();
+localNc.addEventListener(NetStatusEvent.NET_STATUS, netStatus);
+localNc.connect("rtmfp:");
+</code></pre>
+
+<p>In the netStatus event listener wait for the "NetConnection.Connect.Success" event and then set up the NetGroup:</p>
+
+<pre><code>private function netStatus(event:NetStatusEvent):void
+{                        
+    switch(event.info.code)
+    {
+        case "NetConnection.Connect.Success":
+            setupGroup();
+            break;
+    }
+}
+
+private function setupGroup():void
+{
+    var groupspec:GroupSpecifier = new GroupSpecifier(GROUP_ID);
+    groupspec.ipMulticastMemberUpdatesEnabled = true;
+    groupspec.multicastEnabled = true;
+    groupspec.routingEnabled = true;
+    groupspec.postingEnabled = true;
+
+    // This is a multicast IP address. More info: http://en.wikipedia.org/wiki/Multicast_address
+    groupspec.addIPMulticastAddress("239.254.254.2:30304");
+
+    netGroup = new NetGroup(localNc, groupspec.groupspecWithAuthorizations());
+    netGroup.addEventListener(NetStatusEvent.NET_STATUS, netStatus);
+}
+</code></pre>
+
+<p>Now handle a "NetGroup.SendTo.Notify" event when a message is received over the P2P connection:</p>
+
+<pre><code>// in the netStatus switch block
+case "NetGroup.SendTo.Notify":
+    var data:Object = event.info.message;
+    break;
+</code></pre>
+
+<p>And finally to send a P2P message to everyone who is listening simply do:</p>
+
+<pre><code>netGroup.sendToAllNeighbors(objectToSend);
+</code></pre>
+
+<p>That's it!  Super simple and super fun!  :)</p>
+
+<p>Thanks to <a href="http://www.flashrealtime.com/">Tom Krcha</a> for all of his great blogs on how to do this.  Also thanks to Mark Dong and <a href="http://jamesli.cn/blog/">James Li</a> (Flash Platform Evangelists in China) for helping me build P2Pong.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Install Adobe AIR on 64-bit Ubuntu 10.10]]></title>
+    <link href="http://jamesward.github.com/2010/10/14/install-adobe-air-on-64-bit-ubuntu-10-10/"/>
+    <updated>2010-10-14T07:22:05-06:00</updated>
+    <id>http://jamesward.github.com/2010/10/14/install-adobe-air-on-64-bit-ubuntu-10-10</id>
+    <content type="html"><![CDATA[<p>Right now Adobe AIR is only officially available for 32-bit Linux.  But it does work on 64-bit Linux with the 32-bit compatibility libraries.  There are several ways to install Adobe AIR on Linux.  My preferred way on Ubuntu is to use the .deb package.  However the .deb package distributed by Adobe can only be installed on 32-bit systems.  Good news is that this can be easily fixed!  To install the Adobe AIR .deb package on a 64-bit system just follow these steps:</p>
+
+<ol>
+<li><p><a href="http://get.adobe.com/air/">Download the Adobe AIR .deb file</a></p></li>
+<li><p>In a terminal window go to the directory containing the adobeair.deb file</p></li>
+<li><p>Create a tmp dir:</p></li>
+</ol>
+
+
+<pre><code>mkdir tmp
+</code></pre>
+
+<ol>
+<li>Extract the deb file to the tmp dir:</li>
+</ol>
+
+
+<pre><code>dpkg-deb -x adobeair.deb tmp
+</code></pre>
+
+<ol>
+<li>Extract the control files:</li>
+</ol>
+
+
+<pre><code>dpkg-deb --control adobeair.deb tmp/DEBIAN
+</code></pre>
+
+<ol>
+<li>Change the Architecture parameter from "i386" to "all":</li>
+</ol>
+
+
+<pre><code>sed -i "s/i386/all/" tmp/DEBIAN/control
+</code></pre>
+
+<ol>
+<li>Repackage the deb file:</li>
+</ol>
+
+
+<pre><code>dpkg -b tmp adobeair_64.deb
+</code></pre>
+
+<p>Now you can install Adobe AIR on a 64-bit system!  From the command line just do:</p>
+
+<pre><code>sudo dpkg -i adobeair_64.deb
+</code></pre>
+
+<p>That's it!  Let me know if you have any questions.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Video: Introduction to the New Adobe AIR Launchpad]]></title>
+    <link href="http://jamesward.github.com/2010/08/24/video-introduction-to-the-new-adobe-air-launchpad/"/>
+    <updated>2010-08-24T09:03:01-06:00</updated>
+    <id>http://jamesward.github.com/2010/08/24/video-introduction-to-the-new-adobe-air-launchpad</id>
+    <content type="html"><![CDATA[<p>I just created a video that walks through the new <a href="http://labs.adobe.com/technologies/airlaunchpad/">Adobe AIR Launchpad</a>.  The AIR Launchpad is the easiest way to get started building desktop apps with Adobe AIR and Flex.  Check it out:</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Building Client / Cloud Apps with Flash Builder for Force.com]]></title>
+    <link href="http://jamesward.github.com/2010/07/26/building-client-cloud-apps-with-flash-builder-for-force-com/"/>
+    <updated>2010-07-26T12:15:25-06:00</updated>
+    <id>http://jamesward.github.com/2010/07/26/building-client-cloud-apps-with-flash-builder-for-force-com</id>
+    <content type="html"><![CDATA[<p>I have a theory.  The majority of people who use enterprise software today use old school Client / Server apps.  We've been trying to move these apps to the web for more than ten years.  The ease of deployment of web apps is a clear motivator.  Yet the client capabilities of the plain old web browser have not been sufficient for many apps to make the leap.  This is why I love Flex and the Flash Platform.  It provides a way to use web technologies and the web deployment model but adds many of the critical things needed for mission critical apps that people use all day long.</p>
+
+<p>But no one wants to go back to the Client / Server architecture.  We want to embrace Cloud Computing architectures but not lose the client capabilities.  What we really need is the Client / Cloud architecture.  We need a web deployment model that provides ease of deployment but also the ability to install applications on our desktops and mobile devices.</p>
+
+<p>This is why I'm so excited about the new <a href="http://developer.force.com/flashbuilder">Adobe Flash Builder for Force.com</a>.  In a nutshell this is a tool that Adobe and Salesforce.com built together to enable developers to build great software using Flex for the UI and Force.com for the Cloud back-end.  It's a wonderful combination of technologies that will help many Client / Server apps make the switch to Client / Cloud.</p>
+
+<p>Applications created with Flash Builder for Force.com can be run in the browser, on the desktop, and on mobile devices.  These applications can be assembled from the hundreds of Flex components that are out there (check out many of them in <a href="http://flex.org/tour">Tour de Flex</a>).</p>
+
+<p>Check out this video to see how to use Flash Builder for Force.com to build a simple app:</p>
+
+<p>As you can see, it's very easy to get started.  But I wanted to go a step further and try to build something real--something that shows a genuine use case for extending beyond the out-of-the-box Salesforce.com UI.  I wanted to keep it really simple so that I could post the code here.  What I came up with is this (in user story form):</p>
+
+<ul>
+<li><p>As a Salesforce.com user I want to take a photo, using my phone, of one of my contacts so that the photo can be saved to their contact record for future reference.</p></li>
+<li><p>As a Salesforce.com user I want to see photos I've taken of my contacts so that I can be reminded of what they look like.</p></li>
+</ul>
+
+
+<p>Simple enough.  So here is what I came up with:</p>
+
+<p>To build these two apps I first downloaded and installed <a href="https://www.developerforce.com/events/flashbuilder/registration.php">Flash Builder for Force.com</a>.  I used the <a href="http://www.adobe.com/go/airbetasignup">Adobe AIR for Android prerelease</a> to build the mobile app.  Here is how I created these apps.</p>
+
+<p>First I added a new field to Contact to store the photo.  Salesforce.com doesn't have a binary field so I used a large text field (32k limit).  I'll store the photo Base64 encoded.</p>
+
+<p>Then in Salesforce.com I saved my enterprise.wsdl file. Check out a <a href="http://wiki.developerforce.com/index.php/Demo_Building_Desktop_Client_for_the_Cloud">great video from Dave Carroll</a> to see how to do this.</p>
+
+<p>Now in Flash Builder for Force.com I created a new Force.com Flex Project for the mobile app.  If you do this on your own and want to run on a mobile device then you will need to overlay the AIR for Android SDK on top of a Flex 4.1 SDK.  Select Desktop Application as the app type.  Replace WindowedApplication with just Application.  And replace the F3DesktopApplication with F3WebApplication since F3DesktopApplication uses APIs that are not available on AIR for Android.  (BTW: Flash Builder, Flex, and Force.com Flex Projects do not officially support mobile deployment yet.  It works but there is no support and no guarantees.)  If you are building a standard Web Application or Desktop Application then you can just leave the generated code as is.</p>
+
+<p>Using the Data/Services wizard I connected to Salesforce.com using my enterprise.wsdl file.  After the services and value objects have been generated I modified the Contact object and added a Bindable account property.  The generated application already included the F3DesktopApplication Declaration used to connect to Salesforce.  Due to an incompatibility with that API and AIR for Android I switched it to use F3WebApplication.  In F3WebApplication's loginComplete event handler I query Salesforce.com for Accounts and then Contacts, associate contacts with their account, and then store the contacts:</p>
+
+<pre><code>app.wrapper.query("select Id, Name from Account", new AsyncResponder(function(data:ArrayCollection, token:Object):void {
+    accounts = data;
+    app.wrapper.query("select Id, AccountId, FirstName, LastName, Phone, MobilePhone, Email, Title, Department, MailingCity, photoData__c from Contact", new AsyncResponder(function(data:ArrayCollection, token:Object):void {
+        for each (var contact:Contact in data)
+        {
+            for each (var account:Account in accounts)
+            {
+                if (account.Id == contact.AccountId)
+                {
+                    contact.account = account;                      
+                }
+            }
+        }
+        contacts = data;
+    }, handleError));
+}, handleError));
+</code></pre>
+
+<p>Notice in the query that I'm fetching photoData__c, which is the custom field I created on Contact to store the photo.</p>
+
+<p>In the renderer for a contact I need to either display the photo if there is one or let the user add one.  Here is the simple UI code to handle that:</p>
+
+<pre><code>&lt;s:group width="92" top="8" right="8" height="92"&gt;
+    &lt;s:rect width="92" height="92"&gt;
+        &lt;s:fill&gt;
+            &lt;s:solidcolor color="#cccccc"&gt;&lt;/s:solidcolor&gt;
+        &lt;/s:fill&gt;
+    &lt;/s:rect&gt;
+    &lt;s:label verticalalign="middle" text="Add a photo" height="92" width="92" textalign="center" id="addPhoto"&gt;&lt;/s:label&gt;
+    &lt;s:bitmapimage width="92" id="photo" height="92"&gt;&lt;/s:bitmapimage&gt;
+&lt;/s:group&gt;
+</code></pre>
+
+<p>When the contact is set I check to see if there is a photo and if so display it:</p>
+
+<pre><code>if (contact.photoData__c == null)
+{
+    photo.visible = false;
+    return;
+}
+
+var decoder:Base64Decoder = new Base64Decoder();
+decoder.decode(contact.photoData__c);
+
+var loader:Loader = new Loader();
+loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
+    photo.source = event.target.content;
+    photo.visible = true;
+});
+loader.loadBytes(decoder.toByteArray());
+</code></pre>
+
+<p>The data from the photoData__c field is Base64 decoded and then displayed using the Flex BitmapImage component.</p>
+
+<p>Now when the user clicks on the photo or empty photo box I use the AIR for Android CameraUI to grab a photo, resize it, covert it to a PNG, Base64 encode it, set it on the contact, and then save the contact to Salesforce.com:</p>
+
+<pre><code>if (CameraUI.isSupported)
+{
+    cameraUI = new CameraUI();
+    cameraUI.addEventListener(MediaEvent.COMPLETE, function(event:MediaEvent):void {
+        var loader:Loader = new Loader();
+        loader.load(new URLRequest(event.data.file.url));
+        loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
+            var bitmap:Bitmap = event.target.content as Bitmap;
+
+            var result:BitmapData = new BitmapData(46, 46, false);
+            var matrix:Matrix = new Matrix();
+            matrix.scale(46 / bitmap.width, 46 / bitmap.height);
+            result.draw(bitmap, matrix);
+
+            var pngEncoder:PNGEncoder = new PNGEncoder();
+            var pngBytes:ByteArray = pngEncoder.encode(result);
+
+            var base64Encoder:Base64Encoder = new Base64Encoder();
+            base64Encoder.encodeBytes(pngBytes);
+            var encodedImage:String = base64Encoder.flush();
+
+            contact.photoData__c = encodedImage;
+
+            displayPhoto();
+
+            F3WebApplication.getInstance().wrapper.save(contact, new AsyncResponder(function(data:Object, token:Object=null):void {
+            }, FlexGlobals.topLevelApplication.handleError));
+        });
+    });
+    cameraUI.addEventListener(ErrorEvent.ERROR, function(event:ErrorEvent):void {
+        FlexGlobals.topLevelApplication.handleError(event);
+    });
+    cameraUI.launch(MediaType.IMAGE);
+}
+</code></pre>
+
+<p>That's it for the mobile app!  I compiled it, exported it to an Android app, and then copied it to my phone.  Pretty simple and as you can see it works!  One limitation with my approach is the 32k limit of the photoData__c field.  However, I think I could easily get around that by striping the Base64 encoded data across multiple fields.  It's not ideal but it would work.</p>
+
+<p>To display the photo when I view a contact on Salesforce.com I created a very simple Flex app using another Force.com Flex Project.  I could have also added photo upload to this application but chose to keep it simple.  All it does is display the selected contact's photo.  Here is the complete code (after generating the required services in Flash Builder):</p>
+
+<pre><code>&lt;s:application xmlns:flexforforce="http://flexforforce.salesforce.com" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx"&gt;
+
+    &lt;fx:script&gt;     
+    import mx.rpc.AsyncResponder;
+    import mx.utils.Base64Decoder;
+    &lt;/fx:script&gt;
+
+    &lt;fx:declarations&gt;
+        &lt;flexforforce:f3webapplication id="app" requiredtypes="Contact"&gt;
+            &lt;flexforforce:logincomplete&gt;
+                app.wrapper.query("select photoData__c from Contact where Id = '" + this.parameters.contactId + "'", new AsyncResponder(function(data:Object, token:Object):void {
+                    if (data.length == 1)
+                    {
+                        if (data[0].photoData__c == null)
+                        {
+                            photo.visible = false;
+                            noPhoto.visible = true;
+                            return;
+                        }
+
+                        var decoder:Base64Decoder = new Base64Decoder();
+                        decoder.decode(data[0].photoData__c);
+
+                        var loader:Loader = new Loader();
+                        loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
+                            photo.source = event.target.content;
+                            photo.visible = true;
+                        });
+                        loader.loadBytes(decoder.toByteArray());
+                    }
+                }, function(fault:Object):void {
+                    // ignored
+                }));
+            &lt;/flexforforce:logincomplete&gt;
+        &lt;/flexforforce:f3webapplication&gt;
+    &lt;/fx:declarations&gt;
+
+    &lt;s:applicationcomplete&gt;
+        app.serverUrl = this.parameters.serverUrl;
+        app.loginBySessionId(this.parameters.sessionId);
+    &lt;/s:applicationcomplete&gt;
+
+    &lt;s:rect width="92" height="92"&gt;
+        &lt;s:fill&gt;
+            &lt;s:solidcolor color="#cccccc"&gt;&lt;/s:solidcolor&gt;
+        &lt;/s:fill&gt;
+    &lt;/s:rect&gt;
+
+    &lt;s:label verticalalign="middle" visible="false" text="No Photo" height="92" width="92" textalign="center" id="noPhoto"&gt;&lt;/s:label&gt;
+
+    &lt;s:bitmapimage width="92" id="photo" height="92"&gt;&lt;/s:bitmapimage&gt;
+
+&lt;/s:application&gt;
+</code></pre>
+
+<p>Finally I created a custom S-Control to run the Flex app:</p>
+
+<pre><code>&lt;object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="92" codebase="https://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab" id="ContactPhoto" height="92"&gt; 
+    &lt;param name="movie" value="{!Scontrol.JavaArchive}"&gt;&lt;/param&gt; 
+    &lt;param name="flashvars" value="sessionId={!API.Session_ID}&amp;serverUrl={!API.Partner_Server_URL_90}&amp;contactId={!Contact.Id}"&gt;&lt;/param&gt; 
+    &lt;embed src="{!Scontrol.JavaArchive}" pluginspage="http://www.adobe.com/go/getflashplayer" name="ContactPhoto" height="92" width="92" type="application/x-shockwave-flash" flashvars="sessionId={!API.Session_ID}&amp;serverUrl={!API.Partner_Server_URL_90}&amp;contactId={!Contact.Id}"&gt; 
+    &lt;/embed&gt; 
+&lt;/object&gt;
+</code></pre>
+
+<p>I uploaded the compiled Flex app to the S-Control and added it to the Contact page.  And that's it!  In just a few hours I extended Force.com and built a cool mobile app.  I could also have easily created a desktop widget for browsing contacts and adding photos.  If you are looking for a fun project to use as a way to learn this stuff that would be a good one!  :)</p>
+
+<p>Here are some resources to help you get started with Flash Builder for Force.com:</p>
+
+<ul>
+<li><p><a href="http://wiki.developerforce.com/index.php/Force.com_Flex_Quick_Start_Tutorial">Force.com Flex Quick Start Tutorial</a></p></li>
+<li><p><a href="http://developerforce.s3.amazonaws.com/website/afb/docs/ASDoc_Flex/index.html">Force.com Flex Project APIs for Web Applications</a></p></li>
+<li><p><a href="http://developerforce.s3.amazonaws.com/website/afb/docs/ASDoc_AIR/index.html">Force.com Flex Project APIs for Desktop Applications</a></p></li>
+<li><p><a href="http://developer.force.com/flashbuilder">Numerous other demo applications and tutorials</a></p></li>
+<li><p><a href="http://github.com/jamesward/MobileContacts">Source code for my mobile contacts demo</a></p></li>
+<li><p><a href="http://github.com/jamesward/WebContactSControl">Source code for my web contact photo viewer demo</a></p></li>
+</ul>
+
+
+<p>Have fun building the next generation of software!  Let me know how it goes.</p>
+]]></content>
+  </entry>
+  
+</feed>

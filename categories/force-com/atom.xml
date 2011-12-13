@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Force.com | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/force-com/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Seattle Force.com Developer Meetup on June 22]]></title>
+    <link href="http://jamesward.github.com/2011/06/15/seattle-force-com-developer-meetup-on-june-22/"/>
+    <updated>2011-06-15T08:58:34-06:00</updated>
+    <id>http://jamesward.github.com/2011/06/15/seattle-force-com-developer-meetup-on-june-22</id>
+    <content type="html"><![CDATA[<p>UPDATE: This event has been canceled!  Sorry!</p>
+
+<p>Next week I'll be presenting in Seattle at my first <a href="http://www.developerforce.com/events/seattle_developer_meetup/registration.php?d=70130000000G4WO">Force.com Developer Meetup</a>!  It starts at 6pm on Wednesday, June 22.  My session will be on Flex Mobile Development. Other sessions include Force.com Platform Basics, Native iOS Development using JavaScript, and a Force.com Hands-On Lab.  It's going to be a fun evening, so if you are in the Seattle area, then I hope to see you there!</p>
+
+<p><a href="http://www.developerforce.com/events/seattle_developer_meetup/registration.php?d=70130000000G4WO">Get more details and register!</a></p>
+]]></content>
+  </entry>
+  
+</feed>

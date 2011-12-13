@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Flash Platform | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/flash-platform/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Tampa Bay Adobe Developer Event this Thursday]]></title>
+    <link href="http://jamesward.github.com/2010/01/20/tampa-bay-adobe-developer-event-this-thursday/"/>
+    <updated>2010-01-20T09:37:45-07:00</updated>
+    <id>http://jamesward.github.com/2010/01/20/tampa-bay-adobe-developer-event-this-thursday</id>
+    <content type="html"><![CDATA[<p>Adobe's Enterprise Evangelism team including <a href="http://gregsramblings.com">Greg Wilson</a>, <a href="http://coenraets.org">Christophe Coenraets</a>, and myself are in Tampa, FL this week.  On Thursday night we are <a href="http://gregsramblings.com/2010/01/18/tampa-bay-adobe-developer-event-this-thursday/">rounding up the local geeks</a> at Taverna Opa for free beers and drunken confabulation about Flex, The Flash Platform, and other topics that bore most normal people.  Hope to see you there!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Salesforce.com and the Adobe Flash Platform eSeminar]]></title>
+    <link href="http://jamesward.github.com/2009/12/11/salesforce-com-and-the-adobe-flash-platform-eseminar/"/>
+    <updated>2009-12-11T11:20:35-07:00</updated>
+    <id>http://jamesward.github.com/2009/12/11/salesforce-com-and-the-adobe-flash-platform-eseminar</id>
+    <content type="html"><![CDATA[<p>On Thursday December 17th I'll be doing an eSeminar about Salesforce.com and the Adobe Flash Platform.  This is a great opportunity to learn more about how to build Flex RIAs on the Cloud using the new Flash Builder for Force.com tool.  <a href="http://www.adobe.com/cfusion/event/index.cfm?event=detail&amp;id=1489921&amp;loc=en_us">Sign up and see more details</a>.  Hope to see you there!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Flash Platform Partner Resources]]></title>
+    <link href="http://jamesward.github.com/2009/01/08/flash-platform-partner-resources/"/>
+    <updated>2009-01-08T10:58:15-07:00</updated>
+    <id>http://jamesward.github.com/2009/01/08/flash-platform-partner-resources</id>
+    <content type="html"><![CDATA[<p>The Flash Platform (Adobe AIR, Flash Player, Flex, etc.) has become a mainstream software development platform.  This is very exciting but also leads to me getting a boat-load of email.  That is great!  I love hearing from the community and answering questions.  I do respond to every email I get - even if it takes a year!  I am frequently asked about partnerships.  It seems that everyone who is building products or services related to the Flash Platform wants to know how they can help Adobe and how Adobe can help them.  I love getting these emails because as the ecosystem around the Flash Platform grows, the Platform itself grows.  But due to my often high latency in responding to email I figured it would be good to document many of the Flash Platform Partner resources that are already out there.  Here they are...</p>
+
+<p><strong>How to promote your offerings to the community</strong></p>
+
+<p><a href="http://www.adobe.com/go/csp">Customer Success Program</a>
+The Adobe Customer Success Program (CSP) works with innovators and business
+leaders to highlight how organizations use and benefit from Adobe solutions.</p>
+
+<p><a href="http://www.adobe.com/go/showcase">Adobe Site of the Day</a>
+Developers can submit applications to be included in the Adobe Site of the Day. This
+submission allows us to use it in other marketing areas, like the Edge newsletter.</p>
+
+<p><a href="http://flex.org/post_items">Flex.org</a>
+Flex.org aggregates Flex news from a number of sources, and allows community
+members to contribute their own content as well.</p>
+
+<p><a href="http://www.adobe.com/go/gntray_comm_partners">The Solution Partner Program</a>
+The Adobe Partner Program is designed for companies that provide solution-based
+sales, system integration, services, or extended products based on Adobe technology.</p>
+
+<p><a href="http://www.adobe.com/go/marketplace">Adobe AIR Marketplace</a>
+Adobe AIR Marketplace is a place where developers can publish their AIR applications for
+users to download. <a href="http://www.adobe.com/devnet/air/articles/air_marketplace_faq.html">Learn more</a>.</p>
+
+<p><a href="http://feeds.adobe.com">Community blogs</a>
+Add your feed to the Adobe blog aggregator to make sure the community at-large is
+receiving the latest news on your offerings. Additionally find active community members
+including Adobe evangelists who may be interested in learning more. <a href="http://feeds.adobe.com/FAQ.cfm">Learn more</a>.</p>
+
+<p><strong>How to access software for evaluation and testing</strong></p>
+
+<p><a href="http://labs.adobe.com/">Adobe Labs</a>
+Labs provides developers with the opportunity to experience and evaluate new and
+emerging innovations, technologies, and products from Adobe. <a href="http://labs.adobe.com/about/">Learn more</a>.</p>
+
+<p><a href="https://prerelease.adobe.com/signup/">Adobe Prerelease Program</a>
+The goal of a Prerelease Program at Adobe is to solicit early feedback on new features
+and bugs in order to produce a unique and bug-free product that can deliver maximum
+results.</p>
+
+<p><a href="http://www.adobe.com/go/gntray_comm_partners">The Solution Partner Program</a></p>
+
+<p><strong>How to get support and training</strong></p>
+
+<p><a href="http://www.adobe.com/go/join_adc">The Adobe Developer Connection</a>
+The ADC serves as the central resource for information on Adobe developer
+technologies, providing tutorials, samples, and documentation to guide and instruct
+developers. <a href="https://www.adobe.com/devnet/">Learn more</a>.</p>
+
+<p><a href="http://www.adobe.com/support/programs/">Adobe Support Programs</a>
+Flex, Flash, and AIR support programs for developers and enterprises include technical
+help and information on planning, workflow, and deployment. <a href="http://www.adobe.com/support/programs/connect_preso/">Learn more</a>.</p>
+
+<p><a href="http://www.adobe.com/support/forums/">Adobe Forums</a>
+Adobe Online Forums are for the Adobe community's peer-to-peer discussions of both
+Adobe and formerly Macromedia products.</p>
+
+<p><a href="http://www.adobe.com/training/">Adobe Training and Certification</a>
+Whether you want to improve your skills, projects, or resume, Adobe training and
+certification programs and resources can help you achieve your goals.</p>
+
+<p><a href="http://groups.adobe.com">Adobe User Groups</a>
+Adobe Developer User Groups provide a forum of support and technology to web
+professionals at all levels. Whether you're a designer, a seasoned developer, or a beginner just
+starting out, Adobe User Groups strengthen community, increase networking, unveil the
+latest technology innovations, and reveal the techniques that turn novices into experts
+and experts into gurus.</p>
+
+<p><a href="http://www.adobe.com/go/gntray_comm_partners">Solution Partner Program</a></p>
+
+<p><a href="http://feeds.adobe.com">Community Blogs</a></p>
+
+<p>I hope that helps some of you.  These programs will continue to grow and evolve.  So please give us your feedback on how they are working for you.  Also, don't hesitate to email me if you have questions - I'll respond as soon as possible!  :)</p>
+]]></content>
+  </entry>
+  
+</feed>

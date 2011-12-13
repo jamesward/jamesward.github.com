@@ -1,0 +1,464 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Heroku Adds Java Support - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="Today Heroku announced that Java is now supported on the Heroku Cloud Application Platform! This is incredibly exciting news and I&#8217;m very lucky &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2011/08/25/heroku-adds-java-support">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Heroku Adds Java Support</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-25T15:23:53-06:00" pubdate data-updated="true">Aug 25<span>th</span>, 2011</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Today <a href="http://blog.heroku.com/archives/2011/8/25/java/">Heroku announced</a> that Java is now supported on the Heroku Cloud Application Platform!  This is incredibly exciting news and I&#8217;m very lucky to be a Heroku for Java Developer Evangelist!</p>
+
+<p>Joining salesforce.com and jumping into the the Java Cloud space holds some nostalgia for me.  When I began using Java in 1997 I was working at an ISP in Denver.  We did the regular web hosting thing, but when the first Java Servlet engines (like Java Web Server 1.0) came out, I created the &#8220;wantjava.com&#8221; hosting service.  Things were really nasty at first.  We could only run one instance of the JWS on a server so I came up with a really bad way to do &#8220;multi-tenancy&#8221;.  I setup a cron job to rsync the customers&#8217; .class files into the server&#8217;s webapp and then restart the server.  Customers had to email me to get a servlet added to the web.xml file.  Uggg&#8230;  I feel like I need to go to confession for this.  But it worked and as the Servlet containers improved we quickly migrated to a more sustainable model.</p>
+
+<p>Now thirteen years later I am privileged to once again be part of Java on the Cloud.  But this time around things are so much easier, better, and sexier!  Heroku is a leading the way in a new generation of application deployment that is making things much better for us Java developers.</p>
+
+<h2>What is Heroku?</h2>
+
+<p>Shortly I will dive into how you can run Java on Heroku, but first, what is Heroku?  From my perspective, Heroku is a <a href="http://blog.heroku.com/archives/2011/8/3/polyglot_platform/">Polyglot Cloud Application Platform</a>.  Heroku provides us a way to run Ruby, Node.js, Clojure, and Java applications on a managed, scalable, and multi-tenant system.  Heroku also provides <a href="http://addons.heroku.com">numerous add-ons</a> that help us make the <a href="http://www.jamesward.com/2011/07/12/architectural-evolution-from-middleware-to-the-cloud">shift from monolithic middleware to Cloud Components</a>.  Another way to say it is:</p>
+
+<p>**</p>
+
+<pre><code>Heroku = Polyglot + Platform as a Service (PaaS) + Cloud Components
+</code></pre>
+
+<p>**</p>
+
+<p>It is very exciting to see these three things coming together!  With Polyglot I can choose the right tool for the job.  With PaaS I don&#8217;t have to think about managing operating systems, scalability, failover, etc.  And with the Cloud Component Architecture I can keep my app thin and focused on what is unique to the problem it needs to solve.  Heroku brings these models together as a cloud application platform.</p>
+
+<h2>Running Java Apps on Heroku</h2>
+
+<p>Heroku can run any Java app that runs in OpenJDK 6.  Today Heroku uses Maven to create a &#8221;<a href="http://devcenter.heroku.com/articles/slug-compiler">slug</a>&#8221; for Java apps.  That slug can then be loaded onto one or more &#8221;<a href="http://devcenter.heroku.com/articles/dynos">dynos</a>&#8221;.  You can tell a dyno to execute / start a Java app from the command line and you can also use a &#8221;<a href="http://devcenter.heroku.com/articles/procfile">Procfile</a>&#8221; to provide a command that will auto-start for each instance of a specific dyno type.  Web dynos are able to listen on a port and will receive HTTP traffic through a load balancer that is automatically setup for each app.  With that background knowledge, lets dive into code!</p>
+
+<p>For Dreamforce 2011, I (with the help of a few co-workers) put together a <a href="http://github.com/heroku/java-workbook">Heroku for Java Workbook</a>.  The Workbook provides detailed instructions on how to create web apps, connect to a database, setup worker processes, use the Redis to Go Heroku add-on, and use Spring Roo on Heroku.  But if you are anxious to get started and don&#8217;t need as much hand-holding, here is a quick and very simple walk through of how to run Java on Heroku:</p>
+
+<ol>
+<li><p>Install the heroku command line client on <a href="http://toolbelt.herokuapp.com/linux/readme">Linux</a>, <a href="http://toolbelt.herokuapp.com/osx/download">Mac</a>, or <a href="http://toolbelt.herokuapp.com/windows/download">Windows</a>.</p></li>
+<li><p>Install <a href="http://git-scm.com/">git</a> and setup your ssh key</p></li>
+<li><p>Install <a href="http://maven.apache.org">Maven</a></p></li>
+<li><p>Login to Heroku from the command line:</p></li>
+</ol>
+
+
+<pre><code>heroku auth:login
+</code></pre>
+
+<ol>
+<li><p>Create a new project directory and move into it:</p></li>
+</ol>
+
+
+<pre><code>mkdir helloherokujava
+cd helloherokujava
+</code></pre>
+
+<ol>
+<li><p>Create a Maven build file named <code>pom.xml</code> containing:</p></li>
+</ol>
+
+
+<pre><code>&lt;project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemalocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+    &lt;modelversion&gt;4.0.0&lt;/modelversion&gt;
+    &lt;groupid&gt;foo&lt;/groupid&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;name&gt;helloherokujava&lt;/name&gt;
+    &lt;artifactid&gt;helloherokujava&lt;/artifactid&gt;
+&lt;/project&gt;
+</code></pre>
+
+<ol>
+<li><p>Create a Java source directory:</p></li>
+</ol>
+
+
+<pre><code>mkdir -p src/main/java
+</code></pre>
+
+<ol>
+<li><p>Create a new Java class in the <code>src/main/java</code> directory named <code>Hello.java</code> containing:</p></li>
+</ol>
+
+
+<pre><code>public class Hello
+{
+  public static void main(String[] args)
+  {
+    System.out.println("hello, world");
+  }
+}
+</code></pre>
+
+<ol>
+<li><p>Compile the class:</p></li>
+</ol>
+
+
+<pre><code>mvn compile
+</code></pre>
+
+<ol>
+<li><p>Run the class locally:</p></li>
+</ol>
+
+
+<pre><code>java -cp target/classes Hello
+</code></pre>
+
+<ol>
+<li><p>Create a local git repo, add the <code>pom.xml</code> file &amp; <code>src</code> dir, and commit the files:</p></li>
+</ol>
+
+
+<pre><code>git init
+git add pom.xml src
+git commit -m init
+</code></pre>
+
+<ol>
+<li><p>Create a new app on Heroku using the Cedar stack:</p></li>
+</ol>
+
+
+<pre><code>heroku create -s cedar
+</code></pre>
+
+<ol>
+<li><p>Upload your app to Heroku:</p></li>
+</ol>
+
+
+<pre><code>git push heroku master
+</code></pre>
+
+<p>Heroku will create a slug for your app.</p>
+
+<ol>
+<li><p>Run the app on Heroku:</p></li>
+</ol>
+
+
+<pre><code>heroku run "java -cp target/classes Hello"
+</code></pre>
+
+<p>Heroku will start a new dyno with your slug and then run the specified command.</p>
+
+<p>You just ran Java on the cloud!  Obviously this is a very simple example.  But I like to start new things with the simplest thing that could possibly work.  Now that you have that working there is more to learn and much more power to harness!</p>
+
+<h2>Next Steps</h2>
+
+<ul>
+<li><p>Go through the <a href="http://github.com/heroku/java-workbook">Heroku for Java Workbook</a></p></li>
+<li><p>Go through the articles on the <a href="http://devcenter.heroku.com/articles/java">Heroku Dev Center</a></p></li>
+<li><p>Ask questions about Heroku on <a href="http://stackoverflow.com">StackOverflow</a></p></li>
+<li><p>Keep watching here for many more blogs about Java on Heroku</p></li>
+</ul>
+
+
+<p>Have fun and please let me know if you have any questions about Heroku.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-25T15:23:53-06:00" pubdate data-updated="true">Aug 25<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/heroku/'>Heroku</a>, <a class='category' href='/categories/java/'>Java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2011/08/25/heroku-adds-java-support/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2011/08/25/heroku-adds-java-support/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2011/08/23/war-less-java-web-apps/" title="Previous Post: WAR-less Java Web Apps">&laquo; WAR-less Java Web Apps</a>
+      
+      
+        <a class="basic-alignment right" href="/2011/08/29/getting-started-with-play-framework-on-heroku/" title="next Post: Getting Started with Play Framework on Heroku">Getting Started with Play Framework on Heroku &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

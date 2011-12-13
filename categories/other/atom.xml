@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Other | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/other/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[This Week: Europe JUG Tour and SAP / Adobe Nanoconference]]></title>
+    <link href="http://jamesward.github.com/2008/07/07/europe_jug_tour/"/>
+    <updated>2008-07-07T04:13:43-06:00</updated>
+    <id>http://jamesward.github.com/2008/07/07/europe_jug_tour</id>
+    <content type="html"><![CDATA[<p>The last few weeks my wife and I have been tromping around the Alps (and we climbed Mont Blanc!)  Now it's time to get back to work.  This week I'm visiting a few Java User Groups to talk about the usual topics: Adobe AIR and Flex<img src="http://www.jamesward.com/wordpress/wp-content/uploads/2008/07/mont_blanc_summit.jpg" alt="" /></p>
+
+<p>Here is the schedule:
+July 7 - <a href="http://www.jugs.ch/html/events/2008/ria_flex.html">Zurich Java User Group</a>
+July 8 - <a href="http://www.parisjug.org/xwiki/bin/view/Main/WebHome">Paris Java User Group</a>
+July 9 - <a href="http://www.nljug.org/flex/">Amsterdam NLJUG</a>
+July 10 - <a href="http://groups.google.com/group/warszawa-jug">Warsaw JUG</a>
+July 11 - <a href="http://java.meetup.com/171/">London Java Meetup Group</a></p>
+
+<p>Also on July 11 I will be at the <a href="http://redmonk.com/jgovernor/2008/06/23/adobe-redmonk-sap-enterprisey-nanoconference-london-july-11th/">Adobe RedMonk SAP Enterprisey Nanoconference</a> with James Governor of RedMonk.</p>
+
+<p>Hope to see you somewhere along the way!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Thinking in Flex Presentation from JavaPolis 2007 is Online]]></title>
+    <link href="http://jamesward.github.com/2008/07/07/thinking-in-flex-presentation-from-javapolis-2007-is-online/"/>
+    <updated>2008-07-07T04:03:16-06:00</updated>
+    <id>http://jamesward.github.com/2008/07/07/thinking-in-flex-presentation-from-javapolis-2007-is-online</id>
+    <content type="html"><![CDATA[<p>The Thinking in Flex keynote which <a href="http://www.artima.com/weblogs/viewpost.jsp?thread=234135">Bruce Eckel</a>, <a href="http://christophrooms.com/">Christoph Rooms</a>, and I did at JavaPolis 2007 has been posted!  <a href="http://parleys.com/display/PARLEYS/Home#slide=1;talk=15138862;title=Thinking%20in%20Flex">Check it out!</a></p>
+
+<p>Let me know what you think.</p>
+
+<p>BTW: Don't you love that <a href="http://www.parleys.com">Parleys.com</a> is a Flex app?!?  And they also have an Adobe AIR version of their app which works pretty well on Linux.  (To install the Parleys AIR app on Linux install <a href="http://labs.adobe.com">Adobe AIR for Linux</a> and then get <a href="http://www.parleys.com/download/attachments/3440646/Pandora.air">the Parleys .air file</a>.)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[James Ward is a Sell-Out]]></title>
+    <link href="http://jamesward.github.com/2008/06/03/james-ward-is-a-sell-out/"/>
+    <updated>2008-06-03T07:16:44-06:00</updated>
+    <id>http://jamesward.github.com/2008/06/03/james-ward-is-a-sell-out</id>
+    <content type="html"><![CDATA[<p>I've gone commercial.  Kinda.  I just bought jamesward.com and it is now my primary domain name instead of jamesward.org.  I liked the .org URL but it's a less familiar URL to non-geeks.  You say .com and everyone knows what you mean.  The .org will still work - redirects right to here.</p>
+
+<p>So I'm a sell-out.  Gone .com.  Good news is that you still won't see any ads on my site.</p>
+
+<p>Let me know if you have any problems with the new domain.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Help me fix my blog [solved]]]></title>
+    <link href="http://jamesward.github.com/2007/07/31/help-me-fix-my-blog/"/>
+    <updated>2007-07-31T05:17:29-06:00</updated>
+    <id>http://jamesward.github.com/2007/07/31/help-me-fix-my-blog</id>
+    <content type="html"><![CDATA[<p>One of the "problems" with using Flex so much is that I get used to having a simple, predictable layout mechanism.  I seem to have forgotten how to do just about anything in HTML.  So can someone help me fix the Digg, Reddit, and Share This stuff below?  I've tried and tried and can't figure out how to get the dang things to align correctly.  Ideally they would align to the bottom of a div or something.  Gosh it's really embarrassing admitting publicly that I can't do HTML anymore.  But since you have already seen how bad this blog looks, you probably already guessed that.  :)  Oh well.  Please help.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Eckel Flex eSeminar; Buni Joins java.net; Twitter Addiction]]></title>
+    <link href="http://jamesward.github.com/2007/02/28/eckel-flex-eseminar-buni-joins-javanet-twitter-addiction/"/>
+    <updated>2007-02-28T11:45:50-07:00</updated>
+    <id>http://jamesward.github.com/2007/02/28/eckel-flex-eseminar-buni-joins-javanet-twitter-addiction</id>
+    <content type="html"><![CDATA[<p>Yesterday was an exciting day!  Bruce Eckel and I hosted an eSeminar about Flex &amp; Java.  We had a few technical difficulties, but overall it was very good.  You can watch the recording here:
+<a href="https://admin.adobe.acrobat.com/_a227210/p16565134/">https://admin.adobe.acrobat.com/_a227210/p16565134/</a></p>
+
+<p>Bruce and I have a few more eSeminars coming up, find out more info here:
+<a href="http://www.adobe.com/cfusion/event/index.cfm?event=detail&amp;id=462539&amp;loc=en_us">http://www.adobe.com/cfusion/event/index.cfm?event=detail&id;=462539&loc;=en_us</a></p>
+
+<p>Also yesterday the Open Source <a href="http://www.buni.org/mediawiki/index.php/Meldware_Communications_Suite">Buni Meldware Communication Suite</a> joined the <a href="https://meldware.dev.java.net/">Java.net</a> community.  This is a great step forward for the project, which uses Flex for it's Webmail client.  More info from Andy Oliver:
+<a href="http://blog.buni.org/blog/acoliver/meldware/2007/02/28/Meldware-joins-Java-net">http://blog.buni.org/blog/acoliver/meldware/2007/02/28/Meldware-joins-Java-net</a></p>
+
+<p>And lastly, while at the Adobe Engage conference, I gained a Twitter addiction.  Please help me indulge my addiction and add me as a friend:
+<a href="http://twitter.com/jlward4th">http://twitter.com/jlward4th</a></p>
+]]></content>
+  </entry>
+  
+</feed>

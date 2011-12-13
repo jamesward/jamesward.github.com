@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Data Paging in Flex 4 - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="I know &#8211; you&#8217;ve heard it from me before &#8211; AMF rocks! With AMF you can load massive amounts of data into your Flex (or JavaScript) &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2010/10/11/data-paging-in-flex-4">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Data Paging in Flex 4</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-10-11T14:33:36-06:00" pubdate data-updated="true">Oct 11<span>th</span>, 2010</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I know &#8211; you&#8217;ve heard it from me before &#8211; <a href="http://www.jamesward.com/2009/06/17/blazing-fast-data-transfer-in-flex/">AMF rocks!</a>  With AMF you can load massive amounts of data into your Flex (<a href="http://www.jamesward.com/2010/07/07/amf-js-a-pure-javascript-amf-implementation/">or JavaScript</a>) apps very quickly.  This can often obviate the need for paging data.  But what if you have lots, and lots, and lots of data?  Well then you should use data paging.  And here is how&#8230;</p>
+
+<p>There is a new collection wrapper class in Flex 4 called &#8221;<a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/mx/collections/AsyncListView.html">AsyncListView</a>&#8221;.  The UI data controls in Flex 4 know how to handle an AsyncListView as a dataProvider.  The purpose of the AsyncListView is to give you a callback when the underlying list throws an <a href="http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/mx/collections/errors/ItemPendingError.html">ItemPendingError</a>.  The ItemPendingError indicates that an item that the list thinks it has isn&#8217;t really there yet.  This allows you to then load the data and update the list.  In order to throw an ItemPendingError you need to keep track of which items haven&#8217;t been loaded and then, when an item is requested that isn&#8217;t really there, throw the ItemPendingError.  Here is some code from my <a href="http://github.com/jamesward/DataPaging/blob/master/src/PagedList.as">PagedList</a> implementation:</p>
+
+<pre><code>public function getItemAt(index:int, prefetch:int = 0):Object
+{
+    if (fetchedItems[index] == undefined)
+    {
+      throw new ItemPendingError("itemPending");
+    }
+
+    return _list.getItemAt(index, prefetch);
+}
+</code></pre>
+
+<p>In my main application I just create a PagedList, set its length (which should really be done by a remote call instead of manually), and then assign the instance of PagedList to the list property on my instance of AsyncListView.  With MXML this looks like:</p>
+
+<pre><code>&lt;local:pagedlist length="100000" id="items"&gt;&lt;/local:pagedlist&gt;
+&lt;s:asynclistview creatependingitemfunction="handleCreatePendingItemFunction" list="{items}" id="asyncListView"&gt;&lt;/s:asynclistview&gt;
+</code></pre>
+
+<p>When the ItemPendingError is thrown, the handleCreatePendingItemFunction is called.  Now I just figure out what page of data is needed, make sure that there isn&#8217;t already a pending request for that page, and then make the request.  When the response comes back I simply update the underlying collection.  Here is the code that does that:</p>
+
+<pre><code>private function handleCreatePendingItemFunction(index:int, ipe:ItemPendingError):Object
+{
+  var page:uint = Math.floor(index / pageSize);
+  if (fetchedPages[page] == undefined)
+  {
+    var numItemsToFetch:uint = pageSize;
+    var startIndex:uint = pageSize * page;
+    var endIndex:uint = startIndex + pageSize - 1;
+    if (endIndex &gt; items.length)
+    {
+      numItemsToFetch = items.length - startIndex;
+    }
+    var asyncToken:AsyncToken = ro.getElements(startIndex, numItemsToFetch);
+    asyncToken.addResponder(new AsyncResponder(function result(event:ResultEvent, token:Object = null):void {
+      for (var i:uint = 0; i &lt; event.result.length; i++)
+      {
+        items.setItemAt(event.result[i], token + i);
+      }
+    }, function fault(event:FaultEvent, token:Object = null):void {
+    }, startIndex));
+    fetchedPages[page] = true;
+  }
+  return null;
+}
+</code></pre>
+
+<p>In this example I&#8217;m using RemoteObject (AMF) but this could be anything (HTTPService, WebService, etc.) as long as there is a method on the back end that lets me set the starting location and the page size.</p>
+
+<p>Here is a simple demo of data paging using the new Spark DataGrid in Flex Hero.  The page size is 100 and there are 100,000 total items.</p>
+
+<p><a href="http://github.com/jamesward/DataPaging">Fork or view the code</a> for this example on <a href="http://github.com">github.com</a>.</p>
+
+<p>Of course another option for doing data paging more automatically is with LiveCycle Data Services.  Check out a great example of <a href="http://www.adobe.com/devnet-archive/flex/tourdeflex/web/#sampleId=13850;illustIndex=0;docIndex=0">Data Paging with LCDS in Tour de Flex</a> to learn more about that.</p>
+
+<p>A big thanks to <a href="http://blogs.digitalprimates.net/codeSlinger/">Mike Labriola</a> for helping me figure this out!  Please let me know if you have any questions about this.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-10-11T14:33:36-06:00" pubdate data-updated="true">Oct 11<span>th</span>, 2010</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/flex/'>Flex</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2010/10/11/data-paging-in-flex-4/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2010/10/11/data-paging-in-flex-4/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2010/10/11/mobile-flash-flex-development/" title="Previous Post: Mobile Flash & Flex Development">&laquo; Mobile Flash & Flex Development</a>
+      
+      
+        <a class="basic-alignment right" href="/2010/10/14/install-adobe-air-on-64-bit-ubuntu-10-10/" title="next Post: Install Adobe AIR on 64-bit Ubuntu 10.10">Install Adobe AIR on 64-bit Ubuntu 10.10 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

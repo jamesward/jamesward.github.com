@@ -1,0 +1,505 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>WAR-less Java Web Apps - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="Have you ever thought about why in Java we package up web apps into WAR files (or WAR directory structures)? It certainly is a convenient way to move &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2011/08/23/war-less-java-web-apps">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">WAR-less Java Web Apps</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-23T08:59:30-06:00" pubdate data-updated="true">Aug 23<span>rd</span>, 2011</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Have you ever thought about why in Java we package up web apps into WAR files (or WAR directory structures)? It certainly is a convenient way to move an application and its dependencies from one place to another. But wouldn&#8217;t it be nice if everything could just stay in its original location and there wouldn&#8217;t be any moving of files around? Wouldn&#8217;t it also be nice if you specified your required version of Jetty or Tomcat just like you do with every other dependency? The WAR-less approach is one that is catching on as emerging Java web frameworks like <a href="http://www.playframework.org/">Play!</a> ditch the WAR files. With standard Java web apps we can also ditch the WAR files by simply launching an embedded Jetty or Tomcat server. Let&#8217;s give this a try and see how it goes.</p>
+
+<p>For this experiment I&#8217;m going to use Maven and Jetty. This will still use the same standard source structure for a WAR file (<em>src/main/java</em>, <em>src/main/webapp</em>, etc). The major difference is that I will actually startup Jetty using a good-old <em>static void main</em>. This is similar to using the <em>jetty:run</em> goal but will allow us to have the same exact setup in development and in production. The static stuff will be in <em>src/main/webapp</em>, the compiled classes will be in target/classes, and the dependencies will be right were Maven downloaded them to. First, here is a little Java class (<em>src/main/java/foo/Main.java</em>) that sets up a Jetty server and starts it:</p>
+
+<pre><code>package foo;
+
+import java.io.File;
+import java.net.URL;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.*;
+import org.eclipse.jetty.util.StringUtil;
+import org.eclipse.jetty.webapp.WebAppContext;
+
+public class Main
+{
+
+  public static void main(String[] args) throws Exception
+  {
+    String webappDirLocation = "src/main/webapp/";
+
+    Server server = new Server(8080);
+    WebAppContext root = new WebAppContext();
+
+    root.setContextPath("/");
+    root.setDescriptor(webappDirLocation + "/WEB-INF/web.xml");
+    root.setResourceBase(webappDirLocation);
+
+    root.setParentLoaderPriority(true);
+
+    server.setHandler(root);
+
+    server.start();
+    server.join();
+  }
+}
+</code></pre>
+
+<p>As you can see, Main just references the webapp directory so I don&#8217;t have to copy the stuff from there to another place. Next I have a little test servlet (<em>src/main/java/foo/HelloServlet.java</em>):</p>
+
+<pre><code>package foo;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.*;
+
+public class HelloServlet extends HttpServlet
+{   
+
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+  {
+    PrintWriter out = resp.getWriter();
+    out.println("hello, world");
+    out.close();
+  }
+}
+</code></pre>
+
+<p>And now the <em>web.xml</em> file (<em>src/main/webapp/WEB-INF/web.xml</em>):</p>
+
+<pre><code>&lt;web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemalocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5"&gt;
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;HelloServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;foo.HelloServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;HelloServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+
+<p>And finally a <em>pom.xml</em> file that specifies Jetty as a dependency and provides an easy way to run the Main class:</p>
+
+<pre><code>&lt;project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemalocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+
+  &lt;modelversion&gt;4.0.0&lt;/modelversion&gt;
+  &lt;groupid&gt;com.jamesward&lt;/groupid&gt;
+  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+  &lt;name&gt;warless_java_web_app&lt;/name&gt;
+  &lt;artifactid&gt;warless_java_web_app&lt;/artifactid&gt;
+  &lt;packaging&gt;jar&lt;/packaging&gt;
+
+  &lt;properties&gt;
+    &lt;jettyversion&gt;7.3.1.v20110307&lt;/jettyversion&gt;
+  &lt;/properties&gt;
+
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupid&gt;org.eclipse.jetty&lt;/groupid&gt;
+      &lt;artifactid&gt;jetty-server&lt;/artifactid&gt;
+      &lt;version&gt;${jettyVersion}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupid&gt;org.eclipse.jetty&lt;/groupid&gt;
+      &lt;artifactid&gt;jetty-webapp&lt;/artifactid&gt;
+      &lt;version&gt;${jettyVersion}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupid&gt;org.eclipse.jetty&lt;/groupid&gt;
+      &lt;artifactid&gt;jetty-servlet&lt;/artifactid&gt;
+      &lt;version&gt;${jettyVersion}&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupid&gt;org.codehaus.mojo&lt;/groupid&gt;
+        &lt;artifactid&gt;exec-maven-plugin&lt;/artifactid&gt;
+        &lt;version&gt;1.2&lt;/version&gt;
+        &lt;configuration&gt;
+          &lt;mainclass&gt;foo.Main&lt;/mainclass&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+&lt;/project&gt;
+</code></pre>
+
+<p>And now simply run:</p>
+
+<pre><code>mvn compile exec:java
+</code></pre>
+
+<p>Maven compiles my Java classes into <em>target/classes</em> and then the <em>exec:java</em> goal runs the Main which finds the other WAR assets in the <em>src/main/webapp</em> directory. If you have been following along, make a request to <a href="http://localhost:8080/">http://localhost:8080/</a> to verify that it works (which it should).</p>
+
+<p>There are two alternatives to running Jetty from Maven. You can use the Maven appassembler plugin to create start scripts containing the correct <em>CLASSPATH</em> references and then launch Main class using the generated scripts. Or you can use the Maven assembly or shade plugin to create a JAR containing the application and all of its dependencies.</p>
+
+<p>Here is an example section of a <em>pom.xml</em> file for using the appassembler plugin:</p>
+
+<pre><code>  &lt;plugin&gt;
+    &lt;groupid&gt;org.codehaus.mojo&lt;/groupid&gt;
+    &lt;artifactid&gt;appassembler-maven-plugin&lt;/artifactid&gt;
+    &lt;version&gt;1.1.1&lt;/version&gt;
+    &lt;configuration&gt;
+      &lt;assembledirectory&gt;target&lt;/assembledirectory&gt; 
+      &lt;generaterepository&gt;false&lt;/generaterepository&gt;
+      &lt;programs&gt;
+        &lt;program&gt;
+          &lt;mainclass&gt;foo.Main&lt;/mainclass&gt;
+          &lt;name&gt;main&lt;/name&gt;
+        &lt;/program&gt;
+      &lt;/programs&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+      &lt;execution&gt;
+        &lt;phase&gt;package&lt;/phase&gt;
+        &lt;goals&gt;
+          &lt;goal&gt;assemble&lt;/goal&gt;
+        &lt;/goals&gt;
+      &lt;/execution&gt;          
+    &lt;/executions&gt;
+  &lt;/plugin&gt;
+</code></pre>
+
+<p>To generate the start scripts simply run:</p>
+
+<pre><code>mvn install
+</code></pre>
+
+<p>Then to run the script set the REPO environment variable to your Maven repository:</p>
+
+<pre><code>export REPO=~/.m2/repository
+</code></pre>
+
+<p>And then simply run the script:</p>
+
+<pre><code>sh target/bin/main
+</code></pre>
+
+<p>All of the code for this example is on github.com:
+<a href="https://github.com/jamesward/warless_java_web_apps">https://github.com/jamesward/warless_java_web_apps</a></p>
+
+<p>To make all of this even easier, Jetty has a Maven archetype for generating everything for you. To create a new project containing this setup run:</p>
+
+<pre><code>mvn archetype:generate -DarchetypeGroupId=org.mortbay.jetty.archetype -DarchetypeArtifactId=jetty-archetype-assembler -DarchetypeVersion=7.5.0-SNAPSHOT
+</code></pre>
+
+<p>And now you are ready to build a WAR-less Java web app!</p>
+
+<p>This setup is really the bare minimum required to handle web resource and servlet requests you will need to do a little more work if you want to add JSP support. Find out more about this in the <a href="http://wiki.eclipse.org/Jetty/Tutorial/Embedding_Jetty#Embedding_JSP">Jetty documentation</a>.</p>
+
+<p>So&#8230; What do you think about Java Web apps without WAR files &amp; WAR packaging? I&#8217;d love to hear your thoughts!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-08-23T08:59:30-06:00" pubdate data-updated="true">Aug 23<span>rd</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/java/'>Java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2011/08/23/war-less-java-web-apps/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2011/08/23/war-less-java-web-apps/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2011/08/10/dreamforce-2011/" title="Previous Post: Dreamforce 2011">&laquo; Dreamforce 2011</a>
+      
+      
+        <a class="basic-alignment right" href="/2011/08/25/heroku-adds-java-support/" title="next Post: Heroku Adds Java Support">Heroku Adds Java Support &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

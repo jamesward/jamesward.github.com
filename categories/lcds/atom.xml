@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: LCDS | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/lcds/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[My Video from MAX 2009 - Introduction to BlazeDS and LCDS]]></title>
+    <link href="http://jamesward.github.com/2009/11/04/my-video-from-max-2009-introduction-to-blazeds-and-lcds/"/>
+    <updated>2009-11-04T09:25:23-07:00</updated>
+    <id>http://jamesward.github.com/2009/11/04/my-video-from-max-2009-introduction-to-blazeds-and-lcds</id>
+    <content type="html"><![CDATA[<p>Here is the video of my session from MAX 2009 - Introduction to BlazeDS and LCDS.  In this session I walk through the basics of connecting Flex applications to BlazeDS and LCDS.  Let me know what you think!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Adobe and Salesforce.com Unite RIA and The Cloud]]></title>
+    <link href="http://jamesward.github.com/2009/10/26/adobe-and-salesforce-com-unite-ria-and-the-cloud/"/>
+    <updated>2009-10-26T09:17:03-06:00</updated>
+    <id>http://jamesward.github.com/2009/10/26/adobe-and-salesforce-com-unite-ria-and-the-cloud</id>
+    <content type="html"><![CDATA[<p>The two major trends transforming software right now are Rich Internet Applications (RIAs) and Cloud Computing / Software as a Service (SaaS or PaaS).  These trends are driven by two needs:</p>
+
+<ul>
+<li>Full client capabilities, which allow software to perform optimally and increase usability</li>
+<li></li>
+<li><p>Easy deployment, which allows developers to focus on business needs instead of building infrastructure</p></li>
+</ul>
+
+
+<p>The combination of RIA and Cloud is the future of software because it provides full client capabilities and easy deployment.  The chart below illustrates this in comparison to the other major software architectures (main-frame, client / server, and web).</p>
+
+<p><img src="http://www.jamesward.com/blog/wp-content/uploads/2009/10/RIA.png" alt="RIA" /></p>
+
+<p>In line with these trends Adobe and Salesforce.com <a href="http://bit.ly/w29bL">announced today</a> that they are working together to unite Rich Internet Applications and The Cloud.  At the core of this announcement is a developer preview of the <a href="http://developer.force.com/flashbuilder">Adobe Flash Builder for Force.com</a> tool.  This tool enables developers to easily build intuitive user interfaces with Flex which connect to the Force.com cloud platform and Salesforce.com CRM data.  These applications can be deployed either in the browser or on the desktop using Adobe AIR.  When utilizing Adobe AIR, the applications can still function when users are disconnected.  Later, when users reconnect, the changes are synchronized with Force.com using the LiveCycle Data Services synchronization engine.</p>
+
+<p>Being able to connect Flex applications to Salesforce.com / Force.com has been possible (and easy) since I co-created what was originally called the <a href="http://www.jamesward.com/blog/2007/04/17/the-open-source-flex-and-apollo-toolkit-for-salesforcecom/">Flex Toolkit for Apex</a>.  So while it has been possible to build Rich Cloud Applications for a few years, today's announcement is significant for a few reasons:</p>
+
+<ul>
+<li><p>Adobe and Salesforce are now officially partnered together around Rich Cloud Applications</p></li>
+<li><p>Much better, officially supported developer tooling</p></li>
+<li><p>Much better offline data synchronization</p></li>
+</ul>
+
+
+<p>It's really exciting to see how the vision of Rich Cloud Applications is becoming reality!</p>
+
+<p>If you'd like to learn more or try out the new tooling check out these resources:</p>
+
+<ul>
+<li><p><a href="http://developer.force.com/flashbuilder">Get the developer preview and watch video demos</a></p></li>
+<li><p><a href="http://www.adobe.com/devnet/salesforce/index.html?devcon=f1">Get inspired and see how it works</a></p></li>
+<li><p><a href="http://www.youtube.com/watch?v=vUsC8sdJaE0">Watch a video walk-through</a></p></li>
+</ul>
+
+
+<p>Another great way to learn more is to sign up for a <a href="https://www.developerforce.com/events/flashbuilder_webinar/registration.php?d=70130000000EuzT">Webinar / Tech Talk</a> that I will be co-presenting.</p>
+
+<p>Let me know what you think about this exciting new partnership and developer tooling.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[My MAX 2009 Sessions]]></title>
+    <link href="http://jamesward.github.com/2009/09/01/my-max-2009-sessions/"/>
+    <updated>2009-09-01T10:09:16-06:00</updated>
+    <id>http://jamesward.github.com/2009/09/01/my-max-2009-sessions</id>
+    <content type="html"><![CDATA[<p><a href="http://max.adobe.com/">MAX 2009</a> is coming fast!  It's going to be another great event with tons of great speakers and after party fun.  Here are my sessions this year:</p>
+
+<ul>
+<li><p><a href="http://max.adobe.com/scheduler/#view=1;session=38f90275-4f7f-4c9e-9456-a87ae4428a8a">Introduction to BlazeDS and LiveCycle Data Services</a></p></li>
+<li><p><a href="http://max.adobe.com/scheduler/#view=1;session=3ed8c7b5-d2fc-4572-b4fd-44e7ab9b4da6">Designing for Augmented Reality</a></p></li>
+<li><p><a href="http://max.adobe.com/scheduler/#view=1;session=51f7122b-42e8-4c10-ad75-d87e7a62aa98">Building Flex and Adobe AIR Service Clients 2009</a></p></li>
+<li><p><a href="http://max.adobe.com/scheduler/#view=1;session=536613cb-9409-4187-81ec-7d00607c2786">Flex and Adobe AIR Boot Camp</a></p></li>
+</ul>
+
+
+<p>Also <a href="http://www.drunkonsoftware.com">Drunk on Software</a> will be there filming some episodes.</p>
+
+<p>So this is certainly a MAX you don't want to miss!  I hope to see you there!</p>
+
+<p>Also check out the very cool MAX Widget (there are some funny facts about me in there):
+<img src="http://counters.gigya.com/wildfire/IMP/CXNID=2000002.0NXC/bT*xJmx*PTEyNTE4MjI2MTI4MzgmcHQ9MTI1MTgyMjYyMjY5NSZwPTc3NDM3MSZkPW1heDA5d2lkZ2V*Jmc9MyZvPTRhYTY5MWUyMDYwZjQ4MzFhNDEyNDg4ZWVlOTMyN2VjJnM9d2Via2l*Y2hlbi5iZSZvZj*w.gif" alt="" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Protected Messaging in Flex with BlazeDS and LCDS]]></title>
+    <link href="http://jamesward.github.com/2009/07/22/protected-messaging-in-flex-with-blazeds-and-lcds/"/>
+    <updated>2009-07-22T08:47:49-06:00</updated>
+    <id>http://jamesward.github.com/2009/07/22/protected-messaging-in-flex-with-blazeds-and-lcds</id>
+    <content type="html"><![CDATA[<p>UPDATE: BlazeDS 4 and LCDS 3.1 now have built-in support to <a href="https://bugs.adobe.com/jira/browse/BLZ-415">disallow subscriptions to wildcard subtopics</a>.  Just set the following parameter on the messaging destination's server properties:</p>
+
+<pre><code>&lt;disallow-wildcard-subtopics&gt;false&lt;/disallow-wildcard-subtopics&gt;
+</code></pre>
+
+<p>You no longer need to use the ProtectedMessagingAdapter from the code examples below in order to protect your messages.</p>
+
+<p>One of the great things about Flex is how easy it is to set up publish and subscribe messaging using BlazeDS, LCDS, or other various server technologies.  Basically a Flex application can be either a Consumer of messages from the server, a Producer of messages to the server, or both.  The channels that are used for the actual transport can vary dramatically depending on the needs.  <a href="http://devgirl.wordpress.com/2009/07/14/livecycle-data-services-channels-and-endpoints-explained/">Here is a great blog</a> that explains the different transports.  No matter what transport / channel is used the API in Flex is the same.  If you'd like to see how to use those APIs check out <a href="http://www.jamesward.com/blog/2008/07/21/video-flex-and-java/">this video</a> I recorded.</p>
+
+<p>Many times with pub/sub messaging the messages should only be sent to a subset of the subscribers.  There are two ways to achieve this in Flex - either using a subtopic or a selector.  Subtopics allow simple dot separated expressions such as "stocks.ADBE" which would allow Flex clients to subscribe to only messages about the ADBE stock.  A Flex client could also subscribe to wild card subtopics like "stocks.<em>" or "</em>".  The developer usually hard codes the subtopics (if any) that an app will use.</p>
+
+<p>Subtopics seem like a great way to send point-to-point or point-to-group messages.  To send a message to a particular client it's as easy as setting the subtopic of the message to a special complex token - usually a generated UID or the server's session ID.  The subscriber then subscribes to a subtopic with that particular complex token and none of the other clients listening on that messaging destination will receive that message.  Or maybe they can...</p>
+
+<p>A malicious developer could easily determine the endpoint being used by an application.  After discovering this they could also very easily create a Flex application that subscribes to the "*" subtopic of a messaging destination.  Then the server would send them ALL of the messages on all of the subtopics for that destination.  Pretty scary stuff.  To see an example of this follow these steps:</p>
+
+<ol>
+<li><p>Open the <a href="/protectedMessaging/protectedMessaging.html">test application</a></p></li>
+<li><p>Open the <a href="/protectedMessaging/HackerApp.html">hacker application</a></p></li>
+<li><p>Click the send button in the test application</p></li>
+<li><p>Watch the message appear in the regularDestination output panel of the hacker application</p></li>
+</ol>
+
+
+<p>Both panels use the same messaging API and same subtopic to send and receive messages.  However the protectedDestination uses a customized Messaging Adapter that doesn't allow subscriptions to subtopics containing a wild card ("*").  Here is the Java code for the ProtectedMessagingAdapter:</p>
+
+<pre><code>package com.jamesward;
+
+import flex.messaging.services.messaging.Subtopic;
+import flex.messaging.services.messaging.adapters.ActionScriptAdapter;
+
+public class ProtectedMessagingAdapter extends ActionScriptAdapter
+{
+
+  public boolean allowSubscribe(Subtopic subtopic)
+  {
+    return !(subtopic.containsSubtopicWildcard());
+  }
+
+}
+</code></pre>
+
+<p>Here is an example of how to use the new adapter in the messaging-config.xml file:</p>
+
+<pre><code>&lt;service id="message-service" class="flex.messaging.services.MessageService"&gt;
+
+    &lt;adapters&gt;
+        &lt;adapter-definition id="protectedMessagingAdapter" class="com.jamesward.ProtectedMessagingAdapter"&gt;&lt;/adapter-definition&gt;
+    &lt;/adapters&gt;
+
+    &lt;default-channels&gt;
+        &lt;channel ref="my-polling-amf"&gt;&lt;/channel&gt;
+    &lt;/default-channels&gt;
+
+    &lt;destination id="protectedDestination"&gt;
+        &lt;adapter ref="protectedMessagingAdapter"&gt;&lt;/adapter&gt;
+        &lt;properties&gt;
+            &lt;server&gt;
+                &lt;allow-subtopics&gt;true&lt;/allow-subtopics&gt;
+                &lt;subtopic-separator&gt;.&lt;/subtopic-separator&gt;
+            &lt;/server&gt;
+        &lt;/properties&gt;
+    &lt;/destination&gt;
+
+&lt;/service&gt;
+</code></pre>
+
+<p>If you are using subtopics (or selectors) to protect messages from being sent to the wrong people then I highly recommend that you use my ProtectedMessagingAdapter or something else so that malicious hackers can't snoop on private messages or send impostor messages.  In my demo I run both the test app and hacker app on the same server but this can be done in other ways (such as proxy servers or local apps).  Also authentication may not protect you because a malicious user might also be an authenticated user.  So the only solution is to really protect destinations from subscriptions to wild card subtopics.</p>
+
+<p>I hope this is helpful for those using messaging.  Let me know what you think.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Adobe TV - Data Synchronization with Flex and LCDS]]></title>
+    <link href="http://jamesward.github.com/2009/01/27/adobe-tv-data-synchronization-with-flex-and-lcds/"/>
+    <updated>2009-01-27T14:07:00-07:00</updated>
+    <id>http://jamesward.github.com/2009/01/27/adobe-tv-data-synchronization-with-flex-and-lcds</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+</feed>

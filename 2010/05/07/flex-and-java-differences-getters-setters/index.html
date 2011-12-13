@@ -1,0 +1,381 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Flex and Java Differences: Getters & Setters - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="In Java it has become a standard practice to use a getter &amp; setter notation to provide a consistent interface to an object&#8217;s properties. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2010/05/07/flex-and-java-differences-getters-setters">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Flex and Java Differences: Getters & Setters</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-05-07T07:57:37-06:00" pubdate data-updated="true">May 7<span>th</span>, 2010</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>In Java it has become a standard practice to use a getter &amp; setter notation to provide a consistent interface to an object&#8217;s properties.  There is a reason why we don&#8217;t do the following in Java:</p>
+
+<pre><code>public String fullName;
+</code></pre>
+
+<p>The code above essentially creates an interface (or contract) between the class and the implementors of this class that does not allow us to change the underlying implementation of what gets returned when the fullName property is accessed on an instance of the class.  So if someone has Java code that accesses the fullName property:</p>
+
+<pre><code>blah = obj.fullName;
+</code></pre>
+
+<p>Or sets the fullName property:</p>
+
+<pre><code>obj.fullName = "blah";
+</code></pre>
+
+<p>Then in Java there is no way to change the behavior of getting or setting the fullName property.  If the author of the class wanted to change the underlying behavior of the getting or setting they would have to change how the implementors of the class interact with the class.  That is obviously not ideal so in Java we typically hide properties with get and set functions.  The Java language doesn&#8217;t yet have Java properties so we use methods to hide the implementation.  So our Java class instead would be:</p>
+
+<pre><code>private String fullName;
+
+public String getFullName() {
+    return fullName;
+}
+
+public void setFullName(String fullName) {
+    this.fullName = fullName;
+}
+</code></pre>
+
+<p>This allows the class author to change the behavior of getting and setting the fullName property without changing the external interface.</p>
+
+<p>In Flex it is not usually necessary to create the wrapper getter and setting functions on an object because ActionScript supports properties.  This means that you can usually just create public properties like:</p>
+
+<pre><code>public var fullName:String;
+</code></pre>
+
+<p>If the internal implementation of getting or setting the fullName property needs to change, then the class can be adapted to have getter and setter functions without changing the external interface of the class:</p>
+
+<pre><code>private var _fullName:String;
+
+public function get fullName():String {
+    return _fullName;
+}
+
+public function set fullName(_fullName:String):void {
+    this._fullName = _fullName;
+}
+</code></pre>
+
+<p>To the class implementor the property fullName could still be get and set through the normal notations:</p>
+
+<pre><code>// getters
+blah = obj.fullName;
+blah = obj['fullName'];
+// setters
+obj.fullName = "blah";
+obj['fullName'] = "blah";
+</code></pre>
+
+<p>Getting or setting the property would call the getter and setter functions instead of accessing the property directly.  This allows the interface of the object to stay the same even if the underlying implementation of getting and setting the property changes.  This also allows a class to dispatch events when properties change (this is how Data Binding works internally in Flex).</p>
+
+<p>I see a lot of Java developers who are wary of public properties on ActionScript classes.  Don&#8217;t be!  ActionScript supports real properties so you shouldn&#8217;t ever need property getters and setters unless you are doing something out of the ordinary.  And you can switch to getters and setters without changing the interface to the object.</p>
+
+<p>If you would like to learn more about the differences between ActionScript and Java check out my <a href="http://www.adobe.com/cfusion/event/index.cfm?event=detail&amp;id=1489921&amp;loc=en_us&amp;sdid=EUQZQ">AS34J: ActionScript 3 for Java Developers eSeminar</a> next week!</p>
+
+<p>UPDATE: Watch the <a href="http://www.jamesward.com/2010/05/17/watch-as34j-actionscript-3-for-java-developers/"> recording of my eSeminar presentation</a>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-05-07T07:57:37-06:00" pubdate data-updated="true">May 7<span>th</span>, 2010</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/actionscript/'>ActionScript</a>, <a class='category' href='/categories/flex/'>Flex</a>, <a class='category' href='/categories/java/'>Java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2010/05/07/flex-and-java-differences-getters-setters/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2010/05/07/flex-and-java-differences-getters-setters/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2010/04/27/emerging-technologies-for-the-enterprise-podcast/" title="Previous Post: Emerging Technologies for the Enterprise Podcast">&laquo; Emerging Technologies for the Enterprise Podcast</a>
+      
+      
+        <a class="basic-alignment right" href="/2010/05/17/watch-as34j-actionscript-3-for-java-developers/" title="next Post: Watch AS34J - ActionScript 3 for Java Developers">Watch AS34J - ActionScript 3 for Java Developers &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

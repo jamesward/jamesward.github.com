@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Linux | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/linux/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Install Adobe AIR on 64-bit Ubuntu 10.10]]></title>
+    <link href="http://jamesward.github.com/2010/10/14/install-adobe-air-on-64-bit-ubuntu-10-10/"/>
+    <updated>2010-10-14T07:22:05-06:00</updated>
+    <id>http://jamesward.github.com/2010/10/14/install-adobe-air-on-64-bit-ubuntu-10-10</id>
+    <content type="html"><![CDATA[<p>Right now Adobe AIR is only officially available for 32-bit Linux.  But it does work on 64-bit Linux with the 32-bit compatibility libraries.  There are several ways to install Adobe AIR on Linux.  My preferred way on Ubuntu is to use the .deb package.  However the .deb package distributed by Adobe can only be installed on 32-bit systems.  Good news is that this can be easily fixed!  To install the Adobe AIR .deb package on a 64-bit system just follow these steps:</p>
+
+<ol>
+<li><p><a href="http://get.adobe.com/air/">Download the Adobe AIR .deb file</a></p></li>
+<li><p>In a terminal window go to the directory containing the adobeair.deb file</p></li>
+<li><p>Create a tmp dir:</p></li>
+</ol>
+
+
+<pre><code>mkdir tmp
+</code></pre>
+
+<ol>
+<li>Extract the deb file to the tmp dir:</li>
+</ol>
+
+
+<pre><code>dpkg-deb -x adobeair.deb tmp
+</code></pre>
+
+<ol>
+<li>Extract the control files:</li>
+</ol>
+
+
+<pre><code>dpkg-deb --control adobeair.deb tmp/DEBIAN
+</code></pre>
+
+<ol>
+<li>Change the Architecture parameter from "i386" to "all":</li>
+</ol>
+
+
+<pre><code>sed -i "s/i386/all/" tmp/DEBIAN/control
+</code></pre>
+
+<ol>
+<li>Repackage the deb file:</li>
+</ol>
+
+
+<pre><code>dpkg -b tmp adobeair_64.deb
+</code></pre>
+
+<p>Now you can install Adobe AIR on a 64-bit system!  From the command line just do:</p>
+
+<pre><code>sudo dpkg -i adobeair_64.deb
+</code></pre>
+
+<p>That's it!  Let me know if you have any questions.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Flex Development on Linux with IntelliJ IDEA]]></title>
+    <link href="http://jamesward.github.com/2010/09/22/flex-development-on-linux-with-intellij-idea/"/>
+    <updated>2010-09-22T17:11:19-06:00</updated>
+    <id>http://jamesward.github.com/2010/09/22/flex-development-on-linux-with-intellij-idea</id>
+    <content type="html"><![CDATA[<p>It's kinda hard to believe that I've been doing Flex development on Linux for over six years now.  In that time I've tried a few different tools.  Vim will always be my favorite but debugging is painful.  <a href="http://labs.adobe.com/technologies/flex/flexbuilder_linux/">Flex Builder for Linux</a> worked but lacked major features and commitment from Adobe for continual improvement.  Most recently I've been using <a href="http://www.jetbrains.com/idea/">IntelliJ IDEA</a> for Flex development on Linux.  It's been working great!  There are a few things I've had to get used to but they are doing a great job of providing superb tooling support for Flex.  I've also been very impressed with the responsiveness from the IntelliJ team in their <a href="http://devnet.jetbrains.net/community/idea/ideacommunity?view=discussions">forums</a> and <a href="http://youtrack.jetbrains.net/dashboard/IDEA#tab=0">bug system</a>.</p>
+
+<p>Here is a quick video I recorded to show the basics of using IntelliJ IDEA for Flex development on Linux:</p>
+
+<p>To get started download either the <a href="http://confluence.jetbrains.net/display/IDEADEV/IDEA+X+EAP">latest prerelease of IntelliJ IDEA</a> or their <a href="http://www.jetbrains.com/idea/download/index.html">current production version</a>.  Flex development is only available in their Ultimate Edition but they do provide a free 30 day trial.  Let me know what you think.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Install Flash Player on 64-bit Linux]]></title>
+    <link href="http://jamesward.github.com/2010/09/15/install-flash-player-on-64-bit-linux/"/>
+    <updated>2010-09-15T12:13:58-06:00</updated>
+    <id>http://jamesward.github.com/2010/09/15/install-flash-player-on-64-bit-linux</id>
+    <content type="html"><![CDATA[<p>Adobe has just <a href="http://adobe.com/go/fpsquare">released a preview of a 64-bit Flash Player</a> for Windows, Mac, and Linux!  I created a quick video to show Linux users how to install Flash Player on a 64-bit system.  Check it out:</p>
+
+<p>Let me know how Flash Player "Square" works for you!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ubuntu 10.10 Boots in 8.6 Seconds!]]></title>
+    <link href="http://jamesward.github.com/2010/09/08/ubuntu-10-10-boots-in-8-6-seconds/"/>
+    <updated>2010-09-08T08:30:25-06:00</updated>
+    <id>http://jamesward.github.com/2010/09/08/ubuntu-10-10-boots-in-8-6-seconds</id>
+    <content type="html"><![CDATA[<p><strong><em> Update: My boot time is now down to 7 seconds!  New video coming soon. </em></strong></p>
+
+<p>I just updated to the latest Ubuntu 10.10 desktop and noticed that boot time is now extremely fast!  My Intel Core 2 Duo 2.80GHz laptop with an Intel SSD now boots in 8.6 seconds!  That is from boot loader all the way to logged in and ready to use!  Nice work Ubuntu!  Check out the video if you want to see it in action:</p>
+
+<p>Ubuntu 10.10 will be released in October, 2010 but if you want to check it out now, <a href="http://www.ubuntu.com/testing/maverick/beta">get the beta</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Flex Builder on Linux Update]]></title>
+    <link href="http://jamesward.github.com/2009/11/25/flex-builder-on-linux-update/"/>
+    <updated>2009-11-25T06:32:44-07:00</updated>
+    <id>http://jamesward.github.com/2009/11/25/flex-builder-on-linux-update</id>
+    <content type="html"><![CDATA[<p><img src="/uploads/2007/10/tux_w_fx_flag_blog.png" alt="" />Adobe has posted <a href="http://labs.adobe.com/downloads/flexbuilder_linux.html">an update</a> for Flex Builder on Linux which was scheduled to time-out on December 1, 2009.  While the Flex SDK has always worked on Linux, development is certainly easier with Eclipse support for coding, compiling, and debugging.  This alpha 5 release of Flex Builder for Linux allows us Linux folks to continue building Flex applications in Eclipse for another 401 days.  However, Adobe has still not announced any plans to create a full Flex Builder (or Flash Builder) product for Linux.  If that is something you want then please go vote for <a href="http://bugs.adobe.com/jira/browse/FB-19053">FB-19053</a>.  This update still doesn't support Eclipse 3.5.  If you want Eclipse 3.5 support then you will need to apply patches created by <a href="http://blog.danyul.id.au/?p=68">Danyul</a> and <a href="http://www.jamesward.com/2009/09/29/flex-builder-3-on-eclipse-3-5/">myself</a>.</p>
+
+<p>Let me know how it goes.  And if you are in the USA - Happy Thanksgiving!</p>
+]]></content>
+  </entry>
+  
+</feed>

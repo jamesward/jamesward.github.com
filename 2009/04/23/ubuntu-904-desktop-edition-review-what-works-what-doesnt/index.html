@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ubuntu 9.04 Desktop Edition Review - What works.  What doesn't. - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="Since the days when I installed Slackware Linux via a stack of 3.5&#8221; floppies, Linux has been a nearly suitable desktop for me. With some &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2009/04/23/ubuntu-904-desktop-edition-review-what-works-what-doesnt">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Ubuntu 9.04 Desktop Edition Review - What Works. What Doesn't.</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-23T08:47:27-06:00" pubdate data-updated="true">Apr 23<span>rd</span>, 2009</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Since the days when I installed Slackware Linux via a stack of 3.5&#8221; floppies, Linux has been a <em>nearly</em> suitable desktop for me.  With some tinkering and with VMWare to run Windows when I need it I&#8217;ve been able to use Linux as my primary desktop OS for around 15 years.  As computers and software have evolved Linux has had to keep up.  In some areas it&#8217;s done exceptionally well and in others it has struggled.  But based on the improvements in Ubuntu Jaunty I believe the pace of improvement is accelerating.  This means that many of the niche oddities and problems with Linux should soon be ironed out.</p>
+
+<p>With the <a href="http://www.ubuntu.com/news/ubuntu-9.04-desktop">recent release of Ubuntu 9.04</a> aka Jaunty I wanted to give a brief overview of what works for me and what doesn&#8217;t.  My requirements for an operating system are not the same as everyone else&#8217;s.  So some of these may not matter to others.  First let me describe what I primarily use my computer for.  I travel frequently so things like battery life, suspend, and 3G connectivity are important.  My employer uses Exchange so being able to access my email, contacts, and calendar while offline is essential.  I do development on Java and Flex so those development platforms must work.  I regularly present at conferences and user groups so connecting to external displays and solid presentation tools are essential.  So let&#8217;s see how Jaunty does in these areas:</p>
+
+<p><strong>Battery Life</strong></p>
+
+<p>The 9-cell battery on my Lenovo W500 now lasts four to five hours!  This is a significant improvement!  In the past I was never able to get more than about two hours.  Also tools such as PowerTOP help me identify which processes are waking up the processor most frequently.</p>
+
+<p><strong>Suspend</strong></p>
+
+<p>I never hibernate to disk so I&#8217;m not sure if that works.  But suspend now regularly works when using the Intel video card (my laptop has both Intel and ATI).  The only problem with suspend is that my F3507g doesn&#8217;t come back after I resume.  I&#8217;m not sure if there is a bug for this yet other than <a href="https://bugs.launchpad.net/ubuntu/+source/network-manager/+bug/287893/comments/16">a comment</a> on another bug.</p>
+
+<p><strong>3G</strong></p>
+
+<p>Sometimes 3G dial-up works.  My F3507g card for some reason is a lot slower than using a PCMCIA 3G card.  But strangely I can only get my PCMCIA card to connect occasionally.  I&#8217;m not sure if there are bugs for either of these issues.  Overall NetworkManager has led to significant improvements in 3G connection handling.  And more improvements are expected with NetworkManager 0.8, which will include ModemManger.</p>
+
+<p><strong>Email</strong></p>
+
+<p>Using Evolution for my personal email via IMAP has always worked fine.  However using Evolution for my work email has been hit and miss over the past few years.  It used to work sometimes before my email account was switched to Exchange 2007.  Since then it has pretty much not worked at all.  I could use IMAP but then I wouldn&#8217;t be able to access my contacts and calendar.  So unfortunately I&#8217;ve been using Outlook via VMWare.  I do have hope though that the evolution-mapi support will soon stabilize and I can ditch Outlook.  Right now there are a number of <a href="https://bugs.launchpad.net/ubuntu/+source/evolution-mapi/+bug/338982">evolution-mapi bugs</a>, some of them crashers.</p>
+
+<p><strong>Display</strong></p>
+
+<p>After a number of problems with my ATI card (performance, suspend, Xrandr, etc.) I gave up and switched over to my Intel card.  So far things have worked much better than they ever have with display drivers on Linux.  Xrandr now actually works to mirror my display when I plug into an external monitor.  However I continue to have problems with gnome-display-properties and compiz.</p>
+
+<p><strong>Boot Performance</strong></p>
+
+<p>One of the best improvements with Jaunty is boot performance.  My W500 now boots from the Grub menu to GDM in 16 seconds!  Hopefully the next release of Ubuntu (Karmic Koala) will incorporate the kernel mode setting stuff to trim the boot time down even further.</p>
+
+<p><strong>Office Productivity</strong></p>
+
+<p>For some people OpenOffice is a viable alternative to Office, but unfortunately not for me.  The PowerPoint and Word conversions are not 100% perfect.  The reviewing / tracking changes mode in Office is still second to none.  So I&#8217;ve been trying to use online solutions like <a href="http://www.acrobat.com">Buzzword</a> and <a href="http://www.sliderocket.com">SlideRocket</a> more.  Once these new platforms support full offline editing I think I&#8217;ll be able to mostly stop using Office.  But for now I&#8217;m stuck with Office via Windows on VMWare.</p>
+
+<p><strong>Screen Sharing</strong></p>
+
+<p>I frequently use <a href="http://acrobat.com">Adobe Acrobat Connect</a> to do remote presentations.  However there isn&#8217;t a presenter plugin for Linux so this is another thing that keeps me using Windows.  Please <a href="https://na5.brightidea.com/ct/ct_a_view_idea.bix?c=8FBBEA8F-D8E6-4E34-A7C1-7C74FB3B4EFA&amp;idea_id=3F96AA68-9F30-41F3-8727-399E8AA5BD9E">go vote for this</a> on the Acrobat.com Ideas website.</p>
+
+<p><strong>Accelerometer</strong></p>
+
+<p>My laptop has an accelerometer and although the hdaps module is supposed to make it work the module won&#8217;t load.  There is an <a href="https://bugs.launchpad.net/ubuntu/+source/linux/+bug/57315">open bug</a> for this one.</p>
+
+<p><strong>Overall</strong></p>
+
+<p>Overall Jaunty is a solid release that moves Linux closer to being my full-time desktop.  For the first time I can see on the horizon the day when I no longer have to use Windows (dual-booted or via VMWare).  Thank you Ubuntu and everyone else who builds this great stack of open source software!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-04-23T08:47:27-06:00" pubdate data-updated="true">Apr 23<span>rd</span>, 2009</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/linux/'>Linux</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2009/04/23/ubuntu-904-desktop-edition-review-what-works-what-doesnt/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2009/04/23/ubuntu-904-desktop-edition-review-what-works-what-doesnt/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2009/04/20/video-connecting-flex-to-a-soap-webservice/" title="Previous Post: Video - Connecting Flex to a SOAP Webservice">&laquo; Video - Connecting Flex to a SOAP Webservice</a>
+      
+      
+        <a class="basic-alignment right" href="/2009/04/28/would-you-pay-for-flex-builder-on-linux/" title="next Post: Would you pay for Flex Builder on Linux?">Would you pay for Flex Builder on Linux? &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Flash Player | James Ward]]></title>
+  <link href="http://jamesward.github.com/categories/flash-player/atom.xml" rel="self"/>
+  <link href="http://jamesward.github.com/"/>
+  <updated>2011-12-12T21:07:27-07:00</updated>
+  <id>http://jamesward.github.com/</id>
+  <author>
+    <name><![CDATA[James Ward]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing Mixing Loom - Runtime ActionScript Bytecode Modification]]></title>
+    <link href="http://jamesward.github.com/2011/04/26/introducing-mixing-loom-runtime-actionscript-bytecode-modification/"/>
+    <updated>2011-04-26T08:54:03-06:00</updated>
+    <id>http://jamesward.github.com/2011/04/26/introducing-mixing-loom-runtime-actionscript-bytecode-modification</id>
+    <content type="html"><![CDATA[<p>At this year's <a href="http://www.360flex.com/">360|Flex</a> conference in Denver, <a href="http://www.digitalprimates.net/author/codeslinger/">Mike Labriola</a> and I unveiled a new project we've been working on called <a href="http://github.com/MixingLoom">Mixing Loom</a>.  Our presentation was called "Planet of the AOPs" because Mixing Loom lays the foundation for true Aspect Oriented Programming (AOP) on the Flash Platform.  Mixing Loom provides Flex and ActionScript applications the hooks they need to do bytecode modification either before runtime or at runtime.  Through bytecode modification an application can apply a behavior across hierarchies of objects.  There are a number of behaviors in a typical Flex application (such as logging, security, application configuration, accessibility, and styling) that could be represented as Aspects.  Today these behaviors must either be included in every class that needs them or included way down the object hierarchy (i.e. UIComponent).  With Mixing Loom a compiled SWF can be modified (applying necessary behaviors) after it's been compiled or as it's starting up.</p>
+
+<p>If you are building Flex apps and want to take advantage of AOP then Mixing Loom is probably a bit lower level than what you need.  Mixing Loom combined with <a href="http://www.as3commons.org/as3-commons-bytecode/index.html">AS3 Commons Bytecode</a> provides the foundation for AOP systems to be built on top of.  We hope that by providing developers the hooks to modify bytecode that frameworks will emerge that provide application developers higher level APIs based on AOP.  As Mike says, "Mixing Loom kicks off the Summer of AOP."</p>
+
+<p>If you are one of those developers who likes getting dirty with bytecode modification then you might want to check out the slides from the "Planet of the AOPs" session:</p>
+
+<p>If you are still following along and looking for more details on how to use Mixing Loom, then keep reading.  Flex applications are broken into at least two pieces.  The first piece is the thing that displays the loading / progress bar.  That is located on the first "frame" of an application's SWF file.  The rest of the application is on the second frame of the main SWF and possibly in other SWF files like Modules and/or Runtime Shared Libraries (RSLs).  Mixing Loom provides two ways to modify the bytecode of a running application.  First, using a custom preloader an application can modify its second frame and/or any Flex Modules before they are loaded into the VM.  The second way is to use LoomApplication and a custom preloader, which allows an application to modify its second frame, modules, and/or RSLs (even the signed Flex Framework RSLs).  Let's walk through a simple example of an application that uses a custom preloader to modify a string that exists in its second frame.</p>
+
+<p>Let's take a simple object Foo that has a getBar method, which returns a string "a bar":</p>
+
+<pre><code>package blah
+{
+public class Foo
+{
+  public function getBar():String
+  {
+      return "a bar";
+  }
+}
+}
+</code></pre>
+
+<p>And here is a simple application that just displays the results of calling an instance of Foo's getBar method:</p>
+
+<pre><code>&lt;s:application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"&gt;
+
+  &lt;fx:script&gt;
+    import blah.Foo;
+  &lt;/fx:script&gt;
+
+  &lt;s:applicationcomplete&gt;
+     var foo:Foo = new Foo();
+     l.text = foo.getBar();
+  &lt;/s:applicationcomplete&gt;
+
+  &lt;s:label id="l"&gt;&lt;/s:label&gt;
+
+&lt;/s:application&gt;
+</code></pre>
+
+<p>If you were to run this application as is then the Label would display "a bar" - as expected.  But to give you an idea of how to do runtime bytecode modification let's change the "a bar" string to something else.  (BTW: If you are following along then you will need to pull down the <a href="https://github.com/MixingLoom/mixingloom-core">mixingloom-core</a> code from github and compile it on your own because we haven't published a SWC for Mixing Loom yet.)  The thing in Mixing Loom that actually does the bytecode modification is called a "Patcher" so we will need to create one of those that searches the bytecode for a string and then replaces that string.  Before we do that, let me explain how a SWF file is structured.  Every SWF file is a series of "tags".  There are many different tag types but the types we are interested in for bytecode modification are the ones that actually contain the ActionScript ByteCode (ABC).  This is the DoABC tag - type 82.  For a full list of SWF tags and their structures check out the <a href="http://www.adobe.com/content/dam/Adobe/en/devnet/swf/pdf/swf_file_format_spec_v10.pdf">SWF Spec</a>.  One of the tag types indicates an executable boundary called a Frame.  As a SWF file is being loaded by Flash Player it is parsing it.  When Flash Player parses a "ShowFrame" tag it knows it can load and run the preceding tags.  The code doing the bytecode modification will be running on the first frame, which means that all of the tags to do the modification and those to display the Flex preloader will have already been loaded.  That means we can't modify those tags using this method at runtime.  But we can modify the tags on the second frame of the SWF, which will be passed to our Patcher before they have actually been loaded.</p>
+
+<p>Here is the code for the StringModifierPatcher:</p>
+
+<pre><code>package org.mixingloom.patcher
+{
+import flash.utils.ByteArray;
+
+import org.as3commons.bytecode.tags.DoABCTag;
+import org.as3commons.bytecode.util.AbcSpec;
+
+import org.mixingloom.SwfContext;
+import org.mixingloom.SwfTag;
+import org.mixingloom.invocation.InvocationType;
+import org.mixingloom.utils.ByteArrayUtils;
+
+public class StringModifierPatcher extends AbstractPatcher
+{
+    public var originalString:String;
+    public var replacementString:String;
+
+    public function StringModifierPatcher(originalString:String, replacementString:String)
+    {
+        this.originalString = originalString;
+        this.replacementString = replacementString;
+    }
+
+    override public function apply( invocationType:InvocationType, swfContext:SwfContext ):void
+    {
+        var searchByteArray:ByteArray = new ByteArray();
+        AbcSpec.writeStringInfo(originalString, searchByteArray);
+
+        var replacementByteArray:ByteArray = new ByteArray();
+        AbcSpec.writeStringInfo(replacementString, replacementByteArray);
+
+        for each (var swfTag:SwfTag in swfContext.swfTags)
+        {
+            if (swfTag.type == DoABCTag.TAG_ID)
+            {
+                swfTag.tagBody = ByteArrayUtils.findAndReplaceFirstOccurrence(swfTag.tagBody, searchByteArray, replacementByteArray);
+            }
+        }
+
+        invokeCallBack();
+    }
+
+}
+}
+</code></pre>
+
+<p>The StringModifierPatcher extends the Mixing Loom AbstractPatcher and takes two parameters, the originalString and the replacementString.  The StringModifierPatcher has an apply method, which will be called by Mixing Loom during application startup.  In the apply method the StringModifierPatcher creates a search ByteArray and a replacement ByteArray from the provided strings.  Then it loops through each tag from the second frame of the SWF being loaded (ignoring everything that is not a DoABC tag) and then uses Mixing Loom's ByteArrayUtils.findAndReplaceFirstOccurrence utility to replace the first occurrence of the search ByteArray with replacement ByteArray.  Finally it notifies Mixing Loom that it is all done by calling the invokeCallBack method.  So that is the simple example of actually modifying the application, but we still need to set the hooks in the main application so that Mixing Loom can do its thing.</p>
+
+<p>Since this example only modifies frame 2 tags (no RSLs), we can just use a custom preloader to set up the Mixing Loom hooks.  Here is the StringModifierPatcherPreloader:</p>
+
+<pre><code>package preloader {
+import org.mixingloom.managers.IPatchManager;
+import org.mixingloom.patcher.StringModifierPatcher;
+import org.mixingloom.preloader.AbstractPreloader;
+
+public class StringModifierPatcherPreloader extends AbstractPreloader {
+    override protected function setupPatchers(manager:IPatchManager):void {
+        super.setupPatchers(manager);
+        manager.registerPatcher( new StringModifierPatcher("a bar", "not really a bar") );
+    }
+}
+}
+</code></pre>
+
+<p>The StringModifierPatcherPreloader extends Mixing Loom's AbstractPreloader and uses the setupPatchers method to register a new patcher.  In this case the only patcher is an instance of the StringModifierPatcher that will search for the default "a bar" string and replace it with the "not really a bar" string.</p>
+
+<p>The last thing to make this all work is to tell the main application to use the new preloader:</p>
+
+<pre><code>&lt;s:application xmlns:fx="http://ns.adobe.com/mxml/2009" preloader="preloader.StringModifierPatcherPreloader" xmlns:s="library://ns.adobe.com/flex/spark"&gt;
+</code></pre>
+
+<p>Here is the result:</p>
+
+<p>Exciting!  Our application code just modified itself at startup!  Now this is obviously a very trivial example but I hope it provides a basic understanding of how to use Mixing Loom as the foundation for AOP.  Let's walk through some other examples that are more exciting (and complex).</p>
+
+<p>For the next example let's do something a little more AOP-ish.  There will be an XML configuration file that is loaded on startup that will specify some classes and methods to apply interceptors to.  An interceptor is simply a method call injected into the body of a method.  First, here is the FooInterceptor class:</p>
+
+<pre><code>package
+{
+import mx.core.FlexGlobals;
+
+public class FooInterceptor
+{
+    public static function interceptAll():void
+    {
+        FlexGlobals.topLevelApplication.setStyle("backgroundColor", Math.random() * 0xffffff);
+    }
+}
+}
+</code></pre>
+
+<p>For demo purposes this interceptor is very simple - it just changes the application's background color.  Here is the XML configuration file that the application will load on startup to determine where to apply the interceptor:</p>
+
+<pre><code>&lt;interceptors&gt;
+    &lt;interceptor&gt;
+        &lt;swftag&gt;blah/Foo&lt;/swftag&gt;
+        &lt;methodentryinvoker&gt;
+            &lt;classname&gt;FooInterceptor&lt;/classname&gt;
+            &lt;methodname&gt;interceptAll&lt;/methodname&gt;
+        &lt;/methodentryinvoker&gt;
+    &lt;/interceptor&gt;
+&lt;/interceptors&gt;
+</code></pre>
+
+<p>In this case it is saying to only apply the interceptor to the SWF tag with the name "blah/Foo".  In a debug version of the application the Foo class from above will be in its own SWF tag named "blah/Foo".  The reason that the SWF tag is specified in this case is because by doing this the application won't need to deserialize and reserialize every class.  The downside to doing things this way is that it won't work if we create an optimized SWF where all of the frame 2 classes are contained in one SWF tag.  With some more work in AS3 Commons Bytecode we could optimize things for this kind of use case.  Volunteers?  :)  The methodEntryInvoker simply specifies the class and method name to call on method entry.  This interceptor will be added to every method, on every class in the SWF tag with the name "blah/Foo".</p>
+
+<p>Now for the fun part...  Here is the patcher that loads the XML config file, parses it, and then applies the interceptor:</p>
+
+<pre><code>package patcher {
+import flash.events.Event;
+import flash.events.TimerEvent;
+import flash.net.URLLoader;
+import flash.net.URLLoaderDataFormat;
+import flash.net.URLRequest;
+import flash.utils.ByteArray;
+
+import org.as3commons.bytecode.abc.AbcFile;
+import org.as3commons.bytecode.abc.InstanceInfo;
+import org.as3commons.bytecode.abc.LNamespace;
+import org.as3commons.bytecode.abc.MethodInfo;
+import org.as3commons.bytecode.abc.Op;
+import org.as3commons.bytecode.abc.QualifiedName;
+import org.as3commons.bytecode.abc.enum.Opcode;
+import org.as3commons.bytecode.io.AbcSerializer;
+
+import org.mixingloom.SwfContext;
+import org.mixingloom.SwfTag;
+import org.mixingloom.invocation.InvocationType;
+import org.mixingloom.patcher.AbstractPatcher;
+
+import org.as3commons.bytecode.io.AbcDeserializer;
+
+public class SampleXMLPatcher extends AbstractPatcher {
+
+    public var url:String;
+
+    private var swfContext:SwfContext;
+
+    public function SampleXMLPatcher(url:String) {
+        this.url = url;
+    }
+
+    override public function apply( invocationType:InvocationType, swfContext:SwfContext ):void {
+        if (invocationType.type == InvocationType.FRAME2) {
+
+            this.swfContext = swfContext;
+
+            var urlLoader:URLLoader = new URLLoader();
+            urlLoader.dataFormat = URLLoaderDataFormat.TEXT;
+            urlLoader.addEventListener(Event.COMPLETE, handleXMLLoad);
+            urlLoader.load(new URLRequest(url));
+        }
+        else {
+            invokeCallBack();
+        }
+    }
+
+    private function handleXMLLoad(event:Event):void {
+        var xmlData:XML = new XML((event.currentTarget as URLLoader).data as String);
+
+        var swfTagName:String = xmlData.interceptor.swfTag;
+        var methodEntryInvokerClassName:String = xmlData.interceptor.methodEntryInvoker.className;
+        var methodEntryInvokerMethodName:String = xmlData.interceptor.methodEntryInvoker.methodName;
+
+        var methodEntryInvokerClassQName:QualifiedName = new QualifiedName(methodEntryInvokerClassName, LNamespace.PUBLIC);
+        var methodEntryInvokerMethodQName:QualifiedName = new QualifiedName(methodEntryInvokerMethodName, LNamespace.PUBLIC);
+
+        for each (var swfTag:SwfTag in swfContext.swfTags) {
+            if (swfTag.name == swfTagName) {
+
+                // skip the flags
+                swfTag.tagBody.position = 4;
+
+                var abcStartLocation:uint = 4;
+                while (swfTag.tagBody.readByte() != 0) {
+                    abcStartLocation++;
+                }
+                abcStartLocation++; // skip the string byte terminator
+
+                swfTag.tagBody.position = 0;
+
+                var abcDeserializer:AbcDeserializer = new AbcDeserializer(swfTag.tagBody);
+
+                var abcFile:AbcFile = abcDeserializer.deserialize(abcStartLocation);
+
+                for each (var instanceInfo:InstanceInfo in abcFile.instanceInfo) {
+
+                    for each (var methodInfo:MethodInfo in instanceInfo.methodInfo) {
+                        var startIndex:uint = 0;
+                        for each (var op:Op in methodInfo.methodBody.opcodes) {
+                            startIndex++;
+                            if (op.opcode === Opcode.pushscope) {
+                                break;
+                            }
+                        }
+
+                        var findOp:Op = new Op(Opcode.findpropstrict, [methodEntryInvokerClassQName]);
+                        var getOp:Op = new Op(Opcode.getproperty, [methodEntryInvokerClassQName]);
+                        var callOp:Op = new Op(Opcode.callproperty, [methodEntryInvokerMethodQName, 0]);
+
+                        methodInfo.methodBody.opcodes.splice(startIndex, 0, findOp, getOp, callOp, new Op(Opcode.pop));
+                    }
+                }
+
+                var abcSerializer:AbcSerializer = new AbcSerializer();
+                var modifiedBytes:ByteArray = new ByteArray();
+                modifiedBytes.writeBytes(swfTag.tagBody, 0, abcStartLocation);
+                modifiedBytes.writeBytes(abcSerializer.serializeAbcFile(abcFile));
+
+                swfTag.tagBody = modifiedBytes;
+            }
+        }
+
+        invokeCallBack();
+    }
+}
+}
+</code></pre>
+
+<p>The constructor for this patcher takes a URL, which is used to specify the XML config file.  Then in the apply method, if the invocation type is "FRAME2" (meaning the patcher is being applied to the SWF tags on the second frame of the loading SWF) then it uses URLLoader to load the XML config file.  Notice that URLLoader is used, not HTTPService.  That is because anything that goes into a patcher is put on the first frame of the SWF and if HTTPService was used here, then there would be a ton of additional classes (dependencies) that would need to also be moved to the first frame.  While technically this would work, it's not a good practice because the more that is on the first frame, the longer the user has to wait before the preloader shows up (remember: all of the frame must be transferred across the network before the frame is loaded into the VM).  If the invocation type is not "FRAME2" then the invokeCallBack method is called to tell Mixing Loom that this patcher is done with the current invocation.  Side note: patchers can block for as long as they want.  Nothing moves forward in Mixing Loom until a patcher calls the invokeCallBack method.</p>
+
+<p>When the data for the XML file arrives it is parsed using the E4X library.  Then new QualifiedName instances are created based on the interceptor's class and method names.  Now the SWF tag with the name specified in the XML file is processed.  First it is deserialized by AS3 Commons Bytecode.  This provides an object representation of the underlying ABC code contained in the SWF tag.  Then for every class and method the interceptor is applied at the beginning of the method.  Kinda.  There are a few operations that must happen at the very beginning of the method.  For each method being intercepted we need to move past the "pushscope" opcode before we can insert new opcodes.  Then four new opcodes are spliced into the array of opcodes for the method: findpropstrict, getproperty, callproperty, and pop.  Those four opcodes are the ABC equivalent of calling the static method on the specified interceptor class.  In this case the rest of the opcodes in the method will be left alone.  Finally the ABC is recreated using AS3 Commons Bytecode and the original SWF tag is overwritten and the invokeCallBack method is called.</p>
+
+<p>Just like before we need a custom preloader to register the patchers:</p>
+
+<pre><code>package preloader {
+import org.mixingloom.managers.IPatchManager;
+import org.mixingloom.preloader.AbstractPreloader;
+
+import patcher.SampleXMLPatcher;
+
+public class SampleXMLPatcherPreloader extends AbstractPreloader {
+
+        override protected function setupPatchers(manager:IPatchManager):void {
+            super.setupPatchers(manager);
+            manager.registerPatcher( new SampleXMLPatcher("interceptors.xml"));
+        }
+    }
+}
+</code></pre>
+
+<p>Notice that a new instance of the SampleXMLPatcher is created and given the URL to the interceptor XML file.  Here is a little test application containing a button that calls Foo's getBar method every time it's clicked:</p>
+
+<pre><code>&lt;s:application xmlns:fx="http://ns.adobe.com/mxml/2009" preloader="preloader.SampleXMLPatcherPreloader" xmlns:s="library://ns.adobe.com/flex/spark"&gt;
+
+    &lt;fx:script&gt;
+        import blah.Foo;
+        import FooInterceptor; FooInterceptor;
+    &lt;/fx:script&gt;
+
+
+    &lt;s:button top="20" horizontalcenter="0" fontsize="32" label="call foo.getBar()"&gt;
+        &lt;s:click&gt;
+                var foo:Foo = new Foo();
+                foo.getBar();
+        &lt;/s:click&gt;
+    &lt;/s:button&gt;
+
+&lt;/s:application&gt;
+</code></pre>
+
+<p>Notice that since there wasn't a reference anywhere else to the FooInterceptor we had to include one manually otherwise it will not exist in the compiled SWF.  Here is a demo of that application:</p>
+
+<p>Well, that was fun!  And I hope you can see how Mixing Loom can be the foundation for doing AOP in Flex / ActionScript!  But before I let you go I want to show you one more crazy thing we can do with Mixing Loom.  Patchers can do just about anything they want since Mixing Loom provides hooks to modify the second frame, RSLs, and Modules.  For instance, say there is a private method or property in the Flex framework that you need access to.  One option is to use Monkey Patching to replace that class with one that you maintain.  This is not a very maintainable way to get access to something that is private.  Using Mixing Loom you can simply patch the class at runtime.  Here is a simple (but impractical) example...  The spark.components.Application class has a private method called "debugTickler" on it.  Using the <a href="https://github.com/MixingLoom/mixingloom-patchers/tree/master/RevealPrivatesPatcher">RevealPrivatesPatcher</a> from Mixing Loom we can make that method public at runtime.  First extend the base RevealPrivatesPatcher class and tell it only to apply the patcher on the "spark_" RSL:</p>
+
+<pre><code>package {
+import org.mixingloom.SwfContext;
+import org.mixingloom.invocation.InvocationType;
+import org.mixingloom.patcher.RevealPrivatesPatcher;
+
+public class MyRevealPrivatesPatcher extends RevealPrivatesPatcher {
+
+    override public function apply( invocationType:InvocationType, swfContext:SwfContext ):void {
+        if ((invocationType.type == InvocationType.RSL) &amp;&amp; (invocationType.url.indexOf("spark_") &gt;= 0)) {
+            super.apply(invocationType, swfContext);
+        }
+        else {
+            invokeCallBack();
+        }
+    }
+}
+}
+</code></pre>
+
+<p>Then create a custom preloader that registers a new instance of MyRevealPrivatesPatcher and tells it to reveal the "spark.components:Application" class and the "debugTickler" method:</p>
+
+<pre><code>package preloader {
+import org.mixingloom.managers.IPatchManager;
+import org.mixingloom.preloader.AbstractPreloader;
+
+    public class RevealPrivatesPatcherPreloader extends AbstractPreloader {
+
+        override protected function setupPatchers( manager:IPatchManager ):void {
+            super.setupPatchers( manager );
+            manager.registerPatcher( new MyRevealPrivatesPatcher("spark.components:Application", "debugTickler") );
+        }
+
+    }
+}
+</code></pre>
+
+<p>Finally, use the LoomApplication and the custom preloader in order to have the hooks to patch RSLs:</p>
+
+<pre><code>&lt;ml:loomapplication preloader="preloader.RevealPrivatesPatcherPreloader" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:ml="library://ns.mixingloom.org/flex/spark" xmlns:s="library://ns.adobe.com/flex/spark"&gt;
+
+    &lt;ml:applicationcomplete&gt;
+            try {
+                this['debugTickler']();
+                l.text = "Yeah.  We just modified an RSL at runtime.";
+            } catch (e:Error) {
+                l.text = "booo";
+            }
+    &lt;/ml:applicationcomplete&gt;
+
+    &lt;s:label text="nothing happened." id="l"&gt;&lt;/s:label&gt;
+
+&lt;/ml:loomapplication&gt;
+</code></pre>
+
+<p>Notice that we can't use the dot syntax "this.debugTickler()" to call the method since the compiler won't let us do that.  Instead we have to use the object key syntax "this<a href="">'debugTickler'</a>" in order to make the method call.  Now watch as Mixing Loom's magic wand modifies a signed Flex Framework RSL right before your very eyes:</p>
+
+<p>Fun stuff!!!  And there is more to come!  We are working on ways to also modify the first frame of the SWF and to modify a SWF pre-runtime.  But now it's your turn!  All of the code for everything you've seen here, as well as some other demos, and goodies is <a href="https://github.com/MixingLoom">all on github</a>.  We'd love to see the community create some interesting and useful patchers!  So fork away and have fun!  Let me know if you have any questions.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Install Flash Player on 64-bit Linux]]></title>
+    <link href="http://jamesward.github.com/2010/09/15/install-flash-player-on-64-bit-linux/"/>
+    <updated>2010-09-15T12:13:58-06:00</updated>
+    <id>http://jamesward.github.com/2010/09/15/install-flash-player-on-64-bit-linux</id>
+    <content type="html"><![CDATA[<p>Adobe has just <a href="http://adobe.com/go/fpsquare">released a preview of a 64-bit Flash Player</a> for Windows, Mac, and Linux!  I created a quick video to show Linux users how to install Flash Player on a 64-bit system.  Check it out:</p>
+
+<p>Let me know how Flash Player "Square" works for you!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Developing Mobile Flash / Flex - Scaling and Zooming]]></title>
+    <link href="http://jamesward.github.com/2010/07/19/developing-mobile-flash-flex-scaling-and-zooming/"/>
+    <updated>2010-07-19T11:29:10-06:00</updated>
+    <id>http://jamesward.github.com/2010/07/19/developing-mobile-flash-flex-scaling-and-zooming</id>
+    <content type="html"><![CDATA[<p>Mobile development with Flash and Flex is a new frontier, full of new adventures and discoveries.  Recently I discovered something that might be useful to you.  By default the mobile web browser on my Android 2.2 device scales a web page to make more room to display pages typically built for a desktop profile.  Here is what a little <a href="http://www.jamesward.com/demos/MobileSizeTest/MobileSizeTest.html">test mobile Flex app</a> I built looks like:
+<img src="http://www.jamesward.com/wp/uploads/2010/07/mobile_flash-default.png" alt="" /></p>
+
+<p>Strange!  The width and height are larger than the screen resolution.  You can fix this by adding the following to the HTML page:</p>
+
+<pre><code>&lt;meta content="target-densityDpi=device-dpi; user-scalable=0;" name="viewport"&gt;&lt;/meta&gt;
+</code></pre>
+
+<p>And now it will look like:
+<img src="http://www.jamesward.com/wp/uploads/2010/07/mobile_flash-noscale.png" alt="" /></p>
+
+<p>Now that looks right!  This also turns off the two-finger / pinch zooming feature for the page (which is more important for content that hasn't been optimized for a mobile profile).</p>
+
+<p>I hope this is useful for those of you embarking on new adventures with Flash / Flex on mobile devices!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[amf.js - A Pure JavaScript AMF Implementation]]></title>
+    <link href="http://jamesward.github.com/2010/07/07/amf-js-a-pure-javascript-amf-implementation/"/>
+    <updated>2010-07-07T08:34:06-06:00</updated>
+    <id>http://jamesward.github.com/2010/07/07/amf-js-a-pure-javascript-amf-implementation</id>
+    <content type="html"><![CDATA[<p>I just finished the first version of a new pure <a href="http://github.com/jamesward/JSAMF">JavaScript library for AMF</a>.  I've wanted to do this for a while but didn't think it was possible since JavaScript doesn't have a ByteArray.  But then I came across this: "<a href="http://www.adamia.com/blog/high-performance-javascript-port-of-actionscript-byteArray">High Performance JavaScript Port of ActionScript's ByteArray</a>".  That became the basis for <a href="http://github.com/jamesward/JSAMF">amf.js</a>.  Before I get into the gory details of how this works, check out some developer eye candy:
+<a href="http://www.jamesward.com/demos/JSAMF/censusTest.html">http://www.jamesward.com/demos/JSAMF/censusTest.html</a></p>
+
+<p>Ok, hopefully that worked for you.  I've tested this in the latest Chrome, Firefox, Safari, and IE and they all seem to work.  It should also work on your iPad, iPhone, or Android device.</p>
+
+<p>Now for those gory details...  AMF is a protocol initially created in Flash Player as a way to serialize data for storage on disk or transfer over a network.  Typically in web apps we use text-based serialization protocols (like JSON or RESTful XML) for data transfer.  But there are some advantages to using binary protocols - primarily <a href="http://www.jamesward.com/2009/06/17/blazing-fast-data-transfer-in-flex/">much better performance</a>.  There are two versions of the AMF protocol, <a href="http://download.macromedia.com/pub/labs/amf/amf0_spec_121207.pdf">AMF0</a> and <a href="http://opensource.adobe.com/wiki/download/attachments/1114283/amf3_spec_05_05_08.pdf">AMF3</a>.  Both are publicly documented by Adobe and numerous server-side implementations of AMF exist.  AMF is just a serialization technology, not a transport.  So you can put AMF encoded data into any transport (like HTTP / HTTPS).  Typically Flash Player is the client that reads / writes AMF data.</p>
+
+<p>I recently had a conversation with <a href="http://twitter.com/Stephan007">Stephan Janssen</a> who runs <a href="http://parleys.com">Parleys.com</a> (an amazing Flex app), which started me on this fun project. The Parleys.com PC-profile web client and the Adobe AIR desktop client both use BlazeDS and AMF as the primary serialization protocol for moving data between client and server.  This is a great choice for those clients because it makes the apps snappy.  But for the HTML5 client Stephan wants to reuse his AMF endpoints.  This is where amf.js comes in.</p>
+
+<p>Flash Player has a ByteArray API that can be used for a lot of amazing things.  One of those things is to read and write AMF.  If you have an object in Flash Player and you create a new ByteArray and then call "byteArray.writeObject(myObject)" you will get a ByteArray with the AMF representation of that object.  Likewise if you get some AMF and you call "byteArray.readObject()" you get the object(s) from the AMF.  In Flex there are high level APIs (like RemoteObject, Consumer, etc.) that use this native AMF support in Flash Player.</p>
+
+<p>To create a pure JavaScript AMF library the first thing that is needed is a pure JavaScript ByteArray library since JavaScript doesn't natively have one.  I used one from <a href="http://www.adamia.com/blog/high-performance-javascript-port-of-actionscript-byteArray">adamia.com</a> since it was similar to the ByteArray in Flash Player, seemed fast, and seemed to parse floats correctly.  This ByteArray has some of the basic functions like readByte, readFloat, etc.  But what about that cool readObject function?  Well, that has to be built from scratch.  And it should support both AMF0 and AMF3.</p>
+
+<p>Using the AMF specs and code from BlazeDS &amp; pyamf as a reference I was able to add the other functions to the ByteArray.  But there was a problem.  Using XMLHttpRequest as the method of getting the AMF was not working right.  Some bytes were incorrect.  It turns out XMLHttpRequest uses UTF-8 and that screws up some of the bytes above 128.  I tried other charsets and each one would change some range of bytes.  That is not good because I need the bytes to be exactly what the server sent.  Then I came across <a href="http://web.archive.org/web/20061114143134/http://mgran.blogspot.com/2006/08/downloading-binary-streams-with.html">this gem</a>:</p>
+
+<pre><code>//XHR binary charset opt by Marcus Granado 2006 [http://mgran.blogspot.com]
+req.overrideMimeType('text/plain; charset=x-user-defined');
+</code></pre>
+
+<p>Using the "x-user-defined" charset left the bytes alone.  Perfect!  Except that IE doesn't support the req.overrideMimeType function.  But IE does actually have a real ByteArray available in req.responseBody via VBScript.  For now in IE I just change the ByteArray into a string (like req.responseText in the other browsers) although a lot of optimization could be done to just use the VBScript ByteArray directly.</p>
+
+<p>Right now amf.js is just a basic JavaScript library for reading AMF data.  It doesn't support using a BlazeDS MessageBrokerServlet yet because I need to be able to assemble a AMF object in JavaScript and send that in the HTTP request to the servlet.  But it works fine with a custom servlet that uses BlazeDS's AMF library to just write AMF into the HTTP response.  It should also work with pyamf, AMFPHP, and other AMF server libraries.</p>
+
+<p>To use amf.js start by dumping some AMF into an HTTP response.  In Java with BlazeDS I did this:</p>
+
+<pre><code>public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+{
+    response.setHeader("Content-Type", "application/x-amf;charset=x-user-defined");
+    ServletOutputStream out = response.getOutputStream();
+    ActionMessage requestMessage = new ActionMessage(MessageIOConstants.AMF3);
+    MessageBody amfMessage = new MessageBody();
+    amfMessage.setData(someSerializableObject);
+    requestMessage.addBody(amfMessage);
+    AmfMessageSerializer amfMessageSerializer = new AmfMessageSerializer();
+    amfMessageSerializer.initialize(SerializationContext.getSerializationContext(), out, new AmfTrace());
+    amfMessageSerializer.writeMessage(requestMessage);
+    out.close();
+}
+</code></pre>
+
+<p>In a HTML web page add the amf.js script:</p>
+
+<pre><code>&lt;script src="amf.js" type="text/javascript"&gt;&lt;/script&gt;
+</code></pre>
+
+<p>In JavaScript make a XHR request for some data:</p>
+
+<pre><code>var url = "TestServlet";
+var req;
+
+function getAMF()
+{
+    if (window.ActiveXObject)
+    {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    else if (window.XMLHttpRequest)
+    {
+        req = new XMLHttpRequest();
+        //XHR binary charset opt by Marcus Granado 2006 [http://mgran.blogspot.com]
+        req.overrideMimeType('text/plain; charset=x-user-defined');
+    }
+    req.onreadystatechange = processReqChange;
+    req.open("GET", url, true);
+    req.send(null);
+}
+</code></pre>
+
+<p>And when the response comes back decode the AMF:</p>
+
+<pre><code>function processReqChange()
+{
+    if (req.readyState == 4)
+    {
+        if (req.status == 200)
+        {
+            var o = decodeAMF(req.responseText).messages[0].body;
+        }
+        else
+        {
+            alert("There was a problem retrieving the data:\n" + req.statusText);
+        }
+    }
+}
+</code></pre>
+
+<p>For details on how to support IE, check out the source code for <a href="http://www.jamesward.com/demos/JSAMF/censusTest.html">censusTest.html</a>.</p>
+
+<p>While amf.js works in my tests there is more work to be done.  I need to add the write functions so that AMF can be sent to the server.  Then supporting BlazeDS's MessageBrokerServlet should be pretty straightforward.  I'd also like to create pure JavaScript implementations of Flex's RemoteObject, Consumer, and Producer APIs.  Also, I need people to test amf.js with their AMF to make sure that I've implemented things correctly.  All of the <a href="http://github.com/jamesward/JSAMF">code is on github.com</a> so go ahead and fork it!  Let me know what you think.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Tour de Flex 2.0 - Nearly 500 Flex Examples!]]></title>
+    <link href="http://jamesward.github.com/2010/06/21/tour-de-flex-2-0-nearly-500-flex-examples/"/>
+    <updated>2010-06-21T08:45:42-06:00</updated>
+    <id>http://jamesward.github.com/2010/06/21/tour-de-flex-2-0-nearly-500-flex-examples</id>
+    <content type="html"><![CDATA[<p>Adobe has just launched the new AIR 2 based <a href="http://flex.org/tour">Tour de Flex version 2.0</a> which now contains almost 500 Flex examples!  The new version has new AIR 2 examples (only available in the AIR version of Tour de Flex) including:</p>
+
+<ul>
+<li><p>File Promises</p></li>
+<li><p>Mass Storage Detection</p></li>
+<li><p>Native Process</p></li>
+<li><p>Open with default app</p></li>
+<li><p>Socket Server</p></li>
+</ul>
+
+
+<p>Also there are some great examples of the new Flash Player 10.1 and AIR 2 APIs including:</p>
+
+<ul>
+<li><p>Gestures</p></li>
+<li><p>Global Error Handler</p></li>
+<li><p>Globalization / Internationalization</p></li>
+<li><p>Microphone access</p></li>
+</ul>
+
+
+<p>Those are some great examples but my favorite is still <a href="http://dougmccune.com/blog/">Doug McCune's</a> <a href="http://www.adobe.com/devnet/flex/tourdeflex/web/#docIndex=0;illustIndex=0;sampleId=16300">Physics Form</a> followed closely by the <a href="http://www.adobe.com/devnet/flex/tourdeflex/web/#docIndex=-1;illustIndex=0;sampleId=14050">real-time Tour de Flex Dashboard</a>.  :)</p>
+
+<p>If you already have Tour de Flex installed then it should auto update to the latest version when you launch it.  Otherwise install it now using the badge installer below.</p>
+]]></content>
+  </entry>
+  
+</feed>

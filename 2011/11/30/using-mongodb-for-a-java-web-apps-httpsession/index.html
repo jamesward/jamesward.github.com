@@ -1,0 +1,673 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Using MongoDB for a Java Web App's HttpSession - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="Since the web&#8217;s inception we&#8217;ve been using it as a glorified green screen. In this model all web application interactions and the state &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Using MongoDB for a Java Web App's HttpSession</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-30T15:02:21-07:00" pubdate data-updated="true">Nov 30<span>th</span>, 2011</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Since the web&#8217;s inception we&#8217;ve been using it as a glorified green screen.  In this model all web application interactions and the state associated with those interactions, is handled by the server.  This model is a real pain to scale.  Luckily the model is shifting to more of a Client/Server approach where the UI state moves to the client (where it should be).  But for many of today&#8217;s applications we still have to deal with server-side state.  Typically that state is just stored in memory.  It&#8217;s fast but if we need more than one server (for failover or load-balancing) then we usually need to replicate that state across our servers.  To keep web clients talking to the same server (usually for performance and consistency) our load-balancers have implemented sticky sessions.  Session replication and sticky sessions are really just a by-product of putting client state information in memory.  Until we all move to stateless web architectures we need to find more scalable and maintainable ways to handle session state.</p>
+
+<p>Jetty has <a href="http://webtide.intalio.com/2011/08/nosql-sessions-with-jetty7-and-jetty8/">recently added support for a pluggable session state manager</a>.  This allows us to move away from sticky sessions and session replication and instead use external systems to store session state.  Jetty provides a MongoDB implementation out-of-the-box but presumably it wouldn&#8217;t be very hard to add other implementations like Memcached.  Jetty has some <a href="http://wiki.eclipse.org/Jetty/Tutorial/MongoDB_Session_Clustering">good documentation on how to configure this with XML</a>.  Lets walk through a sample application using Jetty and MongoDB for session state and then deploy that application on the cloud with Heroku.</p>
+
+<p>First lets cover some Heroku basics.  Heroku runs applications on &#8220;dynos&#8221;.  You can think of dynos as isolated execution environments for your application.  An application on Heroku can have web dynos and non-web dynos.  Web dynos will be used for handling HTTP requests for your application.  Non-web dynos can be used for background processing, one-off processes, scheduled jobs, etc.  HTTP (or HTTPS) requests to your application are automatically load balanced across your web dynos.  Heroku does not use sticky sessions so it is up to you to insure that if you have more than one web dyno or if a dyno is restarted, that your users&#8217; sessions will not be lost.</p>
+
+<p>Heroku does not have any special/custom APIs and does not dictate which app server you use.  This means you have to bring your app server with you.  There are a variety of ways to do that but the preferred approach is to specify your app server as a dependency in your application build descriptor (Maven, sbt, etc).</p>
+
+<p>You must tell Heroku what process needs to be run when a new dyno is started.  This is defined in a file called &#8220;Procfile&#8221; that must be in the root directory of your project.</p>
+
+<p>Heroku provides a really nifty and simple way to provision new external systems that you can use in your application.  These are called &#8220;add-ons&#8221;.  There are <a href="http://addons.heroku.com">tons of Heroku add-ons</a> but for this example we will be using the <a href="http://addons.heroku.com/mongohq">MongoHQ add-on</a> that provides a MongoDB instance.</p>
+
+<p>With that in mind lets walk through a simple application that uses Jetty&#8217;s MongoDB-backed sessions.  You can <a href="https://github.com/jamesward/jetty-mongo-session-test">get all of this code from github</a> or just clone the github repo:</p>
+
+<pre><code>git clone git://github.com/jamesward/jetty-mongo-session-test.git
+</code></pre>
+
+<p>First lets setup a Maven build that will include the Jetty and MongoDB driver dependencies.  We will use &#8220;appassembler-maven-plugin&#8221; to generate a script that starts the Jetty server.  Here is the pom.xml Maven build descriptor:</p>
+
+<pre><code>&lt;project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemalocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"&gt;
+    &lt;modelversion&gt;4.0.0&lt;/modelversion&gt;
+    &lt;groupid&gt;com.heroku.test&lt;/groupid&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;name&gt;jettySessionTest&lt;/name&gt;
+    &lt;artifactid&gt;jettySessionTest&lt;/artifactid&gt;
+    &lt;packaging&gt;jar&lt;/packaging&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupid&gt;org.eclipse.jetty&lt;/groupid&gt;
+            &lt;artifactid&gt;jetty-webapp&lt;/artifactid&gt;
+            &lt;version&gt;8.0.3.v20111011&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupid&gt;org.eclipse.jetty&lt;/groupid&gt;
+            &lt;artifactid&gt;jetty-nosql&lt;/artifactid&gt;
+            &lt;version&gt;8.0.3.v20111011&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupid&gt;org.mongodb&lt;/groupid&gt;
+            &lt;artifactid&gt;mongo-java-driver&lt;/artifactid&gt;
+            &lt;version&gt;2.6.5&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupid&gt;org.codehaus.mojo&lt;/groupid&gt;
+                &lt;artifactid&gt;appassembler-maven-plugin&lt;/artifactid&gt;
+                &lt;version&gt;1.1.1&lt;/version&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;phase&gt;package&lt;/phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;assemble&lt;/goal&gt;
+                        &lt;/goals&gt;
+                        &lt;configuration&gt;
+                            &lt;assembledirectory&gt;target&lt;/assembledirectory&gt;
+                            &lt;programs&gt;
+                                &lt;program&gt;
+                                    &lt;mainclass&gt;com.heroku.test.Main&lt;/mainclass&gt;
+                                    &lt;name&gt;webapp&lt;/name&gt;
+                                &lt;/program&gt;
+                            &lt;/programs&gt;
+                        &lt;/configuration&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+
+&lt;/project&gt;
+</code></pre>
+
+<p>The &#8220;appassembler-maven-plugin&#8221; references a class &#8220;com.heroku.test.Main&#8221; that hasn&#8217;t been created yet.  We will get to that in a minute.  First lets create a simple servlet that will store an object in the session.  Here is the servlet from the &#8220;src/main/java/com/heroku/test/servlet/TestServlet.java&#8221; file:</p>
+
+<pre><code>package com.heroku.test.servlet;
+
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+public class TestServlet extends HttpServlet {
+
+    private class CountHolder implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+        private Integer count;
+        private Date time;
+
+        public CountHolder() {
+            count = 0;
+            time = new Date();
+        }
+
+        public Integer getCount() {
+            return count;
+        }
+
+        public void plusPlus() {
+            count++;
+        }
+
+        public void setTime(Date time) {
+            this.time = time;
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        HttpSession session = req.getSession();
+
+        CountHolder count;
+
+        if(session.getAttribute("count") != null) {            
+            count = (CountHolder) session.getAttribute("count");
+        } else {
+            count = new CountHolder();
+        }
+
+        count.setTime(new Date());
+        count.plusPlus();
+
+        System.out.println("Count: " + count.getCount());
+
+        session.setAttribute("count", count);
+
+        resp.getWriter().print("count = " + count.getCount());
+    }
+
+}
+</code></pre>
+
+<p>As you can see there is nothing special here.  We are using the regular HttpSession normally, storing and retrieving a <em>Serializable</em> object named <em>CountHolder</em>.  The application simply displays the number or times the servlet has been accessed by a user (where &#8220;user&#8221; really means a request that passes the same JSESSIONID cookie as a previous request).</p>
+
+<p>Now lets map that servlet to the &#8220;/&#8221; URL pattern in the web app descriptor (src/main/webapp/WEB-INF/web.xml):</p>
+
+<pre><code>&lt;web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemalocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5"&gt;
+
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;Test Servlet&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;com.heroku.test.servlet.TestServlet&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;default&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;*.ico&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;Test Servlet&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+
+&lt;/web-app&gt;
+</code></pre>
+
+<p>I put a servlet mapping in for &#8220;.ico&#8221; because some browsers automatically request &#8220;favicon.ico&#8221;, and those requests if not mapped to something will map to our servlet and make the count appear to jump.</p>
+
+<p>Now lets create that &#8220;com.heroku.test.Main&#8221; class that will configure Jetty and start it.  One reason we are using a Java class to start Jetty is because we are trying to avoid putting the MongoDB connection information in a text file.  Heroku add-ons place their connection information for the external systems in environment variables.  We could copy that information into a plain XML Jetty config file but that is an anti-pattern because if the add-on provider needs to change the connection information (perhaps for failover purposes) then our application would stop working until we manually updated the config file.  So our simple Main class will just read the connection information from an environment variable and configure Jetty at runtime.  Here is the source for the &#8220;src/main/java/com/heroku/test/Main.java&#8221; file:</p>
+
+<pre><code>package com.heroku.test;
+
+import java.util.Date;
+import java.util.Random;
+
+import org.eclipse.jetty.nosql.mongodb.MongoSessionIdManager;
+import org.eclipse.jetty.nosql.mongodb.MongoSessionManager;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.webapp.WebAppContext;
+
+import com.mongodb.DB;
+import com.mongodb.MongoURI;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception{
+        String webappDirLocation = "src/main/webapp/";
+
+        String webPort = System.getenv("PORT");
+        if(webPort == null || webPort.isEmpty()) {
+            webPort = "8080";
+        }
+
+        Server server = new Server(Integer.valueOf(webPort));
+        WebAppContext root = new WebAppContext();
+
+        MongoURI mongoURI = new MongoURI(System.getenv("MONGOHQ_URL"));
+        DB connectedDB = mongoURI.connectDB();
+
+        if (mongoURI.getUsername() != null) {
+            connectedDB.authenticate(mongoURI.getUsername(), mongoURI.getPassword());
+        }
+
+        MongoSessionIdManager idMgr = new MongoSessionIdManager(server, connectedDB.getCollection("sessions"));
+
+        Random rand = new Random((new Date()).getTime());
+        int workerNum = 1000 + rand.nextInt(8999);
+
+        idMgr.setWorkerName(String.valueOf(workerNum));
+        server.setSessionIdManager(idMgr);
+
+        SessionHandler sessionHandler = new SessionHandler();
+        MongoSessionManager mongoMgr = new MongoSessionManager();
+        mongoMgr.setSessionIdManager(server.getSessionIdManager());
+        sessionHandler.setSessionManager(mongoMgr);
+
+        root.setSessionHandler(sessionHandler);
+        root.setContextPath("/");
+        root.setDescriptor(webappDirLocation+"/WEB-INF/web.xml");
+        root.setResourceBase(webappDirLocation);
+        root.setParentLoaderPriority(true);
+
+        server.setHandler(root);
+
+        server.start();
+        server.join();
+    }
+
+}
+</code></pre>
+
+<p>As you can see the <em>MongoSessionManager</em> is being configured based on the <em>MONGOHQ_URL</em> environment variable, the Jetty server is being configured to use the <em>MongoSessionManager</em> and pointed to the web app location, and then Jetty is started.</p>
+
+<p>Now lets give it a try!  If you want to run everything locally then you will need to have <a href="http://maven.apache.org/">Maven 3</a> and <a href="http://www.mongodb.org/">MongoDB</a> installed and started.  Then run the Maven build</p>
+
+<pre><code>mvn package
+</code></pre>
+
+<p>This will use the <em>appassembler-maven-plugin</em> to generate the start script which sets up the <em>CLASSPATH</em> and then runs the <em>com.heroku.test.Main</em> class.  Before we run we need to set the environment variable to point to our local MongoDB:</p>
+
+<ul>
+<li><p>On Windows:</p>
+
+<p>  set MONGOHQ_URL=mongodb://127.0.0.1:27017/test</p>
+
+<ul>
+<li><p>On Linux/Mac:</p>
+
+<p>export MONGOHQ_URL=mongodb://127.0.0.1:27017/test</p></li>
+</ul>
+</li>
+</ul>
+
+
+<p>Now run the generated start script:</p>
+
+<ul>
+<li><p>On Windows:</p>
+
+<p>  target\bin\webapp.bat</p>
+
+<ul>
+<li><p>On Linux/Mac:</p>
+
+<p>sh target/bin/webapp</p></li>
+</ul>
+</li>
+</ul>
+
+
+<p>Test the app in your browser by visiting:
+<a href="http://localhost:8080/">http://localhost:8080/</a></p>
+
+<p>Refresh the page a few times to verify that the count is increasing.</p>
+
+<p>This is just testing one instance of the application which isn&#8217;t very exciting since part of the purpose of moving the session out of memory and into an external system is to handle scalability.  So lets start up another instance of the app on a different port and make sure that the session is consistent between both servers.  In another terminal window / command prompt start up a second server on port 9090:</p>
+
+<ul>
+<li><p>On Windows:</p>
+
+<p>  set MONGOHQ_URL=mongodb://127.0.0.1:27017/test
+  set PORT=9090
+  target\bin\webapp.bat</p>
+
+<ul>
+<li><p>On Linux/Mac:</p>
+
+<p>export MONGOHQ_URL=mongodb://127.0.0.1:27017/test
+export PORT=9090
+sh target/bin/webapp</p></li>
+</ul>
+</li>
+</ul>
+
+
+<p>Now in your browser make a few requests to:
+<a href="http://localhost:9090/">http://localhost:9090/</a></p>
+
+<p>Verify that the session is consistent between the two servers.</p>
+
+<p>Now lets deploy this app on the cloud with Heroku.  As mentioned earlier we need a file named &#8220;Procfile&#8221; in the root directory that will tell Heroku what process to run when a dyno is started.  Here is the Procfile for this application:</p>
+
+<pre><code>web: sh target/bin/webapp
+</code></pre>
+
+<p>To create and deploy the application you will need to install <a href="http://git-scm.com/">git</a> &amp; the <a href="http://toolbelt.heroku.com">Heroku Toolbelt</a>, create an <a href="http://heroku.com/signup">Heroku</a>, and since we will be using add-ons you will need to <a href="http://heroku.com/verify">verify your Heroku account</a>.  Each application your create on Heroku gets 750 free dyno hours per month.  So as long as you don&#8217;t go above that and you stick with the free tier of the MongoHQ add-on, then you won&#8217;t be billed for anything.</p>
+
+<p>Login to Heroku using the heroku command line interface:</p>
+
+<pre><code>heroku login
+</code></pre>
+
+<p>If you haven&#8217;t already setup an SSH key for Heroku then the login process will walk you through that.</p>
+
+<p>In the root directory of this project create the app on Heroku with the &#8220;cedar&#8221; stack and the free MongoHQ add-on:</p>
+
+<pre><code>heroku create --stack cedar --addons mongohq:free
+</code></pre>
+
+<p>Upload your application to Heroku using git:</p>
+
+<pre><code>git push heroku master
+</code></pre>
+
+<p>Open the application in your browser:</p>
+
+<pre><code>heroku open
+</code></pre>
+
+<p>If you want to add more dynos handling web requests then run:</p>
+
+<pre><code>heroku scale web=2
+</code></pre>
+
+<p>To see what is running on Heroku run:</p>
+
+<pre><code>heroku ps
+</code></pre>
+
+<p>If you want to turn off all of the dynos for your application just scale to 0:</p>
+
+<pre><code>heroku scale web=0
+</code></pre>
+
+<p>To see the logging information for your application run:</p>
+
+<pre><code>heroku logs
+</code></pre>
+
+<p>To see a live version of this demo visit:
+<a href="http://young-wind-7462.herokuapp.com/">http://young-wind-7462.herokuapp.com/</a></p>
+
+<p>Well, there you go.  You&#8217;ve learned how to avoid sticky sessions and session replication by moving session state to an external MongoDB system that can be scaled independently of the web tier.  You&#8217;ve also learned how to run this on the cloud with Heroku.  Let me know if you have any questions.</p>
+
+<p>BTW: I&#8217;d like to thank <a href="https://twitter.com/j_simone/">John Simone</a> from Heroku for writing most of the code for this demo.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-11-30T15:02:21-07:00" pubdate data-updated="true">Nov 30<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/heroku/'>Heroku</a>, <a class='category' href='/categories/java/'>Java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/" title="Previous Post: Heroku Java User Group Tour: Columbus and Orange County">&laquo; Heroku Java User Group Tour: Columbus and Orange County</a>
+      
+      
+        <a class="basic-alignment right" href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/" title="next Post: Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

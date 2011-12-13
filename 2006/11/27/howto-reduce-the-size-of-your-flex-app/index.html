@@ -1,0 +1,401 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>HowTo: Reduce the size of your Flex app - James Ward</title>
+  <meta name="author" content="James Ward">
+
+  
+  <meta name="description" content="Flex 2 added a neat little feature which allows you to load Runtime Shared Libraries, from other domains. And since the browser caches these &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jamesward.github.com/2006/11/27/howto-reduce-the-size-of-your-flex-app">
+  <link href="/favicon.ico" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="James Ward" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-784803-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">James Ward</a></h1>
+  
+    <h2>Heroku | Java | Scala | Cloud | Open Source | Linux</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jamesward.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul class="main-navigation">
+  <li><a href="/about-james-ward">About James Ward</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">HowTo: Reduce the Size of Your Flex App</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2006-11-27T13:26:50-07:00" pubdate data-updated="true">Nov 27<span>th</span>, 2006</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Flex 2 added a neat little feature which allows you to load Runtime Shared Libraries, from other domains.  And since the browser caches these libraries in theory we could all point to a central set of Flex 2 Framework RSLs and users of your application would only have to download the RSLs the first time they went to an application which used them.  Before I show you how to make this work, lets talk about the caveats&#8230;  First and most important, THIS IS UNSUPPORTED BY ADOBE.  While the Flex team is working on a better, more permanent solution to this problem, this is really a hack and despite the fact that I am using this in my applications, neither I or Adobe warranty or support the use of this in any way.  Second, since there is no failover mechanism, until we find a better home for the RSLs, if you choose to point to my hosted RSLs, your application will be at the mercy of my web server.  Third, if someone hacks my web server and uploads new cracked malware RSLs, or uses a man-in-the-middle attack to replace the RSLs in flight, then you (and I) have been <a href="http://www.urbandictionary.com/define.php?term=p0wned">p0wned</a>.  Fourth, I, James Ward, may have included modified Flex framework files which do bad things, like track user behavior/input and report them back to my server.  While I promise I have not done this, if you choose to use these RSLs, you are putting your trust in my promise.</p>
+
+<p>So despite the caveats, I still think this hack is sufficient enough for many applications.  Flex engineering is really working hard to make this work for everyone.  In the mean time what is outlined here may likely help you to dramatically reduce SWF size.  Read on to find out how.</p>
+
+<p><strong>Quick Start</strong></p>
+
+<p>I&#8217;ve created 3 RSLs, a small one, with just the dependencies of mx.core.Application and a medium one with what I guessed were the 20 or so most commonly used components, and then a large one with over 30 other components.  Each RSL does not include the contents of the smaller RSLs.  So if you want to take advantage of this technique using the medium RSL, then you will need to use the medium AND the small RSL.  Here is table with the information about the RSLs:</p>
+
+<p>RSLSizeSWCLinker SourceSWC Catalog</p>
+
+<p>[small</p>
+
+<p>106K</p>
+
+<p><a href="http://ws.jamesward.org/framework-2_0_1_b-small.swc">Download SWC</a></p>
+
+<p><a href="http://flexapps.cvs.sourceforge.net/flexapps/hosted_rsls/src/smallLinker.as?view=log">smallLinker.as</a></p>
+
+<p><a href="http://ws.jamesward.org/framework-2_0_1_b-small.xml">Catalog XML</a></p>
+
+<p>[medium</p>
+
+<p>160K</p>
+
+<p><a href="http://ws.jamesward.org/framework-2_0_1_b-medium.swc">Download SWC</a></p>
+
+<p><a href="http://flexapps.cvs.sourceforge.net/flexapps/hosted_rsls/src/mediumLinker.as?view=log">mediumLinker.as</a></p>
+
+<p><a href="http://ws.jamesward.org/framework-2_0_1_b-medium.xml">Catalog XML</a></p>
+
+<p>[large</p>
+
+<p>141K</p>
+
+<p><a href="http://ws.jamesward.org/framework-2_0_1_b-large.swc">Download SWC</a></p>
+
+<p><a href="http://flexapps.cvs.sourceforge.net/flexapps/hosted_rsls/src/largeLinker.as?view=log">largeLinker.as</a></p>
+
+<p><a href="http://ws.jamesward.org/framework-2_0_1_b-large.xml">Catalog XML</a></p>
+
+<p>Once you have decided which RSL to use, follow these instructions:
+1) Download the SWC for the RSL(s) you want to use from <a href="http://ws.jamesward.org">ws.jamesward.org</a>
+2) Fix your build path
+2.1) If you are compiling via Ant or the command line, then specify your external-library-path and runtime-shared-libraries like:</p>
+
+<p><code>flex2-sdk/bin/mxmlc \
+  -external-library-path+=build/framework-2_0_1_b-small.swc,build/framework-2_0_1_b-medium.swc  \
+  -runtime-shared-libraries=http://ws.jamesward.org/framework-2_0_1_b-small.swf,http://ws.jamesward.org/framework-2_0_1_b-medium.swf\
+  -o=build/testHostedFlexLibs-medium.swf \
+  -file-specs=test/testHostedFlexLibs.mxml
+</code></p>
+
+<p>2.2) If you are using Flex Builder then go to Project -> Properties -> Flex Build Path -> Library Path -> Add SWC -> [Enter or browse to the first SWC] -> Add all the SWCs you will be using.  Then select a SWC&#8217;s RSL URL and select the Edit button.  Change the Link Type to &#8220;Runtime shard library (RSL)&#8221;, set the RSL URL to the correct swf url on ws.jamesward.org, deselect the &#8220;Auto extract checkbox&#8221;, and then select the OK button.  Repeat this for each SWC.  When done, select the OK button to exit the Project Properties.  Here is what my Build Path looks like:
+<img src="http://www.jamesward.org/wordpress/wp-content/uploads/2006/11/buildpath.png" alt="Build Path" /></p>
+
+<p>2.3) If you are using FDS, then just add the SWC(s) to your flex/user_classes dir and update the runtime-shared-libraries accordingly in the flex-config.xml file.</p>
+
+<p>3) Recompile your Flex app (if Flex Builder didn&#8217;t do this for you automatically) and the file size should be significantly lower!</p>
+
+<p>4) One more caveat&#8230;  You have to actually load your application from a web server for it to work.  This is due to the Flash local OR network sandbox.  Maybe someone can suggest a better workaround.</p>
+
+<p><strong>How It Works</strong></p>
+
+<p>This all starts with the Preloader.  The out of the box preloader doesn&#8217;t support cross domain loaded RSLs.  If you use my hosted RSL(s) then you don&#8217;t need to worry about this since it includes the patched Preloader.  However, if you are interested in really knowing how this all works, or if you want to download the source code and play with it, then here is what you need to do.  In order for your application to be able to use the classes in the crossdomain loaded RSL, the Preloader needs to specify the securityDomain for the loaderContext of the RSLs.  So in the loadRSL function of my patched mx/preloaders/Preloader.as file I have:</p>
+
+<p><code>loaderContext.securityDomain = SecurityDomain.currentDomain;
+loaderContext.applicationDomain = ApplicationDomain.currentDomain;
+</code></p>
+
+<p>The source code I use to build the RSLs is available on <a href="http://sourceforge.net/projects/flexapps">Source Forge</a>.  If you want to play with the code, then you will need to copy the Preloader.as from the Flex SDK&#8217;s source code, update the RSL loaderContext as noted above, and add the import for the flash.system.SecurityDomain class.</p>
+
+<p>You can also see that I have a <a href="http://ws.jamesward.org/crossdomain.xml">wildcard crossdomain.xml</a> policy file on ws.jamesward.org which allows Flash player to load the RSLs no matter what domain the requesting application is hosted on.  One quick note on crossdomain policy files, since I don&#8217;t think it is said clearly enough, and often enough&#8230;
+DO NOT EVER PUT A WILDCARD CROSSDOMAIN POLICY FILE ON A DOMAIN IF EITHER OF THE FOLLOWING APPLY:
+ - THE DOMAIN IS USED FOR COOKIE BASED OR BASIC AUTHENTICATION
+ - THE DOMAIN IS ON AN INTERNAL NETWORK</p>
+
+<p>Now about the small, medium, and large RSLs&#8230;  For now I opted to use just three RSLs to keep it simple.  I am using just simple linker classes and compc to create the SWCs, then expanding the SWCs to get the SWF, which is the RSL.  You can see all this in the source code, specifically, the <a href="http://flexapps.cvs.sourceforge.net/flexapps/hosted_rsls/build.sh?view=log">build.sh</a> file.  I have also guessed at the best way to organize the RSLs (as far as what classes go where), but definitely want to hear what others think.</p>
+
+<p>Now the fun part&#8230;  To prove this all works, first go to the <a href="http://www.jamesward.org/testHostedFlexLibs-large-1.swf">test app</a> on www.jamesward.org and watch as the RSLs are loaded from ws.jamesward.org.  You should now have all 3 RSLs in your browser cache and if you now go to another <a href="http://www.thebetterside.com/testHostedFlexLibs-large-1.swf">test app</a> on a different domain the application should load much faster since it only needs to load 72K instead of what would have been over 400K (my test app doesn&#8217;t use all the classes in the three RSLs).</p>
+
+<p><strong>The Future?</strong></p>
+
+<p>I&#8217;d really like to hear feedback if this is a viable hack for those looking to reduce Flex app size.  Let me know if you plan to use this technique, or if you don&#8217;t, why?  What should be different?  Also, I think someone could further hack the preloader to support failover and md5 checksums.  Any takers?</p>
+
+<p>Thanks in advance for your feedback!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">James Ward</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2006-11-27T13:26:50-07:00" pubdate data-updated="true">Nov 27<span>th</span>, 2006</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/flex/'>Flex</a>, <a class='category' href='/categories/open-source/'>Open Source</a>, <a class='category' href='/categories/ria/'>RIA</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jamesward.github.com/2006/11/27/howto-reduce-the-size-of-your-flex-app/" data-via="_JamesWard" data-counturl="http://jamesward.github.com/2006/11/27/howto-reduce-the-size-of-your-flex-app/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2006/11/14/screencast-watch-a-flex-app-built-in-11-minutes/" title="Previous Post: Screencast: Watch a Flex app built in 11 minutes">&laquo; Screencast: Watch a Flex app built in 11 minutes</a>
+      
+      
+        <a class="basic-alignment right" href="/2006/12/04/please-mind-the-gap-between-flash-versions/" title="next Post: Please Mind the Gap; Between Flash Versions">Please Mind the Gap; Between Flash Versions &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("_JamesWard", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/_JamesWard" class="twitter-follow-button" data-show-count="false">Follow @_JamesWard</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/101156657838073927919?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>Github Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jamesward">@jamesward</a> on Github
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jamesward',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2011/12/12/heroku-jug-tour-boulder-phoenix-portland/">Heroku JUG Tour: Boulder, Phoenix, & Portland</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/12/11/tutorial-play-framework-jpa-json-jquery-heroku/">Tutorial: Play Framework, JPA, JSON, jQuery, & Heroku</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/using-mongodb-for-a-java-web-apps-httpsession/">Using MongoDB for a Java Web App's HttpSession</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/30/heroku-java-user-group-tour-columbus-and-orange-county/">Heroku Java User Group Tour: Columbus and Orange County</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2011/11/29/heroku-preso-from-devoxx-2011/">Heroku Preso from Devoxx 2011</a>
+      </li>
+    
+  </ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2011 - James Ward -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jamesward';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
