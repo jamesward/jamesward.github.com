@@ -24,5 +24,8 @@
     </footer>
   {% endif %}
 {% else %}
-<div class="entry-content">{{ content }}</div>
+<div class="entry-content">
+  <h3 style="background: #990000; border: 1px solid #333333; border-radius: 0.4em 0.4em 0.4em 0.4em; color: #dddddd; padding: 0.8em;">I've recently migrated my blog to <a href="http://octopress.org">Octopress</a>.  As a result there may be some formatting issues on this post.  If you notice any issues, please let me know in the comments below.  Thanks!</h3>
+{{ content }}
+</div>
 {% endif %}

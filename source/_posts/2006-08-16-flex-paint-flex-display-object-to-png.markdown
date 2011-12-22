@@ -19,20 +19,30 @@ Flex allows you to easily create beautiful UIs.  But what if you want to take a 
 
 **Flex Paint** (requires Flash 9)
 
-
+<iframe src="http://www.cayambe.com/flexpaint/flexpaint.mxml" width="325" height="380" style="border:0px"></iframe>
 
 **How it Works**
 
 We use the Flash drawing API to draw on a canvas.  Then when the "Save Image" button is clicked we do a few simple things.  First we create a new BitmapData object:
+
+```actionscript
 var bd:BitmapData = new BitmapData(canvas.width,canvas.height);
+```
 
 Then we copy canvas' pixels onto the BitmapData object:
+
+```actionscript
 bd.draw(canvas);
+````
 
 Now we convert the BitmapData object to a ByteArray encoded as a PNG:
+```actionscript
 var ba:ByteArray = PNGEnc.encode(bd);
+```
 
 And then upload the PNG via Remote Object:
+```actionscript
 ro.doUpload(ba);
+```
 
 Then Remote Object just saves the file to the file system.  If you would like to download the code for Flex Paint, you can find it on [Source Forge](http://sourceforge.net/projects/flexapps/).  Let me know what you think.  Thanks!

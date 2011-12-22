@@ -11,10 +11,9 @@ categories:
 
 Have you ever thought about why in Java we package up web apps into WAR files (or WAR directory structures)? It certainly is a convenient way to move an application and its dependencies from one place to another. But wouldn't it be nice if everything could just stay in its original location and there wouldn't be any moving of files around? Wouldn't it also be nice if you specified your required version of Jetty or Tomcat just like you do with every other dependency? The WAR-less approach is one that is catching on as emerging Java web frameworks like [Play!](http://www.playframework.org/) ditch the WAR files. With standard Java web apps we can also ditch the WAR files by simply launching an embedded Jetty or Tomcat server. Let's give this a try and see how it goes.
 
-For this experiment I'm going to use Maven and Jetty. This will still use the same standard source structure for a WAR file (_src/main/java_, _src/main/webapp_, etc). The major difference is that I will actually startup Jetty using a good-old _static void main_. This is similar to using the _jetty:run_ goal but will allow us to have the same exact setup in development and in production. The static stuff will be in _src/main/webapp_, the compiled classes will be in target/classes, and the dependencies will be right were Maven downloaded them to. First, here is a little Java class (_src/main/java/foo/Main.java_) that sets up a Jetty server and starts it:
+For this experiment I'm going to use Maven and Jetty. This will still use the same standard source structure for a WAR file (`src/main/java`, `src/main/webapp`, etc). The major difference is that I will actually startup Jetty using a good-old `static void main`. This is similar to using the `jetty:run` goal but will allow us to have the same exact setup in development and in production. The static stuff will be in `src/main/webapp`, the compiled classes will be in `target/classes`, and the dependencies will be right were Maven downloaded them to. First, here is a little Java class (`src/main/java/foo/Main.java`) that sets up a Jetty server and starts it:
 
-    
-    
+```java
     package foo;
     
     import java.io.File;
@@ -49,14 +48,11 @@ For this experiment I'm going to use Maven and Jetty. This will still use the sa
         server.join();
       }
     }
-    
+```
 
+As you can see, Main just references the webapp directory so I don't have to copy the stuff from there to another place. Next I have a little test servlet (`src/main/java/foo/HelloServlet.java`):
 
-
-As you can see, Main just references the webapp directory so I don't have to copy the stuff from there to another place. Next I have a little test servlet (_src/main/java/foo/HelloServlet.java_):
-
-    
-    
+```java
     package foo;
     
     import java.io.IOException;
@@ -76,15 +72,11 @@ As you can see, Main just references the webapp directory so I don't have to cop
         out.close();
       }
     }
-    
+```
 
+And now the `web.xml` file (`src/main/webapp/WEB-INF/web.xml`):
 
-
-And now the _web.xml_ file (_src/main/webapp/WEB-INF/web.xml_):
-
-    
-    
-    
+```xml
     <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemalocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
       <servlet>
         <servlet-name>HelloServlet</servlet-name>
@@ -95,15 +87,11 @@ And now the _web.xml_ file (_src/main/webapp/WEB-INF/web.xml_):
         <url-pattern>/</url-pattern>
       </servlet-mapping>
     </web-app>
-    
+```
 
+And finally a `pom.xml` file that specifies Jetty as a dependency and provides an easy way to run the Main class:
 
-
-And finally a _pom.xml_ file that specifies Jetty as a dependency and provides an easy way to run the Main class:
-
-    
-    
-    
+```xml
     <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemalocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     
       <modelversion>4.0.0</modelversion>
@@ -148,27 +136,19 @@ And finally a _pom.xml_ file that specifies Jetty as a dependency and provides a
         </plugins>
       </build>
     </project>
-    
-
-
+```
 
 And now simply run:
 
-    
-    
     mvn compile exec:java
-    
 
+Maven compiles my Java classes into `target/classes` and then the `exec:java` goal runs the Main which finds the other WAR assets in the `src/main/webapp` directory. If you have been following along, make a request to [http://localhost:8080/](http://localhost:8080/) to verify that it works (which it should).
 
+There are two alternatives to running Jetty from Maven. You can use the Maven appassembler plugin to create start scripts containing the correct `CLASSPATH` references and then launch Main class using the generated scripts. Or you can use the Maven assembly or shade plugin to create a JAR containing the application and all of its dependencies.
 
-Maven compiles my Java classes into _target/classes_ and then the _exec:java_ goal runs the Main which finds the other WAR assets in the _src/main/webapp_ directory. If you have been following along, make a request to [http://localhost:8080/](http://localhost:8080/) to verify that it works (which it should).
+Here is an example section of a `pom.xml` file for using the appassembler plugin:
 
-There are two alternatives to running Jetty from Maven. You can use the Maven appassembler plugin to create start scripts containing the correct _CLASSPATH_ references and then launch Main class using the generated scripts. Or you can use the Maven assembly or shade plugin to create a JAR containing the application and all of its dependencies.
-
-Here is an example section of a _pom.xml_ file for using the appassembler plugin:
-
-    
-    
+```xml
       <plugin>
         <groupid>org.codehaus.mojo</groupid>
         <artifactid>appassembler-maven-plugin</artifactid>
@@ -192,48 +172,26 @@ Here is an example section of a _pom.xml_ file for using the appassembler plugin
           </execution>          
         </executions>
       </plugin>
-    
-
-
+```
 
 To generate the start scripts simply run:
 
-    
-    
     mvn install
-    
 
+Then to run the script set the `REPO` environment variable to your Maven repository:
 
-
-Then to run the script set the REPO environment variable to your Maven repository:
-
-    
-    
     export REPO=~/.m2/repository
-    
-
-
 
 And then simply run the script:
 
-    
-    
     sh target/bin/main
-    
 
-
-
-All of the code for this example is on github.com:
+All of the code for this example is on github.com:  
 [https://github.com/jamesward/warless_java_web_apps](https://github.com/jamesward/warless_java_web_apps)
 
 To make all of this even easier, Jetty has a Maven archetype for generating everything for you. To create a new project containing this setup run:
 
-    
-    
     mvn archetype:generate -DarchetypeGroupId=org.mortbay.jetty.archetype -DarchetypeArtifactId=jetty-archetype-assembler -DarchetypeVersion=7.5.0-SNAPSHOT
-    
-
-
 
 And now you are ready to build a WAR-less Java web app!
 

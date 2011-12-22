@@ -3,8 +3,9 @@ article {
   a { @extend .force-wrap; }
   header {
     position: relative;
-    padding-top: 2em;
-    padding-bottom: 1em;
+// switch the date & comments to below the title
+//    padding-top: 2em;
+    padding-bottom: 3em;
     margin-bottom: 1em;
     background: $img-border bottom left repeat-x;
     h1 {
@@ -19,7 +20,8 @@ article {
       &.meta {
         @extend .sans;
         text-transform: uppercase;
-        position: absolute; top: 0;
+// switch the date & comments to below the title
+//        position: absolute; top: 0;
       }
     }
     @media only screen and (min-width: 768px) {

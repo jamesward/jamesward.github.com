@@ -24,20 +24,12 @@ Heroku provides a really nifty and simple way to provision new external systems 
 
 With that in mind lets walk through a simple application that uses Jetty's MongoDB-backed sessions.  You can [get all of this code from github](https://github.com/jamesward/jetty-mongo-session-test) or just clone the github repo:
 
-
-    
-    
     git clone git://github.com/jamesward/jetty-mongo-session-test.git
-    
+
+First lets setup a Maven build that will include the Jetty and MongoDB driver dependencies.  We will use `appassembler-maven-plugin` to generate a script that starts the Jetty server.  Here is the pom.xml Maven build descriptor:
 
 
-
-First lets setup a Maven build that will include the Jetty and MongoDB driver dependencies.  We will use "appassembler-maven-plugin" to generate a script that starts the Jetty server.  Here is the pom.xml Maven build descriptor:
-
-
-    
-    
-    
+```xml
     <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemalocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
         <modelversion>4.0.0</modelversion>
         <groupid>com.heroku.test</groupid>
@@ -90,17 +82,13 @@ First lets setup a Maven build that will include the Jetty and MongoDB driver de
                 </plugin>
             </plugins>
         </build>
-        
     </project>
-    
+```
+
+The `appassembler-maven-plugin` references a class "com.heroku.test.Main" that hasn't been created yet.  We will get to that in a minute.  First lets create a simple servlet that will store an object in the session.  Here is the servlet from the `src/main/java/com/heroku/test/servlet/TestServlet.java` file:
 
 
-
-The "appassembler-maven-plugin" references a class "com.heroku.test.Main" that hasn't been created yet.  We will get to that in a minute.  First lets create a simple servlet that will store an object in the session.  Here is the servlet from the "src/main/java/com/heroku/test/servlet/TestServlet.java" file:
-
-
-    
-    
+```java
     package com.heroku.test.servlet;
     
     
@@ -165,18 +153,14 @@ The "appassembler-maven-plugin" references a class "com.heroku.test.Main" that h
         }
     
     }
-    
+```
+
+As you can see there is nothing special here.  We are using the regular `HttpSession` normally, storing and retrieving a `Serializable` object named `CountHolder`.  The application simply displays the number or times the servlet has been accessed by a user (where "user" really means a request that passes the same `JSESSIONID` cookie as a previous request).
+
+Now lets map that servlet to the `/` URL pattern in the web app descriptor (`src/main/webapp/WEB-INF/web.xml`):
 
 
-
-As you can see there is nothing special here.  We are using the regular HttpSession normally, storing and retrieving a _Serializable_ object named _CountHolder_.  The application simply displays the number or times the servlet has been accessed by a user (where "user" really means a request that passes the same JSESSIONID cookie as a previous request).
-
-Now lets map that servlet to the "/" URL pattern in the web app descriptor (src/main/webapp/WEB-INF/web.xml):
-
-
-    
-    
-    
+```xml
     <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemalocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         
         <servlet>
@@ -195,17 +179,13 @@ Now lets map that servlet to the "/" URL pattern in the web app descriptor (src/
         </servlet-mapping>
     
     </web-app>
-    
+```
 
+I put a servlet mapping in for `.ico` because some browsers automatically request `favicon.ico`, and those requests if not mapped to something will map to our servlet and make the count appear to jump.
 
+Now lets create that `com.heroku.test.Main` class that will configure Jetty and start it.  One reason we are using a Java class to start Jetty is because we are trying to avoid putting the MongoDB connection information in a text file.  Heroku add-ons place their connection information for the external systems in environment variables.  We could copy that information into a plain XML Jetty config file but that is an anti-pattern because if the add-on provider needs to change the connection information (perhaps for failover purposes) then our application would stop working until we manually updated the config file.  So our simple Main class will just read the connection information from an environment variable and configure Jetty at runtime.  Here is the source for the `src/main/java/com/heroku/test/Main.java` file:
 
-I put a servlet mapping in for ".ico" because some browsers automatically request "favicon.ico", and those requests if not mapped to something will map to our servlet and make the count appear to jump.
-
-Now lets create that "com.heroku.test.Main" class that will configure Jetty and start it.  One reason we are using a Java class to start Jetty is because we are trying to avoid putting the MongoDB connection information in a text file.  Heroku add-ons place their connection information for the external systems in environment variables.  We could copy that information into a plain XML Jetty config file but that is an anti-pattern because if the add-on provider needs to change the connection information (perhaps for failover purposes) then our application would stop working until we manually updated the config file.  So our simple Main class will just read the connection information from an environment variable and configure Jetty at runtime.  Here is the source for the "src/main/java/com/heroku/test/Main.java" file:
-
-
-    
-    
+```java
     package com.heroku.test;
     
     import java.util.Date;
@@ -266,212 +246,99 @@ Now lets create that "com.heroku.test.Main" class that will configure Jetty and 
         }
     
     }
-    
+```
 
-
-
-As you can see the _MongoSessionManager_ is being configured based on the _MONGOHQ_URL_ environment variable, the Jetty server is being configured to use the _MongoSessionManager_ and pointed to the web app location, and then Jetty is started.
+As you can see the `MongoSessionManager` is being configured based on the `MONGOHQ_URL` environment variable, the Jetty server is being configured to use the `MongoSessionManager` and pointed to the web app location, and then Jetty is started.
 
 Now lets give it a try!  If you want to run everything locally then you will need to have [Maven 3](http://maven.apache.org/) and [MongoDB](http://www.mongodb.org/) installed and started.  Then run the Maven build
 
-    
-    
     mvn package
+
+This will use the `appassembler-maven-plugin` to generate the start script which sets up the `CLASSPATH` and then runs the `com.heroku.test.Main` class.  Before we run we need to set the environment variable to point to our local MongoDB:
+
+  * On Windows:
+
+        set MONGOHQ_URL=mongodb://127.0.0.1:27017/test
     
-
-
-
-This will use the _appassembler-maven-plugin_ to generate the start script which sets up the _CLASSPATH_ and then runs the _com.heroku.test.Main_ class.  Before we run we need to set the environment variable to point to our local MongoDB:
-
-
-
-
-  * 
-On Windows:
-
+  * On Linux/Mac:
     
-    
-    set MONGOHQ_URL=mongodb://127.0.0.1:27017/test
-    
-
-
-
-
-
-  * 
-On Linux/Mac:
-
-    
-    
-    export MONGOHQ_URL=mongodb://127.0.0.1:27017/test
-    
-
-
-
-
-
+        export MONGOHQ_URL=mongodb://127.0.0.1:27017/test
 
 Now run the generated start script:
 
+  * On Windows:
 
-  * 
-On Windows:
+        target\bin\webapp.bat
 
-    
-    
-    target\bin\webapp.bat
-    
+  * On Linux/Mac:
 
+        sh target/bin/webapp
 
-
-
-
-  * 
-On Linux/Mac:
-
-    
-    
-    sh target/bin/webapp
-    
-
-
-
-
-
-
-Test the app in your browser by visiting:
+Test the app in your browser by visiting:  
 [http://localhost:8080/](http://localhost:8080/)
 
 Refresh the page a few times to verify that the count is increasing.
 
 This is just testing one instance of the application which isn't very exciting since part of the purpose of moving the session out of memory and into an external system is to handle scalability.  So lets start up another instance of the app on a different port and make sure that the session is consistent between both servers.  In another terminal window / command prompt start up a second server on port 9090:
 
-
-
-
-
-  * 
-On Windows:
-
+  * On Windows:
     
-    
-    set MONGOHQ_URL=mongodb://127.0.0.1:27017/test
-    set PORT=9090
-    target\bin\webapp.bat
-    
+        set MONGOHQ_URL=mongodb://127.0.0.1:27017/test
+        set PORT=9090
+        target\bin\webapp.bat
 
+  * On Linux/Mac:
 
+        export MONGOHQ_URL=mongodb://127.0.0.1:27017/test
+        export PORT=9090
+        sh target/bin/webapp
 
-
-
-  * 
-On Linux/Mac:
-
-    
-    
-    export MONGOHQ_URL=mongodb://127.0.0.1:27017/test
-    export PORT=9090
-    sh target/bin/webapp
-    
-
-
-
-
-
-
-Now in your browser make a few requests to:
+Now in your browser make a few requests to:  
 [http://localhost:9090/](http://localhost:9090/)
 
 Verify that the session is consistent between the two servers.
 
-Now lets deploy this app on the cloud with Heroku.  As mentioned earlier we need a file named "Procfile" in the root directory that will tell Heroku what process to run when a dyno is started.  Here is the Procfile for this application:
+Now lets deploy this app on the cloud with Heroku.  As mentioned earlier we need a file named `Procfile` in the root directory that will tell Heroku what process to run when a dyno is started.  Here is the Procfile for this application:
 
-    
-    
     web: sh target/bin/webapp
-    
-
-
 
 To create and deploy the application you will need to install [git](http://git-scm.com/) & the [Heroku Toolbelt](http://toolbelt.heroku.com), create an [Heroku](http://heroku.com/signup), and since we will be using add-ons you will need to [verify your Heroku account](http://heroku.com/verify).  Each application your create on Heroku gets 750 free dyno hours per month.  So as long as you don't go above that and you stick with the free tier of the MongoHQ add-on, then you won't be billed for anything.
 
 Login to Heroku using the heroku command line interface:
 
-
-    
-    
     heroku login
-    
-
-
 
 If you haven't already setup an SSH key for Heroku then the login process will walk you through that.
 
 In the root directory of this project create the app on Heroku with the "cedar" stack and the free MongoHQ add-on:
 
-
-    
-    
     heroku create --stack cedar --addons mongohq:free
     
-
-
-
 Upload your application to Heroku using git:
 
-    
-    
     git push heroku master
     
-
-
-
 Open the application in your browser:
 
-    
-    
     heroku open
     
-
-
-
 If you want to add more dynos handling web requests then run:
 
-    
-    
     heroku scale web=2
-    
-
-
 
 To see what is running on Heroku run:
 
-    
-    
     heroku ps
-    
-
-
 
 If you want to turn off all of the dynos for your application just scale to 0:
 
-    
-    
     heroku scale web=0
-    
-
-
 
 To see the logging information for your application run:
 
-    
-    
     heroku logs
-    
 
-
-
-To see a live version of this demo visit:
+To see a live version of this demo visit:  
 [http://young-wind-7462.herokuapp.com/](http://young-wind-7462.herokuapp.com/)
 
 Well, there you go.  You've learned how to avoid sticky sessions and session replication by moving session state to an external MongoDB system that can be scaled independently of the web tier.  You've also learned how to run this on the cloud with Heroku.  Let me know if you have any questions.

@@ -17,19 +17,10 @@ This week I'm starting a Java User Group tour where I'll be travelling to JUGs a
 
 > Heroku is a Polyglot Cloud Application Platform that makes it easy to deploy Java, Play! and Scala apps on the cloud. Deployment is as simple as doing a "git push". This session will teach you how to instantly deploy and scale Java, Play! and Scala apps on Heroku.
 
-
-
 I'm still scheduling JUGs but here are the first two I'll be doing:
 
-
-
-
   * [Los Angeles JUG - October 11](http://www.lajug.org/index.html)
-
-
   * [Utah / Salt Lake City / Murray JUG - October 20](http://www.ujug.org/)
-
-
 
 There will be more to come and if you'd like this talk at your local Java User Group, let your leader know and have them email me: jw <at> heroku <dot> com
 

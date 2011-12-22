@@ -3,6 +3,8 @@
 // If you need a handy color picker try http://hslpicker.com
 
 //$header-bg: #263347;
+$header-bg: #0e0c11 image-url("james_profile_2011.jpg") no-repeat top right;
+$header-border: #444444;
 //$subtitle-color: lighten($header-bg, 58);
 //$nav-bg: desaturate(lighten(#8fc17a, 18), 5);
 //$nav-bg-front: image-url('noise.png');
@@ -41,3 +43,5 @@
 //$pre-bg: $base03;
 //$pre-border: darken($base02, 5);
 //$pre-color: $base1;
+
+$link-color-visited: darken(#165b94, 3)

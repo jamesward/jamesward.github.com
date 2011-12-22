@@ -14,13 +14,7 @@ categories:
 
 The Heroku Java User Group Tour continues next week:
 
-
-
-
   * [Tuesday December 6 at the Central Ohio JUG](http://www.cojug.org/index.php?option=com_eventlist&Itemid=27&func=details&did=113)
-
-
   * [Thursday December 8 at the Orange County JUG](http://www.ocjug.org/presos/abstract.jsp?id=117)
-
 
 The sessions will teach you how to deploy Java, Play! and Scala apps on the cloud with Heroku.  Hope to see you there!
