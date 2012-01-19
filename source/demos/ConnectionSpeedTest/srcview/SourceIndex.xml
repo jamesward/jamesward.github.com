@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of ConnectionSpeedTest</title>
+	<nodes>
+		<node icon="classpathIcon" label="src" expanded="true">
+			<node icon="packageIcon" label="flex.net" expanded="true">
+				<node icon="actionScriptIcon" label="AMFConnection.as" url="source/flex/net/AMFConnection.as.html"/>
+				<node icon="actionScriptIcon" label="AMFResponder.as" url="source/flex/net/AMFResponder.as.html"/>
+				<node icon="actionScriptIcon" label="IAMFResponder.as" url="source/flex/net/IAMFResponder.as.html"/>
+			</node>
+			<node icon="packageIcon" label="mx.messaging.channels" expanded="true">
+				<node icon="actionScriptIcon" label="AMFChannel2.as" url="source/mx/messaging/channels/AMFChannel2.as.html"/>
+				<node icon="actionScriptIcon" label="AMFConnectionChannel.as" url="source/mx/messaging/channels/AMFConnectionChannel.as.html"/>
+			</node>
+			<node icon="mxmlAppIcon" selected="true" label="ConnectionSpeedTest.mxml" url="source/ConnectionSpeedTest.mxml.html"/>
+		</node>
+	</nodes>
+</index>

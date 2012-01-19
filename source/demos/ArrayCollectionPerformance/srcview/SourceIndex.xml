@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of ArrayCollectionPerformance</title>
+	<nodes>
+		<node label="html-template">
+			<node label="AC_OETags.js" url="source/html-template/AC_OETags.js.txt"/>
+			<node icon="htmlIcon" label="index.template.html" url="source/html-template/index.template.html"/>
+			<node icon="swfIcon" label="playerProductInstall.swf" url="source/html-template/playerProductInstall.swf"/>
+		</node>
+		<node label="libs">
+		</node>
+		<node icon="classpathIcon" label="src" expanded="true">
+			<node icon="mxmlAppIcon" selected="true" label="ArrayCollectionPerformance.mxml" url="source/ArrayCollectionPerformance.mxml.html"/>
+			<node icon="mxmlIcon" label="InstancePerformance.mxml" url="source/InstancePerformance.mxml.html"/>
+		</node>
+	</nodes>
+</index>

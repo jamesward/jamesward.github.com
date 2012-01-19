@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteRule  ^app$                 /demos/FlexReplaceState/app/ [L,R]
+RewriteRule  ^app/                 /demos/FlexReplaceState/FlexReplaceState.html [L]

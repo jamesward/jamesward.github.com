@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of FlexPaint4</title>
+	<nodes>
+		<node label="src">
+			<node icon="actionScriptIcon" label="DrawingArea.as" url="source/DrawingArea.as.html"/>
+			<node icon="mxmlAppIcon" selected="true" label="FlexPaint4.mxml" url="source/FlexPaint4.mxml.html"/>
+		</node>
+	</nodes>
+	<zipfile label="Download source (ZIP, 4K)" url="FlexPaint4.zip">
+	</zipfile>
+	<sdklink label="Download Flex SDK" url="http://www.adobe.com/go/flex4_sdk_download">
+	</sdklink>
+</index>

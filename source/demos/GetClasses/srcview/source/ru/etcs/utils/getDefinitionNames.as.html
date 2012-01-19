@@ -1,0 +1,557 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>getDefinitionNames.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptASDoc">/**
+* getDefinitionNames by Denis Kolyako. August 13, 2008. Updated September 16, 2009.
+* Visit http://etcs.ru for documentation, updates and more free code.
+*
+* You may distribute this class freely, provided it is not modified in any way (including
+* removing this header or changing the package path).
+* 
+*
+* Please contact etc[at]mail.ru prior to distributing modified versions of this class.
+*/</span>
+<span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">ru</span>.<span class="ActionScriptDefault_Text">etcs</span>.<span class="ActionScriptDefault_Text">utils</span> <span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">display</span>.<span class="ActionScriptDefault_Text">LoaderInfo</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">utils</span>.<span class="ActionScriptDefault_Text">ByteArray</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * getDefinitionNames function
+     * 
+     * @author                    etc
+     * @version                    2.0
+     * @playerversion            Flash 9.0.45+
+     * @langversion                3.0
+     */</span>
+    <span class="ActionScriptASDoc">/**
+     * Return an array of class names in LoaderInfo object.
+     * 
+     * @param    data        Associated LoaderInfo object or a ByteArray, which contains swf data.
+     * 
+     * @param    extended    If false, function returns only classes &amp; interfaces.
+     *                         If true, function return all visible definitions (classes, interfaces, functions, namespaces, variables, constants, etc.).
+     *                         Extended mode is slightly slower than a regular search.
+     * 
+     * @param    linkedOnly    If true, function returns only linked classes (objects with linkage), MUCH faster than regular or extended search.
+     *                         This mode is preferable if you need only graphic resources (sprites, bitmaps, fonts, etc.).
+     *                         NB: &quot;extended&quot; parameter will be ignored if this argument is true.    
+     */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getDefinitionNames</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">data</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Object</span>, <span class="ActionScriptDefault_Text">extended</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>, <span class="ActionScriptDefault_Text">linkedOnly</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">bytes</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span>;
+        
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">data</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">LoaderInfo</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">bytes</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">data</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">LoaderInfo</span><span class="ActionScriptBracket/Brace">)</span>.<span class="ActionScriptDefault_Text">bytes</span>;
+        <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">data</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">bytes</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">data</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">ByteArray</span>;
+        <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&apos;Error #1001: The specified data is invalid&apos;</span><span class="ActionScriptBracket/Brace">)</span>;
+        
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">position</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">position</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">finder</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Finder</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Finder</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bytes</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">position</span>;
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">finder</span>.<span class="ActionScriptDefault_Text">getDefinitionNames</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">extended</span>, <span class="ActionScriptDefault_Text">linkedOnly</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">utils</span>.<span class="ActionScriptDefault_Text">ByteArray</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">utils</span>.<span class="ActionScriptDefault_Text">Endian</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">geom</span>.<span class="ActionScriptDefault_Text">Rectangle</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">system</span>.<span class="ActionScriptDefault_Text">ApplicationDomain</span>;
+
+<span class="ActionScriptASDoc">/**
+ * @private
+ */</span>
+<span class="ActionScriptReserved">internal</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">Finder</span> <span class="ActionScriptBracket/Brace">{</span>
+        
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">Finder</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bytes</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SWFByteArray</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bytes</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_data</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">SWFByteArray</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_stringTable</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_namespaceTable</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span>;
+
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_multinameTable</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span>;
+            
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getDefinitionNames</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">extended</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span>, <span class="ActionScriptDefault_Text">linkedOnly</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">definitions</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">tag</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">id</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">length</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">minorVersion</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">majorVersion</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">position</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">index</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">int</span>;
+        
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">bytesAvailable</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">tag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUnsignedShort</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">tag</span> <span class="ActionScriptOperator">&gt;&gt;</span> 6;
+            <span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">tag</span> <span class="ActionScriptOperator">&amp;</span> 0<span class="ActionScriptDefault_Text">x3F</span>;
+            <span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">==</span> 0<span class="ActionScriptDefault_Text">x3F</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">?</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUnsignedInt</span><span class="ActionScriptBracket/Brace">()</span> <span class="ActionScriptOperator">:</span> <span class="ActionScriptDefault_Text">length</span>;
+            <span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">position</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">linkedOnly</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">==</span> 76<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUnsignedShort</span><span class="ActionScriptBracket/Brace">()</span>;
+                    
+                    <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUnsignedShort</span><span class="ActionScriptBracket/Brace">()</span>; <span class="ActionScriptComment">// Object ID
+</span>                        <span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readString</span><span class="ActionScriptBracket/Brace">()</span>;
+                        <span class="ActionScriptDefault_Text">index</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">name</span>.<span class="ActionScriptDefault_Text">lastIndexOf</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&apos;.&apos;</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">index</span> <span class="ActionScriptOperator">&gt;=</span> 0<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">name</span>.<span class="ActionScriptDefault_Text">substr</span><span class="ActionScriptBracket/Brace">(</span>0, <span class="ActionScriptDefault_Text">index</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&apos;::&apos;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">name</span>.<span class="ActionScriptDefault_Text">substr</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">index</span> <span class="ActionScriptOperator">+</span> 1<span class="ActionScriptBracket/Brace">)</span>; <span class="ActionScriptComment">// Fast. Simple. Cheat ;)
+</span>                        <span class="ActionScriptDefault_Text">definitions</span>.<span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">else</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">switch</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">id</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">case</span> 72<span class="ActionScriptOperator">:</span>
+                    <span class="ActionScriptReserved">case</span> 82<span class="ActionScriptOperator">:</span>
+                        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">==</span> 82<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">+=</span> 4;
+                            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readString</span><span class="ActionScriptBracket/Brace">()</span>; <span class="ActionScriptComment">// identifier
+</span>                        <span class="ActionScriptBracket/Brace">}</span>
+                        
+                        <span class="ActionScriptDefault_Text">minorVersion</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUnsignedShort</span><span class="ActionScriptBracket/Brace">()</span>;
+                        <span class="ActionScriptDefault_Text">majorVersion</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUnsignedShort</span><span class="ActionScriptBracket/Brace">()</span>;
+                        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">minorVersion</span> <span class="ActionScriptOperator">==</span> 0<span class="ActionScriptDefault_Text">x0010</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">majorVersion</span> <span class="ActionScriptOperator">==</span> 0<span class="ActionScriptDefault_Text">x002E</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">definitions</span>.<span class="ActionScriptDefault_Text">push</span>.<span class="ActionScriptDefault_Text">apply</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">definitions</span>, <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">getDefinitionNamesInTag</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">extended</span><span class="ActionScriptBracket/Brace">))</span>;
+                    <span class="ActionScriptReserved">break</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">length</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">definitions</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+    
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getDefinitionNamesInTag</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">extended</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">classesOnly</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">extended</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">int</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">kind</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">id</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">flags</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">counter</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">ns</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">names</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_stringTable</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_namespaceTable</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_multinameTable</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">()</span>;
+        
+        <span class="ActionScriptComment">// int table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span> <span class="ActionScriptOperator">-</span> 1;
+        
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptComment">// uint table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span> <span class="ActionScriptOperator">-</span> 1;
+        
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptComment">// Double table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span> <span class="ActionScriptOperator">-</span> 1;
+        
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readDouble</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptComment">// String table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">-</span>1;
+        <span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">=</span> 1;
+        
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_stringTable</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">id</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUTFBytes</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">())</span>;
+            <span class="ActionScriptDefault_Text">id</span><span class="ActionScriptOperator">++</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptComment">// Namespace table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span> <span class="ActionScriptOperator">-</span> 1;
+        <span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">=</span> 1;
+        
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">kind</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUnsignedByte</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">ns</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">kind</span> <span class="ActionScriptOperator">==</span> 0<span class="ActionScriptDefault_Text">x16</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_namespaceTable</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">id</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ns</span>; <span class="ActionScriptComment">// only public
+</span>            <span class="ActionScriptDefault_Text">id</span><span class="ActionScriptOperator">++</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptComment">// NsSet table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span> <span class="ActionScriptOperator">-</span> 1;
+        
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+             <span class="ActionScriptDefault_Text">counter</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUnsignedByte</span><span class="ActionScriptBracket/Brace">()</span>;
+             <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">counter</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptComment">// Multiname table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span> <span class="ActionScriptOperator">-</span> 1;
+        <span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">=</span> 1;
+        
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">kind</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            
+            <span class="ActionScriptReserved">switch</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">kind</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x07</span><span class="ActionScriptOperator">:</span>
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x0D</span><span class="ActionScriptOperator">:</span>
+                    <span class="ActionScriptDefault_Text">ns</span> <span class="ActionScriptOperator">=</span>  <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+                    <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_multinameTable</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">id</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">ns</span>, <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()]</span>;
+                <span class="ActionScriptReserved">break</span>;    
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x0F</span><span class="ActionScriptOperator">:</span>
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x10</span><span class="ActionScriptOperator">:</span>
+                    <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_multinameTable</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">id</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">[</span>0, <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_stringTable</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()]]</span>;
+                <span class="ActionScriptReserved">break</span>;    
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x11</span><span class="ActionScriptOperator">:</span>
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x12</span><span class="ActionScriptOperator">:</span>
+                <span class="ActionScriptReserved">break</span>;    
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x09</span><span class="ActionScriptOperator">:</span>
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x0E</span><span class="ActionScriptOperator">:</span>
+                    <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_multinameTable</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">id</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">[</span>0, <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_stringTable</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()]]</span>;
+                    <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+                <span class="ActionScriptReserved">break</span>;    
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x1B</span><span class="ActionScriptOperator">:</span>
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x1C</span><span class="ActionScriptOperator">:</span>
+                    <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+                <span class="ActionScriptReserved">break</span>;    
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptDefault_Text">id</span><span class="ActionScriptOperator">++</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptComment">// Method table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">paramsCount</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">counter</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">paramsCount</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">counter</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">flags</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUnsignedByte</span><span class="ActionScriptBracket/Brace">()</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">flags</span> <span class="ActionScriptOperator">&amp;</span> 0<span class="ActionScriptDefault_Text">x08</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">counter</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+                
+                <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">counter</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+                    <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">flags</span> <span class="ActionScriptOperator">&amp;</span> 0<span class="ActionScriptDefault_Text">x80</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">counter</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">paramsCount</span>;
+                <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">counter</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptComment">// Metadata table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">counter</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">counter</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+                <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptComment">// Instance table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">classCount</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">count</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>;
+
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">flags</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUnsignedByte</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">flags</span> <span class="ActionScriptOperator">&amp;</span> 0<span class="ActionScriptDefault_Text">x08</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">ns</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">counter</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">counter</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>; <span class="ActionScriptComment">// iinit
+</span>            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">readTraits</span><span class="ActionScriptBracket/Brace">()</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">classesOnly</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">getName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">id</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">names</span>.<span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">classesOnly</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">names</span>;
+        
+        <span class="ActionScriptComment">// Class table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">classCount</span>;
+        
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>; <span class="ActionScriptComment">// cinit
+</span>            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">readTraits</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptComment">// Script table
+</span>        <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">traits</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span>;
+        
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">count</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>; <span class="ActionScriptComment">// init
+</span>            <span class="ActionScriptDefault_Text">traits</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">readTraits</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">true</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">traits</span>.<span class="ActionScriptDefault_Text">length</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">names</span>.<span class="ActionScriptDefault_Text">push</span>.<span class="ActionScriptDefault_Text">apply</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">names</span>, <span class="ActionScriptDefault_Text">traits</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">names</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+    
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">readTraits</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">buildNames</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">kind</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">counter</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">ns</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">id</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">traitCount</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">names</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>;
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">buildNames</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">names</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">[]</span>;
+
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">traitCount</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>; <span class="ActionScriptComment">// name
+</span>            <span class="ActionScriptDefault_Text">kind</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readUnsignedByte</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">upperBits</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">kind</span> <span class="ActionScriptOperator">&gt;&gt;</span> 4;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">lowerBits</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">kind</span> <span class="ActionScriptOperator">&amp;</span> 0<span class="ActionScriptDefault_Text">xF</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            
+            <span class="ActionScriptReserved">switch</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">lowerBits</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x00</span><span class="ActionScriptOperator">:</span>
+                <span class="ActionScriptReserved">case</span> 0<span class="ActionScriptDefault_Text">x06</span><span class="ActionScriptOperator">:</span>
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">())</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+                    <span class="ActionScriptReserved">break</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">buildNames</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">getName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">id</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">names</span>.<span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">upperBits</span> <span class="ActionScriptOperator">&amp;</span> 0<span class="ActionScriptDefault_Text">x04</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">counter</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+                <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">counter</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_data</span>.<span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">names</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+    
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">id</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">mn</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_multinameTable</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">id</span><span class="ActionScriptBracket/Brace">]</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">ns</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">mn</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(!(</span><span class="ActionScriptDefault_Text">ns</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_namespaceTable</span><span class="ActionScriptBracket/Brace">))</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">null</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">nsName</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_stringTable</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_namespaceTable</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">ns</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">String</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_stringTable</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">mn</span><span class="ActionScriptBracket/Brace">[</span>1<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">String</span>;
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">nsName</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">nsName</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&apos;::&apos;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">name</span>;
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">name</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span>
+    
+<span class="ActionScriptReserved">internal</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">SWFByteArray</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">ByteArray</span> <span class="ActionScriptBracket/Brace">{</span>
+    
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">TAG_SWF</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">&apos;FWS&apos;</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">TAG_SWF_COMPRESSED</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">&apos;CWS&apos;</span>;
+    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">SWFByteArray</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">data</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptOperator">=</span><span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">endian</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">Endian</span>.<span class="ActionScriptDefault_Text">LITTLE_ENDIAN</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">endian</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">tag</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>;
+        
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">data</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">endian</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">data</span>.<span class="ActionScriptDefault_Text">endian</span>;
+            <span class="ActionScriptDefault_Text">data</span>.<span class="ActionScriptDefault_Text">endian</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">Endian</span>.<span class="ActionScriptDefault_Text">LITTLE_ENDIAN</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">data</span>.<span class="ActionScriptDefault_Text">bytesAvailable</span> <span class="ActionScriptOperator">&gt;</span> 26<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">tag</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">data</span>.<span class="ActionScriptDefault_Text">readUTFBytes</span><span class="ActionScriptBracket/Brace">(</span>3<span class="ActionScriptBracket/Brace">)</span>;
+                
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">tag</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">SWFByteArray</span>.<span class="ActionScriptDefault_Text">TAG_SWF</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">tag</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">SWFByteArray</span>.<span class="ActionScriptDefault_Text">TAG_SWF_COMPRESSED</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_version</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">data</span>.<span class="ActionScriptDefault_Text">readUnsignedByte</span><span class="ActionScriptBracket/Brace">()</span>;
+                    <span class="ActionScriptDefault_Text">data</span>.<span class="ActionScriptDefault_Text">readUnsignedInt</span><span class="ActionScriptBracket/Brace">()</span>;
+                    <span class="ActionScriptDefault_Text">data</span>.<span class="ActionScriptDefault_Text">readBytes</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">tag</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">SWFByteArray</span>.<span class="ActionScriptDefault_Text">TAG_SWF_COMPRESSED</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">uncompress</span><span class="ActionScriptBracket/Brace">()</span>;
+                <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&apos;Error #2124: Loaded file is an unknown type.&apos;</span><span class="ActionScriptBracket/Brace">)</span>;
+                
+                <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">readHeader</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptDefault_Text">data</span>.<span class="ActionScriptDefault_Text">endian</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">endian</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+        
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_bitIndex</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_version</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">version</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_version</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+    
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_frameRate</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span>;
+    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">frameRate</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_frameRate</span>;    
+    <span class="ActionScriptBracket/Brace">}</span>
+    
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_rect</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Rectangle</span>;
+    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">rect</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Rectangle</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_rect</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">writeBytesFromString</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bytesHexString</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">length</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytesHexString</span>.<span class="ActionScriptDefault_Text">length</span>;
+        
+        <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0;<span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">&lt;</span><span class="ActionScriptDefault_Text">length</span>;<span class="ActionScriptDefault_Text">i</span> <span class="ActionScriptOperator">+=</span> 2<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">hexByte</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytesHexString</span>.<span class="ActionScriptDefault_Text">substr</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">i</span>, 2<span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">byte</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">parseInt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">hexByte</span>, 16<span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">writeByte</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">byte</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">readRect</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Rectangle</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">pos</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">position</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">byte</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">pos</span><span class="ActionScriptBracket/Brace">]</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">bits</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">byte</span> <span class="ActionScriptOperator">&gt;&gt;</span> 3;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">xMin</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">readBits</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bits</span>, 5<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">/</span> 20;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">xMax</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">readBits</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bits</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">/</span> 20;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">yMin</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">readBits</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bits</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">/</span> 20;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">yMax</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">readBits</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bits</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">/</span> 20;
+        <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">pos</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">Math</span>.<span class="ActionScriptDefault_Text">ceil</span><span class="ActionScriptBracket/Brace">(((</span><span class="ActionScriptDefault_Text">bits</span> <span class="ActionScriptOperator">*</span> 4<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">-</span> 3<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">/</span> 8<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">+</span> 1;
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Rectangle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">xMin</span>, <span class="ActionScriptDefault_Text">yMin</span>, <span class="ActionScriptDefault_Text">xMax</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">xMin</span>, <span class="ActionScriptDefault_Text">yMax</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">yMin</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">readBits</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">length</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>, <span class="ActionScriptDefault_Text">start</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">-</span>1<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">start</span> <span class="ActionScriptOperator">&lt;</span> 0<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">start</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_bitIndex</span>;
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_bitIndex</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">start</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">byte</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">position</span><span class="ActionScriptBracket/Brace">]</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">out</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">shift</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">currentByteBitsLeft</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 8 <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">start</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">bitsLeft</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">currentByteBitsLeft</span>;
+        
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bitsLeft</span> <span class="ActionScriptOperator">&gt;</span> 0<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">position</span><span class="ActionScriptOperator">++</span>;
+            <span class="ActionScriptDefault_Text">out</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">readBits</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bitsLeft</span>, 0<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">|</span> <span class="ActionScriptBracket/Brace">((</span><span class="ActionScriptDefault_Text">byte</span> <span class="ActionScriptOperator">&amp;</span> <span class="ActionScriptBracket/Brace">((</span>1 <span class="ActionScriptOperator">&lt;&lt;</span> <span class="ActionScriptDefault_Text">currentByteBitsLeft</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">-</span> 1<span class="ActionScriptBracket/Brace">))</span> <span class="ActionScriptOperator">&lt;&lt;</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bitsLeft</span><span class="ActionScriptBracket/Brace">))</span>;
+        <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">else</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">out</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">byte</span> <span class="ActionScriptOperator">&gt;&gt;</span> <span class="ActionScriptBracket/Brace">(</span>8 <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">start</span><span class="ActionScriptBracket/Brace">))</span> <span class="ActionScriptOperator">&amp;</span> <span class="ActionScriptBracket/Brace">((</span>1 <span class="ActionScriptOperator">&lt;&lt;</span> <span class="ActionScriptDefault_Text">length</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">-</span> 1<span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_bitIndex</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">start</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">length</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">%</span> 8;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">start</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">&gt;</span> 7<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">position</span><span class="ActionScriptOperator">++</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">out</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">readASInt</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">result</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0, <span class="ActionScriptDefault_Text">byte</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptReserved">do</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">byte</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">readUnsignedByte</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">result</span> <span class="ActionScriptOperator">|=</span> <span class="ActionScriptBracket/Brace">(</span> <span class="ActionScriptDefault_Text">byte</span> <span class="ActionScriptOperator">&amp;</span> 0<span class="ActionScriptDefault_Text">x7F</span> <span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">&lt;&lt;</span> <span class="ActionScriptBracket/Brace">(</span> <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">*</span>7 <span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">+=</span>1;
+        <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span> <span class="ActionScriptDefault_Text">byte</span> <span class="ActionScriptOperator">&amp;</span> 1<span class="ActionScriptOperator">&lt;&lt;</span>7 <span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">result</span>;            
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">readString</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">position</span>;
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">+=</span>1<span class="ActionScriptBracket/Brace">))</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">str</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">readUTFBytes</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">i</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">position</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">+</span>1; 
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">str</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">traceArray</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">array</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptComment">// for debug
+</span>        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">out</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">&apos;&apos;</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">pos</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">array</span>.<span class="ActionScriptDefault_Text">position</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptDefault_Text">array</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> 0;
+
+        <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">array</span>.<span class="ActionScriptDefault_Text">bytesAvailable</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">str</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">array</span>.<span class="ActionScriptDefault_Text">readUnsignedByte</span><span class="ActionScriptBracket/Brace">()</span>.<span class="ActionScriptDefault_Text">toString</span><span class="ActionScriptBracket/Brace">(</span>16<span class="ActionScriptBracket/Brace">)</span>.<span class="ActionScriptDefault_Text">toUpperCase</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">str</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">str</span>.<span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">&lt;</span> 2 <span class="ActionScriptOperator">?</span> <span class="ActionScriptString">&apos;0&apos;</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">str</span> <span class="ActionScriptOperator">:</span> <span class="ActionScriptDefault_Text">str</span>;
+            <span class="ActionScriptDefault_Text">out</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">str</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">&apos; &apos;</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptDefault_Text">array</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">pos</span>;
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">out</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">readFrameRate</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_version</span> <span class="ActionScriptOperator">&lt;</span> 8<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_frameRate</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">readUnsignedShort</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptReserved">else</span> <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">fixed</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">readUnsignedByte</span><span class="ActionScriptBracket/Brace">()</span> <span class="ActionScriptOperator">/</span> 0<span class="ActionScriptDefault_Text">xFF</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_frameRate</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">readUnsignedByte</span><span class="ActionScriptBracket/Brace">()</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">fixed</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+    
+    <span class="ActionScriptASDoc">/**
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">readHeader</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span> <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">_rect</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">readRect</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">readFrameRate</span><span class="ActionScriptBracket/Brace">()</span>;        
+        <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">readShort</span><span class="ActionScriptBracket/Brace">()</span>; <span class="ActionScriptComment">// num of frames
+</span>    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

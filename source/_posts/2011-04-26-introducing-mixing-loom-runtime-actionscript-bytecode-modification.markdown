@@ -133,17 +133,11 @@ The last thing to make this all work is to tell the main application to use the 
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:s="library://ns.adobe.com/flex/spark"
                preloader="preloader.StringModifierPatcherPreloader">
-```mxml
+```
 
 Here is the result:
 
-<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100" height=
-"30">
-<param name="movie" value="/demos/MixingLoomTestApp/MixingLoomTestApp_StringModi
-fierPatcher.swf" />
-<param name="quality" value="high" />
-<embed src="/demos/MixingLoomTestApp/MixingLoomTestApp_StringModifierPatcher.swf" quality="high" width="100" height="30" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>
-</object>
+<iframe src="/demos/MixingLoomTestApp/MixingLoomTestApp_StringModifierPatcher.html" width="100%" height="80"></iframe>
 
 Exciting!  Our application code just modified itself at startup!  Now this is obviously a very trivial example but I hope it provides a basic understanding of how to use Mixing Loom as the foundation for AOP.  Let's walk through some other examples that are more exciting (and complex).
 
@@ -384,6 +378,7 @@ package preloader {
     
     }
 }
+```
 
 Finally, use the LoomApplication and the custom preloader in order to have the hooks to patch RSLs:
 
@@ -408,7 +403,7 @@ Finally, use the LoomApplication and the custom preloader in order to have the h
 </ml:LoomApplication>
 ```
 
-Notice that we can't use the dot syntax "this.debugTickler()" to call the method since the compiler won't let us do that.  Instead we have to use the object key syntax "this['debugTickler']()" in order to make the method call.  Now watch as Mixing Loom's magic wand modifies a signed Flex Framework RSL right before your very eyes:
+Notice that we can't use the dot syntax `this.debugTickler()` to call the method since the compiler won't let us do that.  Instead we have to use the object key syntax `this['debugTickler']()` in order to make the method call.  Now watch as Mixing Loom's magic wand modifies a signed Flex Framework RSL right before your very eyes:
 
 <iframe src="/demos/MixingLoomTestApp/MixingLoomTestAppWithFrameworkRSLs.html" width="300" height="30"></iframe>
 

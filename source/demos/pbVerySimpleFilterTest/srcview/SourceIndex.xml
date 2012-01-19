@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of pbVerySimpleFilterTest</title>
+	<nodes>
+		<node icon="classpathIcon" label="src" expanded="true">
+			<node icon="imageIcon" label="100_1766.JPG" url="source/100_1766.JPG.html"/>
+			<node icon="mxmlAppIcon" selected="true" label="pbVerySimpleFilterTest.mxml" url="source/pbVerySimpleFilterTest.mxml.html"/>
+			<node icon="imageIcon" label="test.jpg" url="source/test.jpg.html"/>
+			<node label="VerySimpleFilter.pbj" url="source/VerySimpleFilter.pbj"/>
+		</node>
+	</nodes>
+</index>

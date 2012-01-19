@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of SapphireComboBox</title>
+	<nodes>
+		<node icon="classpathIcon" label="src" expanded="true">
+			<node icon="mxmlIcon" label="PopUpScroller.mxml" url="source/PopUpScroller.mxml.html"/>
+			<node icon="mxmlAppIcon" selected="true" label="SapphireComboBox.mxml" url="source/SapphireComboBox.mxml.html"/>
+		</node>
+	</nodes>
+</index>

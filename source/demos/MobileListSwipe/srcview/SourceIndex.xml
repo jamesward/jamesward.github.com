@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of MobileListSwipe</title>
+	<nodes>
+		<node icon="classpathIcon" label="src" expanded="true">
+			<node icon="packageIcon" label="com.dynamicflash.util" expanded="true">
+				<node icon="actionScriptIcon" label="Base64.as" url="source/com/dynamicflash/util/Base64.as.html"/>
+			</node>
+			<node icon="packageIcon" label="twitter.api" expanded="true">
+				<node icon="actionScriptIcon" label="Twitter.as" url="source/twitter/api/Twitter.as.html"/>
+				<node icon="actionScriptIcon" label="TwitterSearch.as" url="source/twitter/api/TwitterSearch.as.html"/>
+			</node>
+			<node icon="packageIcon" label="twitter.api.data" expanded="true">
+				<node icon="actionScriptIcon" label="TwitterDirectMessage.as" url="source/twitter/api/data/TwitterDirectMessage.as.html"/>
+				<node icon="actionScriptIcon" label="TwitterStatus.as" url="source/twitter/api/data/TwitterStatus.as.html"/>
+				<node icon="actionScriptIcon" label="TwitterUser.as" url="source/twitter/api/data/TwitterUser.as.html"/>
+			</node>
+			<node icon="packageIcon" label="twitter.api.events" expanded="true">
+				<node icon="actionScriptIcon" label="TwitterEvent.as" url="source/twitter/api/events/TwitterEvent.as.html"/>
+			</node>
+			<node icon="mxmlAppIcon" selected="true" label="MobileListSwipe.mxml" url="source/MobileListSwipe.mxml.html"/>
+		</node>
+	</nodes>
+</index>

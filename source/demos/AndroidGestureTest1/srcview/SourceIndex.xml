@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of AndroidGestureTest1</title>
+	<nodes>
+		<node label="html-template">
+			<node label="AC_OETags.js" url="source/html-template/AC_OETags.js.txt"/>
+			<node icon="htmlIcon" label="index.template.html" url="source/html-template/index.template.html"/>
+		</node>
+		<node icon="mxmlAppIcon" selected="true" label="AndroidGestureTest1.as" url="source/AndroidGestureTest1.as.html"/>
+	</nodes>
+</index>

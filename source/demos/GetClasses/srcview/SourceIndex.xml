@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of GetClasses</title>
+	<nodes>
+		<node icon="classpathIcon" label="src" expanded="true">
+			<node icon="packageIcon" label="ru.etcs.utils" expanded="true">
+				<node icon="actionScriptIcon" label="getDefinitionNames.as" url="source/ru/etcs/utils/getDefinitionNames.as.html"/>
+			</node>
+			<node icon="mxmlAppIcon" selected="true" label="GetClasses.mxml" url="source/GetClasses.mxml.html"/>
+			<node icon="actionScriptIcon" label="IFoo.as" url="source/IFoo.as.html"/>
+			<node icon="actionScriptIcon" label="SomeClass1.as" url="source/SomeClass1.as.html"/>
+			<node icon="actionScriptIcon" label="SomeClass2.as" url="source/SomeClass2.as.html"/>
+			<node icon="actionScriptIcon" label="SomeClass3.as" url="source/SomeClass3.as.html"/>
+			<node icon="actionScriptIcon" label="SomeClass4.as" url="source/SomeClass4.as.html"/>
+			<node icon="actionScriptIcon" label="SomeClasses.as" url="source/SomeClasses.as.html"/>
+		</node>
+	</nodes>
+</index>

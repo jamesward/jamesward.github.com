@@ -1,0 +1,548 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>AMFChannel2.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptComment">////////////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">//  ADOBE SYSTEMS INCORPORATED
+</span><span class="ActionScriptComment">//  Copyright 2005-2007 Adobe Systems Incorporated
+</span><span class="ActionScriptComment">//  All Rights Reserved.
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">//  NOTICE: Adobe permits you to use, modify, and distribute this file
+</span><span class="ActionScriptComment">//  in accordance with the terms of the license agreement accompanying it.
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">////////////////////////////////////////////////////////////////////////////////
+</span>
+<span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">messaging</span>.<span class="ActionScriptDefault_Text">channels</span>
+<span class="ActionScriptBracket/Brace">{</span>
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">IOErrorEvent</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">NetStatusEvent</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">SecurityErrorEvent</span>;
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flex</span>.<span class="ActionScriptDefault_Text">net</span>.<span class="ActionScriptDefault_Text">AMFResponder</span>;
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">core</span>.<span class="ActionScriptDefault_Text">mx_internal</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">logging</span>.<span class="ActionScriptDefault_Text">Log</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">messaging</span>.<span class="ActionScriptDefault_Text">FlexClient</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">messaging</span>.<span class="ActionScriptDefault_Text">config</span>.<span class="ActionScriptDefault_Text">ConfigMap</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">messaging</span>.<span class="ActionScriptDefault_Text">config</span>.<span class="ActionScriptDefault_Text">ServerConfig</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">messaging</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">ChannelFaultEvent</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">messaging</span>.<span class="ActionScriptDefault_Text">messages</span>.<span class="ActionScriptDefault_Text">AbstractMessage</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">messaging</span>.<span class="ActionScriptDefault_Text">messages</span>.<span class="ActionScriptDefault_Text">CommandMessage</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">messaging</span>.<span class="ActionScriptDefault_Text">messages</span>.<span class="ActionScriptDefault_Text">ErrorMessage</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">messaging</span>.<span class="ActionScriptDefault_Text">messages</span>.<span class="ActionScriptDefault_Text">IMessage</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">resources</span>.<span class="ActionScriptDefault_Text">IResourceManager</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">resources</span>.<span class="ActionScriptDefault_Text">ResourceManager</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">utils</span>.<span class="ActionScriptDefault_Text">ObjectUtil</span>;
+
+<span class="ActionScriptReserved">use</span> <span class="ActionScriptReserved">namespace</span> <span class="ActionScriptDefault_Text">mx_internal</span>;
+
+<span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">ResourceBundle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&quot;messaging&quot;</span><span class="ActionScriptBracket/Brace">)]</span>
+
+<span class="ActionScriptASDoc">/**
+ *  The AMFChannel class provides the AMF support for messaging.
+ *  You can configure this Channel to poll the server at an interval
+ *  to approximate server push.
+ *  You can also use this Channel with polling disabled to send RPC messages
+ *  to remote destinations to invoke their methods.
+ *
+ *  &lt;p&gt;
+ *  The AMFChannel relies on network services native to Flash Player and AIR,
+ *  and exposed to ActionScript by the AMFConnection class.
+ *  This channel uses AMFConnection exclusively, and creates a new AMFConnection
+ *  per instance.
+ *  &lt;/p&gt;
+ *
+ *  &lt;p&gt;
+ *  Channels are created within the framework using the
+ *  &lt;code&gt;ServerConfig.getChannel()&lt;/code&gt; method. Channels can be constructed
+ *  directly and assigned to a ChannelSet if desired.
+ *  &lt;/p&gt;
+ *
+ *  &lt;p&gt;
+ *  Channels represent a physical connection to a remote endpoint.
+ *  Channels are shared across destinations by default.
+ *  This means that a client targetting different destinations may use
+ *  the same Channel to communicate with these destinations.
+ *  &lt;/p&gt;
+ *
+ *  &lt;p&gt;
+ *  When used in polling mode, this Channel polls the server for new messages
+ *  based on the &lt;code&gt;polling-interval-seconds&lt;/code&gt; property in the configuration file,
+ *  and this can be changed by setting the &lt;code&gt;pollingInterval&lt;/code&gt; property.
+ *  The default value is 3 seconds.
+ *  To enable polling, the channel must be connected and the &lt;code&gt;polling-enabled&lt;/code&gt;
+ *  property in the configuration file must be set to &lt;code&gt;true&lt;/code&gt;, or the
+ *  &lt;code&gt;pollingEnabled&lt;/code&gt; property of the Channel must be set to &lt;code&gt;true&lt;/code&gt;.
+ *  &lt;/p&gt;
+ */</span>
+<span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">AMFChannel2</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">AMFConnectionChannel</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Constructor
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     *  Creates an new AMFChannel instance.
+     *
+     *  @param id The id of this Channel.
+     *
+     *  @param uri The uri for this Channel.
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">AMFChannel2</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">id</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>, <span class="ActionScriptDefault_Text">uri</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">id</span>, <span class="ActionScriptDefault_Text">uri</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Variables
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     * @private
+     * Flag used to indicate that the channel is in the process of reconnecting
+     * with the session id in the url.
+     */</span>
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_reconnectingWithSessionId</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span>;
+
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     *  Flag used to control when we need to handle NetStatusEvents.
+     *  If the channel has shutdown due to reaching a connect timeout we need to
+     *  continue listening for events (such as 404s) but we&apos;ve already shutdown so
+     *  we must ignore them.
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_ignoreNetStatusEvents</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span>;
+
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     */</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">resourceManager</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">IResourceManager</span> <span class="ActionScriptOperator">=</span>
+                                    <span class="ActionScriptDefault_Text">ResourceManager</span>.<span class="ActionScriptDefault_Text">getInstance</span><span class="ActionScriptBracket/Brace">()</span>;
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Properties
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptComment">//----------------------------------
+</span>    <span class="ActionScriptComment">//  piggybackingEnabled
+</span>    <span class="ActionScriptComment">//----------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     *  Indicates whether this channel will piggyback poll requests along
+     *  with regular outbound messages when an outstanding poll is not in
+     *  progress. This allows the server to piggyback data for the client
+     *  along with its response to client&apos;s message.
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">piggybackingEnabled</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">internalPiggybackingEnabled</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">piggybackingEnabled</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">internalPiggybackingEnabled</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//----------------------------------
+</span>    <span class="ActionScriptComment">//  pollingEnabled
+</span>    <span class="ActionScriptComment">//----------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     *  Indicates whether this channel is enabled to poll.
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">pollingEnabled</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">internalPollingEnabled</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">pollingEnabled</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">internalPollingEnabled</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//----------------------------------
+</span>    <span class="ActionScriptComment">//  pollingInterval
+</span>    <span class="ActionScriptComment">//----------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     *  Provides access to the polling interval for this Channel.
+     *  The value is in milliseconds.
+     *  This value determines how often this Channel requests messages from
+     *  the server, to approximate server push.
+     *
+     *  @throws ArgumentError If the pollingInterval is assigned a value of 0 or
+     *                        less.
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">pollingInterval</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">internalPollingInterval</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">pollingInterval</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">internalPollingInterval</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//----------------------------------
+</span>    <span class="ActionScriptComment">//  polling
+</span>    <span class="ActionScriptComment">//----------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     *  Reports whether the channel is actively polling.
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">polling</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">pollOutstanding</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//----------------------------------
+</span>    <span class="ActionScriptComment">//  protocol
+</span>    <span class="ActionScriptComment">//----------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     *  Returns the protocol for this channel (http).
+     */</span>
+    <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">protocol</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptString">&quot;http&quot;</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Overridden Public Methods
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     *  Processes polling related configuration settings.
+     */</span>
+    <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">applySettings</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">settings</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">XML</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">applySettings</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">settings</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">applyPollingSettings</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">settings</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     *  Overriding to be able to keep track of the fact that the Channel is in
+     *  the process of reconnecting with the session id, so the initial
+     *  AMFConnection call can be discarded properly in the resultHandler.
+     */</span>
+    <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">AppendToGatewayUrl</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptString">&quot;&quot;</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">_appendToURL</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptDefault_Text">value</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">AppendToGatewayUrl</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_reconnectingWithSessionId</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Protected Methods
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     *  Attempts to connect to the endpoint specified for this channel.
+     */</span>
+    <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">internalConnect</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">internalConnect</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptDefault_Text">_ignoreNetStatusEvents</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+
+        <span class="ActionScriptComment">// Ping the server to make sure that it is reachable.
+</span>        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">msg</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">CommandMessage</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">CommandMessage</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">credentials</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">operation</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CommandMessage</span>.<span class="ActionScriptDefault_Text">LOGIN_OPERATION</span>;
+            <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">body</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">credentials</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptReserved">else</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">operation</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CommandMessage</span>.<span class="ActionScriptDefault_Text">CLIENT_PING_OPERATION</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptComment">// Report the messaging version for this Channel.
+</span>        <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">CommandMessage</span>.<span class="ActionScriptDefault_Text">MESSAGING_VERSION</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">messagingVersion</span>;
+
+        <span class="ActionScriptComment">// Indicate if requesting the dynamic configuration from the server.
+</span>        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">ServerConfig</span>.<span class="ActionScriptDefault_Text">needsConfig</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">))</span>
+            <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">CommandMessage</span>.<span class="ActionScriptDefault_Text">NEEDS_CONFIG_HEADER</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+
+        <span class="ActionScriptComment">// Add the FlexClient id header.
+</span>        <span class="ActionScriptDefault_Text">setFlexClientIdOnMessage</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptDefault_Text">netConnection</span>.<span class="ActionScriptDefault_Text">call</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span>, <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">AMFResponder</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">resultHandler</span>, <span class="ActionScriptDefault_Text">faultHandler</span><span class="ActionScriptBracket/Brace">)</span>, <span class="ActionScriptDefault_Text">msg</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">Log</span>.<span class="ActionScriptDefault_Text">isDebug</span><span class="ActionScriptBracket/Brace">())</span>
+            <span class="ActionScriptDefault_Text">_log</span>.<span class="ActionScriptDefault_Text">debug</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&quot;&apos;{0}&apos; pinging endpoint.&quot;</span>, <span class="ActionScriptDefault_Text">id</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     *  Disconnects from the remote destination.
+     *  Because this channel uses a stateless HTTP connection, it sends a fire-and-forget
+     *  message to the server as it disconnects to allow the server to shut down any
+     *  session or other resources that it may be managing on behalf of this channel.
+     */</span>
+    <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">internalDisconnect</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">rejected</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptComment">// Attempt to notify the server of the disconnect.
+</span>        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(!</span><span class="ActionScriptDefault_Text">rejected</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">msg</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">CommandMessage</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">CommandMessage</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">operation</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CommandMessage</span>.<span class="ActionScriptDefault_Text">DISCONNECT_OPERATION</span>;
+            <span class="ActionScriptDefault_Text">internalSend</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">AMFFireAndForgetResponder</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span><span class="ActionScriptBracket/Brace">))</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptComment">// Shut down locally.
+</span>        <span class="ActionScriptDefault_Text">setConnected</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">false</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">internalDisconnect</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">rejected</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     *  Shuts down the underlying AMFConnection for the AMFChannel.
+     *  The reason this override is necessary is because the AMFConnection may dispatch
+     *  a NetStatusEvent after it has been closed and if we&apos;re not registered to listen for
+     *  that event the Player will throw an RTE.
+     *  The only time this can occur when the channel has been shut down due to a connect
+     *  timeout but an error (i.e. 404) response from the server returns later.
+     */</span>
+    <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">shutdownAMFConnection</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">_nc</span>.<span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">SecurityErrorEvent</span>.<span class="ActionScriptDefault_Text">SECURITY_ERROR</span>, <span class="ActionScriptDefault_Text">securityErrorHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">_nc</span>.<span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">IOErrorEvent</span>.<span class="ActionScriptDefault_Text">IO_ERROR</span>, <span class="ActionScriptDefault_Text">ioErrorHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptComment">// Leave the NetStatusEvent statusHandler registered but set the ignore flag.
+</span>        <span class="ActionScriptDefault_Text">_ignoreNetStatusEvents</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptDefault_Text">_nc</span>.<span class="ActionScriptDefault_Text">close</span><span class="ActionScriptBracket/Brace">()</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     *  Called on the status event of the associated AMFConnection when there is a
+     *  problem with the connection for this channel.
+     */</span>
+    <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">statusHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">NetStatusEvent</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_ignoreNetStatusEvents</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptReserved">return</span>; <span class="ActionScriptComment">// Ignore NetStatusEvents that are dispatched after the AMFConnection has been closed.
+</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">channelFault</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ChannelFaultEvent</span>;
+
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">Log</span>.<span class="ActionScriptDefault_Text">isDebug</span><span class="ActionScriptBracket/Brace">())</span>
+            <span class="ActionScriptDefault_Text">_log</span>.<span class="ActionScriptDefault_Text">debug</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&quot;&apos;{0}&apos; channel got status. {1}&quot;</span>, <span class="ActionScriptDefault_Text">id</span>, <span class="ActionScriptDefault_Text">ObjectUtil</span>.<span class="ActionScriptDefault_Text">toString</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>.<span class="ActionScriptDefault_Text">info</span><span class="ActionScriptBracket/Brace">))</span>;
+
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">handled</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptComment">// We should always have a non-null info object.
+</span>        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>.<span class="ActionScriptDefault_Text">info</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">info</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">event</span>.<span class="ActionScriptDefault_Text">info</span>;
+            <span class="ActionScriptComment">// If the level is error we couldn&apos;t communicate with the server.
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">info</span>.<span class="ActionScriptDefault_Text">level</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">&quot;error&quot;</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">connected</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">info</span>.<span class="ActionScriptDefault_Text">code</span>.<span class="ActionScriptDefault_Text">indexOf</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&quot;Call.Failed&quot;</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptOperator">-</span>1<span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptDefault_Text">channelFault</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ChannelFaultEvent</span>.<span class="ActionScriptDefault_Text">createEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span>,
+                                        <span class="ActionScriptReserved">false</span>, <span class="ActionScriptString">&quot;Channel.Call.Failed&quot;</span>, <span class="ActionScriptDefault_Text">info</span>.<span class="ActionScriptDefault_Text">level</span>,
+                                        <span class="ActionScriptDefault_Text">info</span>.<span class="ActionScriptDefault_Text">code</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&quot;: &quot;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">info</span>.<span class="ActionScriptDefault_Text">description</span><span class="ActionScriptBracket/Brace">)</span>
+                        <span class="ActionScriptDefault_Text">channelFault</span>.<span class="ActionScriptDefault_Text">rootCause</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">info</span>;
+                        <span class="ActionScriptComment">// Dispatch the fault.
+</span>                        <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">channelFault</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                    <span class="ActionScriptComment">/*
+                     * A AMFConnection.Call.Failed indicates that the server is
+                     * not running or the URL to the channel endpoint is incorrect.
+                     *
+                     * If we didn&apos;t receive a AMFConnection.Call.Failed, and the status
+                     * info object has a level of &quot;error&quot; then we must have received one
+                     * of:
+                     *     AMFConnection.Connect.AppShutdown
+                     *     AMFConnection.Connect.Failed
+                     *     AMFConnection.Connect.Rejected
+                     * None of these have anything to do with call processing.
+                     *
+                     * In any case, at this point we need to indicate to the channel that
+                     * it is disconnected which may trigger failover/hunting.
+                     */</span>
+                    <span class="ActionScriptDefault_Text">internalDisconnect</span><span class="ActionScriptBracket/Brace">()</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">channelFault</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ChannelFaultEvent</span>.<span class="ActionScriptDefault_Text">createEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span>,
+                                    <span class="ActionScriptReserved">false</span>, <span class="ActionScriptString">&quot;Channel.Connect.Failed&quot;</span>, <span class="ActionScriptDefault_Text">info</span>.<span class="ActionScriptDefault_Text">level</span>,
+                                    <span class="ActionScriptDefault_Text">info</span>.<span class="ActionScriptDefault_Text">code</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&quot;: &quot;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">info</span>.<span class="ActionScriptDefault_Text">description</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&quot;: url: &apos;&quot;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">endpoint</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&quot;&apos;&quot;</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptDefault_Text">channelFault</span>.<span class="ActionScriptDefault_Text">rootCause</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">info</span>;
+                    <span class="ActionScriptDefault_Text">connectFailed</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">channelFault</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+             <span class="ActionScriptBracket/Brace">}</span>
+             <span class="ActionScriptReserved">else</span>
+             <span class="ActionScriptBracket/Brace">{</span>
+                 <span class="ActionScriptComment">// Ignore AMFConnection.Connect.Closed events when the
+</span>                 <span class="ActionScriptComment">// Channel is in the process of failing over to another url but
+</span>                 <span class="ActionScriptComment">// it receives a delayed AMFConnection.Connect.Closed for the
+</span>                 <span class="ActionScriptComment">// previous failed url.
+</span>                 <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(!</span><span class="ActionScriptDefault_Text">connected</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">handled</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">info</span>.<span class="ActionScriptDefault_Text">level</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">&quot;status&quot;</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">info</span>.<span class="ActionScriptDefault_Text">code</span>.<span class="ActionScriptDefault_Text">indexOf</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&quot;Connect.Closed&quot;</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptOperator">-</span>1<span class="ActionScriptBracket/Brace">)</span>;
+                 <span class="ActionScriptReserved">else</span>
+                    <span class="ActionScriptDefault_Text">handled</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+             <span class="ActionScriptBracket/Brace">}</span>
+         <span class="ActionScriptBracket/Brace">}</span>
+         <span class="ActionScriptReserved">else</span>
+         <span class="ActionScriptBracket/Brace">{</span>
+             <span class="ActionScriptDefault_Text">handled</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+         <span class="ActionScriptBracket/Brace">}</span>
+         <span class="ActionScriptComment">// If we haven&apos;t handled the status event, perform default handling.
+</span>         <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(!</span><span class="ActionScriptDefault_Text">handled</span><span class="ActionScriptBracket/Brace">)</span>
+         <span class="ActionScriptBracket/Brace">{</span>
+             <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">errorText</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">resourceManager</span>.<span class="ActionScriptDefault_Text">getString</span><span class="ActionScriptBracket/Brace">(</span>
+                <span class="ActionScriptString">&quot;messaging&quot;</span>, <span class="ActionScriptString">&quot;invalidURL&quot;</span><span class="ActionScriptBracket/Brace">)</span>;
+             <span class="ActionScriptDefault_Text">connectFailed</span><span class="ActionScriptBracket/Brace">(C</span><span class="ActionScriptDefault_Text">hannelFaultEvent</span>.<span class="ActionScriptDefault_Text">createEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span>, <span class="ActionScriptReserved">false</span>, <span class="ActionScriptString">&quot;Channel.Connect.Failed&quot;</span>, <span class="ActionScriptString">&quot;error&quot;</span>, <span class="ActionScriptDefault_Text">errorText</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&quot; url: &apos;&quot;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">endpoint</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&quot;&apos;&quot;</span><span class="ActionScriptBracket/Brace">))</span>;
+         <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Protected Methods
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     *  Used by result and fault handlers to update the url of the underlying
+     *  AMFConnection with session id.
+     */</span>
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">handleReconnectWithSessionId</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_reconnectingWithSessionId</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_reconnectingWithSessionId</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+            <span class="ActionScriptDefault_Text">shutdownAMFConnection</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptReserved">super</span>.<span class="ActionScriptDefault_Text">internalConnect</span><span class="ActionScriptBracket/Brace">()</span>; <span class="ActionScriptComment">// To avoid another ping request.
+</span>            <span class="ActionScriptDefault_Text">_ignoreNetStatusEvents</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     *  Called in response to the server ping to check connectivity.
+     *  An error indicates that although the endpoint uri is reachable the Channel
+     *  is still not able to connect.
+     */</span>
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">faultHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ErrorMessage</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">faultEvent</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ChannelFaultEvent</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+            <span class="ActionScriptComment">// An authentication fault means we reached it which
+</span>            <span class="ActionScriptComment">// still means we can connect.
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">faultCode</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">&quot;Client.Authentication&quot;</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">resultHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">faultEvent</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ChannelFaultEvent</span>.<span class="ActionScriptDefault_Text">createEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span>, <span class="ActionScriptReserved">false</span>, <span class="ActionScriptString">&quot;Channel.Authentication.Error&quot;</span>, <span class="ActionScriptString">&quot;warn&quot;</span>, <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">faultString</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">faultEvent</span>.<span class="ActionScriptDefault_Text">rootCause</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">msg</span>;
+                <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">faultEvent</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">else</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">_log</span>.<span class="ActionScriptDefault_Text">debug</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&quot;&apos;{0}&apos; fault handler called. {1}&quot;</span>, <span class="ActionScriptDefault_Text">id</span>, <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">toString</span><span class="ActionScriptBracket/Brace">())</span>;
+
+                <span class="ActionScriptComment">// Set the server assigned FlexClient Id.
+</span>                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">FlexClient</span>.<span class="ActionScriptDefault_Text">getInstance</span><span class="ActionScriptBracket/Brace">()</span>.<span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">AbstractMessage</span>.<span class="ActionScriptDefault_Text">FLEX_CLIENT_ID_HEADER</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">FlexClient</span>.<span class="ActionScriptDefault_Text">getInstance</span><span class="ActionScriptBracket/Brace">()</span>.<span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">AbstractMessage</span>.<span class="ActionScriptDefault_Text">FLEX_CLIENT_ID_HEADER</span><span class="ActionScriptBracket/Brace">]</span>;
+
+                <span class="ActionScriptComment">// Process the features advertised by the server endpoint.
+</span>                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">CommandMessage</span>.<span class="ActionScriptDefault_Text">MESSAGING_VERSION</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">serverVersion</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">CommandMessage</span>.<span class="ActionScriptDefault_Text">MESSAGING_VERSION</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Number</span>;
+                    <span class="ActionScriptDefault_Text">handleServerMessagingVersion</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">serverVersion</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+
+                <span class="ActionScriptDefault_Text">faultEvent</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ChannelFaultEvent</span>.<span class="ActionScriptDefault_Text">createEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span>, <span class="ActionScriptReserved">false</span>, <span class="ActionScriptString">&quot;Channel.Ping.Failed&quot;</span>, <span class="ActionScriptString">&quot;error&quot;</span>, <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">faultDetail</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&quot; url: &apos;&quot;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">endpoint</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&quot;&apos;&quot;</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">faultEvent</span>.<span class="ActionScriptDefault_Text">rootCause</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">msg</span>;
+                <span class="ActionScriptDefault_Text">connectFailed</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">faultEvent</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptDefault_Text">handleReconnectWithSessionId</span><span class="ActionScriptBracket/Brace">()</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     *  @private
+     *  This method will be called if the ping message sent to test connectivity
+     *  to the server during the connection attempt succeeds.
+     */</span>
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">resultHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">IMessage</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptComment">// Update the ServerConfig with dynamic configuration
+</span>        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">ServerConfig</span>.<span class="ActionScriptDefault_Text">updateServerConfigData</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">body</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">ConfigMap</span>, <span class="ActionScriptDefault_Text">endpoint</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptComment">// Set the server assigned FlexClient Id.
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">FlexClient</span>.<span class="ActionScriptDefault_Text">getInstance</span><span class="ActionScriptBracket/Brace">()</span>.<span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">AbstractMessage</span>.<span class="ActionScriptDefault_Text">FLEX_CLIENT_ID_HEADER</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">FlexClient</span>.<span class="ActionScriptDefault_Text">getInstance</span><span class="ActionScriptBracket/Brace">()</span>.<span class="ActionScriptDefault_Text">id</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">AbstractMessage</span>.<span class="ActionScriptDefault_Text">FLEX_CLIENT_ID_HEADER</span><span class="ActionScriptBracket/Brace">]</span>;
+
+            <span class="ActionScriptComment">// Process the features advertised by the server endpoint.
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">CommandMessage</span>.<span class="ActionScriptDefault_Text">MESSAGING_VERSION</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">serverVersion</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">msg</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">CommandMessage</span>.<span class="ActionScriptDefault_Text">MESSAGING_VERSION</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Number</span>;
+                <span class="ActionScriptDefault_Text">handleServerMessagingVersion</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">serverVersion</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptDefault_Text">handleReconnectWithSessionId</span><span class="ActionScriptBracket/Brace">()</span>;
+
+        <span class="ActionScriptDefault_Text">connectSuccess</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">credentials</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptOperator">!</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">msg</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">ErrorMessage</span><span class="ActionScriptBracket/Brace">))</span>
+            <span class="ActionScriptDefault_Text">setAuthenticated</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">true</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptComment">//------------------------------------------------------------------------------
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Private Classes
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">//------------------------------------------------------------------------------
+</span>
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">messaging</span>.<span class="ActionScriptDefault_Text">MessageResponder</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">mx</span>.<span class="ActionScriptDefault_Text">messaging</span>.<span class="ActionScriptDefault_Text">messages</span>.<span class="ActionScriptDefault_Text">IMessage</span>;
+
+<span class="ActionScriptASDoc">/**
+ *  Helper class for sending a fire-and-forget disconnect message.
+ */</span>
+<span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">AMFFireAndForgetResponder</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">MessageResponder</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">AMFFireAndForgetResponder</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">message</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">IMessage</span><span class="ActionScriptBracket/Brace">)</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span>, <span class="ActionScriptDefault_Text">message</span>, <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

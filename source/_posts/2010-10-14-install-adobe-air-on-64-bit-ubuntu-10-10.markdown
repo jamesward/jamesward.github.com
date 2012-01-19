@@ -14,7 +14,7 @@ Right now Adobe AIR is only officially available for 32-bit Linux.  But it does 
 
 1. [Download the Adobe AIR .deb file](http://get.adobe.com/air/)
 
-2. In a terminal window go to the directory containing the adobeair.deb file
+2. In a terminal window go to the directory containing the `adobeair.deb` file
 
 3. Create a tmp dir: 
     

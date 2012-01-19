@@ -1,0 +1,147 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>AndroidGestureTest1.as</title>
+<link rel="stylesheet" type="text/css" href="../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptBracket/Brace">{</span>
+  <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">display</span>.<span class="ActionScriptDefault_Text">Sprite</span>;
+  <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">GestureEvent</span>;
+  <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">GesturePhase</span>;
+  <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">MouseEvent</span>;
+  <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">TouchEvent</span>;
+  <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">TransformGestureEvent</span>;
+  <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">text</span>.<span class="ActionScriptDefault_Text">AntiAliasType</span>;
+  <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">text</span>.<span class="ActionScriptDefault_Text">TextField</span>;
+  <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">text</span>.<span class="ActionScriptDefault_Text">TextFormat</span>;
+  <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">ui</span>.<span class="ActionScriptDefault_Text">Multitouch</span>;
+  <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">ui</span>.<span class="ActionScriptDefault_Text">MultitouchInputMode</span>;
+
+  <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">AndroidGestureTest1</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">Sprite</span>
+  <span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">myTextField</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">TextField</span>;
+    
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">dots</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Object</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">labels</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Object</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">labelFormat</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">TextFormat</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">dotCount</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">dotsLeft</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">TextField</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">LABEL_SPACING</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 15;
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">lastMove</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">MOVE_INTERVAL</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 100;
+        
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">AndroidGestureTest1</span><span class="ActionScriptBracket/Brace">()</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">()</span>;
+
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">labelFormat</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">TextFormat</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">labelFormat</span>.<span class="ActionScriptDefault_Text">color</span> <span class="ActionScriptOperator">=</span> 0<span class="ActionScriptDefault_Text">xACF0F2</span>;
+            <span class="ActionScriptDefault_Text">labelFormat</span>.<span class="ActionScriptDefault_Text">font</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">&quot;Helvetica&quot;</span>;
+            <span class="ActionScriptDefault_Text">labelFormat</span>.<span class="ActionScriptDefault_Text">size</span> <span class="ActionScriptOperator">=</span> 11;
+            
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotCount</span> <span class="ActionScriptOperator">=</span> 0;
+
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotsLeft</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">TextField</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotsLeft</span>.<span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">=</span> 300;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotsLeft</span>.<span class="ActionScriptDefault_Text">defaultTextFormat</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">labelFormat</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotsLeft</span>.<span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> 3;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotsLeft</span>.<span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">stage</span>.<span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotsLeft</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">updateDotsLeft</span><span class="ActionScriptBracket/Brace">()</span>;
+
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dots</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">labels</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">()</span>;
+
+            <span class="ActionScriptDefault_Text">Multitouch</span>.<span class="ActionScriptDefault_Text">inputMode</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">MultitouchInputMode</span>.<span class="ActionScriptDefault_Text">TOUCH_POINT</span>;
+            
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">stage</span>.<span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(T</span><span class="ActionScriptDefault_Text">ouchEvent</span>.<span class="ActionScriptDefault_Text">TOUCH_BEGIN</span>, <span class="ActionScriptDefault_Text">onTouchBegin</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">stage</span>.<span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(T</span><span class="ActionScriptDefault_Text">ouchEvent</span>.<span class="ActionScriptDefault_Text">TOUCH_MOVE</span>, <span class="ActionScriptDefault_Text">onTouchMove</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">stage</span>.<span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(T</span><span class="ActionScriptDefault_Text">ouchEvent</span>.<span class="ActionScriptDefault_Text">TOUCH_END</span>, <span class="ActionScriptDefault_Text">onTouchEnd</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">onTouchBegin</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">TouchEvent</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotCount</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">Multitouch</span>.<span class="ActionScriptDefault_Text">maxTouchPoints</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">dot</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Sprite</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">getCircle</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">dot</span>.<span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">stageX</span>;
+            <span class="ActionScriptDefault_Text">dot</span>.<span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">stageY</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">stage</span>.<span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">dot</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">dot</span>.<span class="ActionScriptDefault_Text">startTouchDrag</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">touchPointID</span>, <span class="ActionScriptReserved">true</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dots</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">touchPointID</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">dot</span>;
+            
+            <span class="ActionScriptOperator">++</span><span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotCount</span>;
+
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">label</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">TextField</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">getLabel</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">stageX</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&quot;, &quot;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">stageY</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">label</span>.<span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> 3;
+            <span class="ActionScriptDefault_Text">label</span>.<span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotCount</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">LABEL_SPACING</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">stage</span>.<span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">label</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">labels</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">touchPointID</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">label</span>;
+
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">updateDotsLeft</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">onTouchMove</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">TouchEvent</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptComment">//if ((new Date().time - lastMove) &gt; MOVE_INTERVAL)
+</span>            <span class="ActionScriptComment">//{
+</span>              <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">label</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">TextField</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">labels</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">touchPointID</span><span class="ActionScriptBracket/Brace">]</span>;
+              <span class="ActionScriptDefault_Text">label</span>.<span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">stageX</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&quot;, &quot;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">stageY</span><span class="ActionScriptBracket/Brace">)</span>;
+              
+            <span class="ActionScriptComment">//  lastMove = new Date().time;
+</span>            <span class="ActionScriptComment">//}
+</span>            <span class="ActionScriptComment">//else
+</span>            <span class="ActionScriptComment">//{
+</span>            <span class="ActionScriptComment">//  e.preventDefault();
+</span>            <span class="ActionScriptComment">//  e.stopImmediatePropagation();
+</span>            <span class="ActionScriptComment">//  e.stopPropagation();
+</span>            <span class="ActionScriptComment">//}
+</span>        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">onTouchEnd</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">TouchEvent</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">dot</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Sprite</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dots</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">touchPointID</span><span class="ActionScriptBracket/Brace">]</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">label</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">TextField</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">labels</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">touchPointID</span><span class="ActionScriptBracket/Brace">]</span>;
+            
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">stage</span>.<span class="ActionScriptDefault_Text">removeChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">dot</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">stage</span>.<span class="ActionScriptDefault_Text">removeChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">label</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">delete</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dots</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">touchPointID</span><span class="ActionScriptBracket/Brace">]</span>;
+            <span class="ActionScriptReserved">delete</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">labels</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">e</span>.<span class="ActionScriptDefault_Text">touchPointID</span><span class="ActionScriptBracket/Brace">]</span>;
+            
+            <span class="ActionScriptOperator">--</span><span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotCount</span>;
+
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">updateDotsLeft</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getCircle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">circumference</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 40<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Sprite</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">circle</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Sprite</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Sprite</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">circle</span>.<span class="ActionScriptDefault_Text">graphics</span>.<span class="ActionScriptDefault_Text">beginFill</span><span class="ActionScriptBracket/Brace">(</span>0<span class="ActionScriptDefault_Text">x1695A3</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">circle</span>.<span class="ActionScriptDefault_Text">graphics</span>.<span class="ActionScriptDefault_Text">drawCircle</span><span class="ActionScriptBracket/Brace">(</span>0, 0, <span class="ActionScriptDefault_Text">circumference</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">circle</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getLabel</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">initialText</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">TextField</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">label</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">TextField</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">TextField</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">label</span>.<span class="ActionScriptDefault_Text">defaultTextFormat</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">labelFormat</span>;
+            <span class="ActionScriptDefault_Text">label</span>.<span class="ActionScriptDefault_Text">selectable</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+            <span class="ActionScriptDefault_Text">label</span>.<span class="ActionScriptDefault_Text">antiAliasType</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">AntiAliasType</span>.<span class="ActionScriptDefault_Text">ADVANCED</span>;
+            <span class="ActionScriptDefault_Text">label</span>.<span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">initialText</span>;
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">label</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">updateDotsLeft</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotsLeft</span>.<span class="ActionScriptDefault_Text">text</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">&quot;Touches Remaining: &quot;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">Multitouch</span>.<span class="ActionScriptDefault_Text">maxTouchPoints</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">dotCount</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">&quot; | frameRate = &quot;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">stage</span>.<span class="ActionScriptDefault_Text">frameRate</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+  <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

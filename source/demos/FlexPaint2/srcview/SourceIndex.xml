@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of FlexPaint2</title>
+	<nodes>
+		<node icon="classpathIcon" label="src" expanded="true">
+			<node icon="mxmlAppIcon" selected="true" label="FlexPaint2.mxml" url="source/FlexPaint2.mxml.html"/>
+		</node>
+	</nodes>
+</index>

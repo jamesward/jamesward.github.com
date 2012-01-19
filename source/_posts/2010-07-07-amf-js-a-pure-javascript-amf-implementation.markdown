@@ -11,7 +11,7 @@ categories:
 - JavaScript
 ---
 
-I just finished the first version of a new pure [JavaScript library for AMF](http://github.com/jamesward/JSAMF).  I've wanted to do this for a while but didn't think it was possible since JavaScript doesn't have a ByteArray.  But then I came across this: "[High Performance JavaScript Port of ActionScript's ByteArray](http://www.adamia.com/blog/high-performance-javascript-port-of-actionscript-byteArray)".  That became the basis for [amf.js](http://github.com/jamesward/JSAMF).  Before I get into the gory details of how this works, check out some developer eye candy:
+I just finished the first version of a new pure [JavaScript library for AMF](http://github.com/jamesward/JSAMF).  I've wanted to do this for a while but didn't think it was possible since JavaScript doesn't have a ByteArray.  But then I came across this: "[High Performance JavaScript Port of ActionScript's ByteArray](http://www.adamia.com/blog/high-performance-javascript-port-of-actionscript-byteArray)".  That became the basis for [amf.js](http://github.com/jamesward/JSAMF).  Before I get into the gory details of how this works, check out some developer eye candy:  
 [http://www.jamesward.com/demos/JSAMF/censusTest.html](http://www.jamesward.com/demos/JSAMF/censusTest.html)
 
 Ok, hopefully that worked for you.  I've tested this in the latest Chrome, Firefox, Safari, and IE and they all seem to work.  It should also work on your iPad, iPhone, or Android device.

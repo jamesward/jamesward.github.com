@@ -20,14 +20,14 @@ Here is the new version:
 
 Saving the drawn image with Flash Player 10 is as simple as:
 
-    
-            var bd:BitmapData = new BitmapData(canvas.width,canvas.height);
-            bd.draw(canvas);
+```actionscript
+var bd:BitmapData = new BitmapData(canvas.width,canvas.height);
+bd.draw(canvas);
       
-            var ba:ByteArray = (new PNGEncoder()).encode(bd);
-            
-            (new FileReference()).save(ba, "doodle.png");
+var ba:ByteArray = (new PNGEncoder()).encode(bd);
 
+(new FileReference()).save(ba, "doodle.png");
+```
 
 
 This reads the image client-side, encodes it, and then initiates a save dialog.  Pretty simple stuff.  The only downside is that using this new code I'll no longer get to see the amazing things that people are drawing.  Here are some of the most interesting drawings people made with the old version:

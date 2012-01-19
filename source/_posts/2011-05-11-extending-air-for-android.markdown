@@ -12,9 +12,9 @@ categories:
 - Mobile
 ---
 
-<font color="#ff0000">*** The following is totally unsupported by Adobe ***</font>  
-
 <font color="#ff0000">*** UPDATE: [Adobe has officially added native extensions to AIR](http://www.adobe.com/devnet/air/articles/extending-air.html).  I highly recommend you use that approach instead of mine. ***</font>
+
+<font color="#ff0000">*** The following is totally unsupported by Adobe ***</font>  
 
 Adobe AIR provides a consistent platform for desktop and mobile apps.  While consistency is very important there are times when developers need to extend beyond the common APIs.  This article will walk you through how to integrate AIR for Android applications with other native APIs and functionality in the Android SDK.  It covers three common use cases for native extensibility: System Notifications, Widgets, and Application Licensing.
 

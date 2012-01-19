@@ -1,0 +1,726 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>AMFConnection.as</title>
+<link rel="stylesheet" type="text/css" href="../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptComment">////////////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">//  ADOBE SYSTEMS INCORPORATED
+</span><span class="ActionScriptComment">//  Copyright 2008 Adobe Systems Incorporated
+</span><span class="ActionScriptComment">//  All Rights Reserved.
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">//  NOTICE: Adobe permits you to use, modify, and distribute this file
+</span><span class="ActionScriptComment">//  in accordance with the terms of the license agreement accompanying it.
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">////////////////////////////////////////////////////////////////////////////////
+</span><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">flex</span>.<span class="ActionScriptDefault_Text">net</span>
+<span class="ActionScriptBracket/Brace">{</span>
+
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">ErrorEvent</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">Event</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">EventDispatcher</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">HTTPStatusEvent</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">IOErrorEvent</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">ProgressEvent</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">events</span>.<span class="ActionScriptDefault_Text">SecurityErrorEvent</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">net</span>.<span class="ActionScriptDefault_Text">ObjectEncoding</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">net</span>.<span class="ActionScriptDefault_Text">URLLoader</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">net</span>.<span class="ActionScriptDefault_Text">URLLoaderDataFormat</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">net</span>.<span class="ActionScriptDefault_Text">URLRequest</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">net</span>.<span class="ActionScriptDefault_Text">URLRequestMethod</span>;
+<span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span>.<span class="ActionScriptDefault_Text">utils</span>.<span class="ActionScriptDefault_Text">ByteArray</span>;
+
+<span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Event</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">&quot;progress&quot;</span>, <span class="ActionScriptDefault_Text">type</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">&quot;flash.events.ProgressEvent&quot;</span><span class="ActionScriptBracket/Brace">)]</span>
+
+<span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Event</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">&quot;complete&quot;</span>, <span class="ActionScriptDefault_Text">type</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">&quot;flash.events.Event&quot;</span><span class="ActionScriptBracket/Brace">)]</span>
+
+<span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Event</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">&quot;ioError&quot;</span>, <span class="ActionScriptDefault_Text">type</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">&quot;flash.events.IOErrorEvent&quot;</span><span class="ActionScriptBracket/Brace">)]</span>
+
+<span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Event</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">&quot;securityError&quot;</span>, <span class="ActionScriptDefault_Text">type</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">&quot;flash.events.SecurityErrorEvent&quot;</span><span class="ActionScriptBracket/Brace">)]</span>
+
+<span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Event</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">&quot;httpStatus&quot;</span>, <span class="ActionScriptDefault_Text">type</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">&quot;flash.events.HTTPStatusEvent&quot;</span><span class="ActionScriptBracket/Brace">)]</span>
+
+<span class="ActionScriptASDoc">/**
+ * An ActionScript alternative to the native flash.net.NetConnection class for
+ * sending AMF formatted requests over HTTP or HTTPS.
+ * 
+ * The default AMF object encoding version is AMF 3. However, AMF formatted
+ * network requests always start with AMF 0 encoding and if the version is
+ * set to AMF 3, the encoder only switches to AMF 3 on the first complex type
+ * encountered. (A complex type is considered to be a value that is not null,
+ * undefined, a Boolean, a String, a Number, an int or a uint).
+ * 
+ * @author pfarland@adobe.com
+ * @version 0.1
+ */</span>
+<span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">AMFConnection</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">EventDispatcher</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Constructor
+</span>    <span class="ActionScriptComment">// 
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     * Creates a new AMFConnection instance.
+     * 
+     * @param url The HTTP or HTTPS URL for the connection.   
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">AMFConnection</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">url</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">=</span><span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptDefault_Text">connect</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">url</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Properties
+</span>    <span class="ActionScriptComment">// 
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptComment">//----------------------------------
+</span>    <span class="ActionScriptComment">//  client
+</span>    <span class="ActionScriptComment">//----------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     * A client can be configured to receive notification of AMF response
+     * headers. If the client instance defines a suitable function of the same
+     * name as an AMF response header it will be invoked. The value of the
+     * header will be passed as the only argument.
+     */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">client</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Object</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_client</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">client</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">_client</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+
+    <span class="ActionScriptComment">//----------------------------------
+</span>    <span class="ActionScriptComment">//  connected
+</span>    <span class="ActionScriptComment">//----------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     * Determines whether a connection exists.
+     */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">connected</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_connected</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+
+    <span class="ActionScriptComment">//----------------------------------
+</span>    <span class="ActionScriptComment">//  defaultObjectEncoding
+</span>    <span class="ActionScriptComment">//----------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     * The default object encoding for all AMFConnection instances. This
+     * controls which version of AMF is used during serialization. The default
+     * is AMF 3.
+     * 
+     * @see #objectEncoding
+     * @see flash.net.ObjectEncoding
+     */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">defaultObjectEncoding</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_defaultObjectEncoding</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">defaultObjectEncoding</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">_defaultObjectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+
+    <span class="ActionScriptComment">//----------------------------------
+</span>    <span class="ActionScriptComment">//  objectEncoding
+</span>    <span class="ActionScriptComment">//----------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     * The object encoding for this AMFConnection sets which AMF version to
+     * use during serialization. If set, this version overrides the
+     * defaultObjectEncoding.
+     * 
+     * @see #defaultObjectEncoding
+     * @see flash.net.ObjectEncoding
+     */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">objectEncoding</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(!</span><span class="ActionScriptDefault_Text">objectEncodingSet</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">defaultObjectEncoding</span>;
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_objectEncoding</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">objectEncoding</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">_objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptDefault_Text">objectEncodingSet</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+
+    <span class="ActionScriptComment">//----------------------------------
+</span>    <span class="ActionScriptComment">//  url
+</span>    <span class="ActionScriptComment">//----------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     * The HTTP or HTTPS url for the AMFConnection.
+     */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">url</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_url</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Deprecated</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&quot;Please use the &apos;url&apos; property instead.&quot;</span><span class="ActionScriptBracket/Brace">)]</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">uri</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_url</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Protected Variables
+</span>    <span class="ActionScriptComment">// 
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     * Sequentially incremented counter used to generate a unique responseURI
+     * to match response messages to responders.
+     */</span> 
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">responseCounter</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+
+    <span class="ActionScriptASDoc">/**
+     * The URLLoader used to make AMF formatted HTTP and HTTPS requests for
+     * this connection.
+     */</span> 
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">urlLoader</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">URLLoader</span>;
+
+    <span class="ActionScriptASDoc">/**
+     * Manages a list of all pending requests. Each request must implement
+     * flex.net.IAMFResponder.
+     */</span>
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">pendingRequests</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">{}</span>;
+
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Public Methods
+</span>    <span class="ActionScriptComment">// 
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptASDoc">/**
+     * Adds an AMF packet-level header which is sent with every request for
+     * the life of this AMFConnection.
+     */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">addHeader</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>, <span class="ActionScriptDefault_Text">mustUnderstand</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptOperator">=</span><span class="ActionScriptReserved">false</span>, <span class="ActionScriptDefault_Text">data</span><span class="ActionScriptOperator">:*=</span><span class="ActionScriptReserved">undefined</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_amfHeaders</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptDefault_Text">_amfHeaders</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">[]</span>;
+
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">header</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFHeader</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">AMFHeader</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span>, <span class="ActionScriptDefault_Text">mustUnderstand</span>, <span class="ActionScriptDefault_Text">data</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">_amfHeaders</span>.<span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">header</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     * Makes an AMF request to the server. A connection must have been made
+     * prior to making a call. 
+     */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">call</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">command</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>, <span class="ActionScriptDefault_Text">responder</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">IAMFResponder</span>, ...<span class="ActionScriptDefault_Text">arguments</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">responseURI</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">getResponseURI</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptDefault_Text">pendingRequests</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">responseURI</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">responder</span>;
+
+        <span class="ActionScriptComment">// TODO: Support customizable batching of messages
+</span>        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">request</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFPacket</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">AMFPacket</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">objectEncoding</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">headers</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_amfHeaders</span>;
+
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">message</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFMessage</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">AMFMessage</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">command</span>, <span class="ActionScriptDefault_Text">responseURI</span>, <span class="ActionScriptDefault_Text">arguments</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">messages</span>.<span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">message</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">data</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">encodeRequest</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">request</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">send</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">data</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     * Closes the connection and clears any pending requests.
+     */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">close</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">_connected</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+        <span class="ActionScriptDefault_Text">pendingRequests</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">{}</span>; 
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">Event</span>.<span class="ActionScriptDefault_Text">COMPLETE</span>, <span class="ActionScriptDefault_Text">completeHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">HTTPStatusEvent</span>.<span class="ActionScriptDefault_Text">HTTP_STATUS</span>, <span class="ActionScriptDefault_Text">httpStatusHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">IOErrorEvent</span>.<span class="ActionScriptDefault_Text">IO_ERROR</span>, <span class="ActionScriptDefault_Text">ioErrorHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">ProgressEvent</span>.<span class="ActionScriptDefault_Text">PROGRESS</span>, <span class="ActionScriptDefault_Text">progressHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">SecurityErrorEvent</span>.<span class="ActionScriptDefault_Text">SECURITY_ERROR</span>, <span class="ActionScriptDefault_Text">securityErrorHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptComment">// TODO: Confirm this event is never dispatched by URLLoader
+</span>        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">ErrorEvent</span>.<span class="ActionScriptDefault_Text">ERROR</span>, <span class="ActionScriptDefault_Text">errorHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+        
+        <span class="ActionScriptReserved">try</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">close</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptReserved">catch</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Error</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptDefault_Text">urlLoader</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     * Connects to the URL provided. Any previous connections are closed and
+     * any outstanding requests are cleared.
+     */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">connect</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">url</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">urlLoader</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptDefault_Text">close</span><span class="ActionScriptBracket/Brace">()</span>;
+
+        <span class="ActionScriptDefault_Text">_url</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">url</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">URLLoader</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">dataFormat</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">URLLoaderDataFormat</span>.<span class="ActionScriptDefault_Text">BINARY</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">Event</span>.<span class="ActionScriptDefault_Text">COMPLETE</span>, <span class="ActionScriptDefault_Text">completeHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">HTTPStatusEvent</span>.<span class="ActionScriptDefault_Text">HTTP_STATUS</span>, <span class="ActionScriptDefault_Text">httpStatusHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">IOErrorEvent</span>.<span class="ActionScriptDefault_Text">IO_ERROR</span>, <span class="ActionScriptDefault_Text">ioErrorHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">ProgressEvent</span>.<span class="ActionScriptDefault_Text">PROGRESS</span>, <span class="ActionScriptDefault_Text">progressHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">SecurityErrorEvent</span>.<span class="ActionScriptDefault_Text">SECURITY_ERROR</span>, <span class="ActionScriptDefault_Text">securityErrorHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptComment">//TODO: Confirm this event is never dispatched by URLLoader
+</span>        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">ErrorEvent</span>.<span class="ActionScriptDefault_Text">ERROR</span>, <span class="ActionScriptDefault_Text">errorHandler</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptDefault_Text">_connected</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     * Removes any AMF headers found with the name given.
+     * 
+     * @param name The name of the header(s) to remove.
+     * 
+     * @return true if a header existed with the given name.
+     */</span> 
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">removeHeader</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">exists</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+
+        <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_amfHeaders</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0; <span class="ActionScriptDefault_Text">i</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">_amfHeaders</span>.<span class="ActionScriptDefault_Text">length</span>; <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">++</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">header</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFHeader</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_amfHeaders</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">AMFHeader</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">header</span>.<span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">_amfHeaders</span>.<span class="ActionScriptDefault_Text">splice</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">i</span>, 1<span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptDefault_Text">exists</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">exists</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Event Handlers
+</span>    <span class="ActionScriptComment">// 
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">completeHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">data</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">data</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">ByteArray</span>;
+        <span class="ActionScriptDefault_Text">response</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">data</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">errorHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ErrorEvent</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">httpStatusHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">HTTPStatusEvent</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">ioErrorHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">IOErrorEvent</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">progressHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ProgressEvent</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">securityErrorHandler</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">SecurityErrorEvent</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Protected Methods
+</span>    <span class="ActionScriptComment">// 
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getResponseURI</span><span class="ActionScriptBracket/Brace">()</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">responseURI</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">&quot;/&quot;</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">responseCounter</span>;
+        <span class="ActionScriptDefault_Text">responseCounter</span><span class="ActionScriptOperator">++</span>;
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">responseURI</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">response</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bytes</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">response</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFPacket</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">decodeResponse</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bytes</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptComment">// Report AMF headers to a configured client, if present
+</span>        <span class="ActionScriptReserved">for</span> <span class="ActionScriptReserved">each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">header</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFHeader</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">response</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">try</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">headerHandler</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Function</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">client</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">headerHandler</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">client</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">header</span>.<span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">]</span>;
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">headerHandler</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptDefault_Text">headerHandler</span>.<span class="ActionScriptDefault_Text">apply</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span>, <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">header</span>.<span class="ActionScriptDefault_Text">data</span><span class="ActionScriptBracket/Brace">])</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptBracket/Brace">}</span>
+
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">headerHandler</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">header</span>.<span class="ActionScriptDefault_Text">mustUnderstand</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptComment">// TODO: Report fault event?
+</span>                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">catch</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Error</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptComment">// Report result or status to the matching responder
+</span>        <span class="ActionScriptReserved">for</span> <span class="ActionScriptReserved">each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">message</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFMessage</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">response</span>.<span class="ActionScriptDefault_Text">messages</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">targetURI</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">message</span>.<span class="ActionScriptDefault_Text">targetURI</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">separator</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">targetURI</span>.<span class="ActionScriptDefault_Text">indexOf</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&quot;/&quot;</span>, 1<span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">requestId</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">targetURI</span>.<span class="ActionScriptDefault_Text">substring</span><span class="ActionScriptBracket/Brace">(</span>0, <span class="ActionScriptDefault_Text">separator</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">responseType</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">targetURI</span>.<span class="ActionScriptDefault_Text">substring</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">separator</span> <span class="ActionScriptOperator">+</span> 1<span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">responder</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">IAMFResponder</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">pendingRequests</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">requestId</span><span class="ActionScriptBracket/Brace">]</span>;
+            <span class="ActionScriptReserved">delete</span> <span class="ActionScriptDefault_Text">pendingRequests</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">requestId</span><span class="ActionScriptBracket/Brace">]</span>;
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">responder</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">responseType</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">&quot;onResult&quot;</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">responder</span>.<span class="ActionScriptDefault_Text">amfResult</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">message</span>.<span class="ActionScriptDefault_Text">body</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">responseType</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">&quot;onStatus&quot;</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">responder</span>.<span class="ActionScriptDefault_Text">amfStatus</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">message</span>.<span class="ActionScriptDefault_Text">body</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">send</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">data</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">urlRequest</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">URLRequest</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">URLRequest</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">url</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptDefault_Text">urlRequest</span>.<span class="ActionScriptDefault_Text">contentType</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">AMF_CONTENT_TYPE</span>;
+        <span class="ActionScriptDefault_Text">urlRequest</span>.<span class="ActionScriptDefault_Text">method</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">URLRequestMethod</span>.<span class="ActionScriptDefault_Text">POST</span>;
+        <span class="ActionScriptDefault_Text">urlRequest</span>.<span class="ActionScriptDefault_Text">data</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">data</span>;
+        <span class="ActionScriptDefault_Text">urlLoader</span>.<span class="ActionScriptDefault_Text">load</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">urlRequest</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Private Methods
+</span>    <span class="ActionScriptComment">// 
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">decodeResponse</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bytes</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFPacket</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptComment">// AMF Version
+</span>        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">version</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readUnsignedShort</span><span class="ActionScriptBracket/Brace">()</span>;
+
+        <span class="ActionScriptComment">// The response must always start in AMF0
+</span>        <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF0</span>;
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">response</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFPacket</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">AMFPacket</span><span class="ActionScriptBracket/Brace">()</span>; 
+
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">remainingBytes</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span>;
+
+        <span class="ActionScriptComment">// Headers
+</span>        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">headerCount</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readUnsignedShort</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">h</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0; <span class="ActionScriptDefault_Text">h</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">headerCount</span>; <span class="ActionScriptDefault_Text">h</span><span class="ActionScriptOperator">++</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">headerName</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readUTF</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">mustUnderstand</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readBoolean</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readInt</span><span class="ActionScriptBracket/Brace">()</span>; <span class="ActionScriptComment">// Consume header length...
+</span>
+            <span class="ActionScriptComment">// Handle AVM+ type marker
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">version</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF3</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">typeMarker</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readByte</span><span class="ActionScriptBracket/Brace">()</span>; 
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">typeMarker</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">AVMPLUS_TYPE_MARKER</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF3</span>;
+                <span class="ActionScriptReserved">else</span>
+                    <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">-</span> 1;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">headerValue</span><span class="ActionScriptOperator">:*</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readObject</span><span class="ActionScriptBracket/Brace">()</span>;
+
+            <span class="ActionScriptComment">// Read off the remaining bytes to account for the reset of 
+</span>            <span class="ActionScriptComment">// the by-reference index on each header value
+</span>            <span class="ActionScriptDefault_Text">remainingBytes</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">remainingBytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span>;
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readBytes</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">remainingBytes</span>, 0, <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">position</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">bytes</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">remainingBytes</span>;
+            <span class="ActionScriptDefault_Text">remainingBytes</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">header</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFHeader</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">AMFHeader</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">headerName</span>, <span class="ActionScriptDefault_Text">mustUnderstand</span>, <span class="ActionScriptDefault_Text">headerValue</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">response</span>.<span class="ActionScriptDefault_Text">headers</span>.<span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">header</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptComment">// Reset to AMF0 for next header
+</span>            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF0</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptComment">// Message Bodies
+</span>        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">messageCount</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readUnsignedShort</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">m</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0; <span class="ActionScriptDefault_Text">m</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">messageCount</span>; <span class="ActionScriptDefault_Text">m</span><span class="ActionScriptOperator">++</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">targetURI</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readUTF</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">responseURI</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readUTF</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readInt</span><span class="ActionScriptBracket/Brace">()</span>; <span class="ActionScriptComment">// Consume message body length...
+</span>
+            <span class="ActionScriptComment">// Handle AVM+ type marker
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">version</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF3</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readByte</span><span class="ActionScriptBracket/Brace">()</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">AVMPLUS_TYPE_MARKER</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF3</span>;
+                <span class="ActionScriptReserved">else</span>
+                    <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">-</span> 1;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">messageBody</span><span class="ActionScriptOperator">:*</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readObject</span><span class="ActionScriptBracket/Brace">()</span>;
+
+            <span class="ActionScriptComment">// Read off the remaining bytes to account for the reset of 
+</span>            <span class="ActionScriptComment">// the by-reference index on each message body
+</span>            <span class="ActionScriptDefault_Text">remainingBytes</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">remainingBytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span>;
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">readBytes</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">remainingBytes</span>, 0, <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">position</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">bytes</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">remainingBytes</span>;
+            <span class="ActionScriptDefault_Text">remainingBytes</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">message</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFMessage</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">AMFMessage</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">targetURI</span>, <span class="ActionScriptDefault_Text">responseURI</span>, <span class="ActionScriptDefault_Text">messageBody</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">response</span>.<span class="ActionScriptDefault_Text">messages</span>.<span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">message</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptComment">// Reset to AMF0 for next message
+</span>            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF0</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">response</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">encodeRequest</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">request</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFPacket</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">bytes</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptBracket/Brace">()</span>;
+        <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF0</span>;
+
+        <span class="ActionScriptComment">// AMF Version
+</span>        <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeShort</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">version</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">bytesBuffer</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">ByteArray</span>;
+
+        <span class="ActionScriptComment">// AMF Headers
+</span>        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">headerCount</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">headers</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">?</span> 0 <span class="ActionScriptOperator">:</span> <span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">headers</span>.<span class="ActionScriptDefault_Text">length</span>;
+        <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeShort</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">headerCount</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptReserved">for</span> <span class="ActionScriptReserved">each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">header</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFHeader</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeUTF</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">header</span>.<span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeBoolean</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">header</span>.<span class="ActionScriptDefault_Text">mustUnderstand</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeInt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">UNKNOWN_CONTENT_LENGTH</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">// AMF 3 requires AMF 0 switch type marker
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">version</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF3</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeByte</span><span class="ActionScriptBracket/Brace">(A</span><span class="ActionScriptDefault_Text">VMPLUS_TYPE_MARKER</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">version</span>;
+
+            <span class="ActionScriptComment">// Write the header value into a temporary buffer to ensure the
+</span>            <span class="ActionScriptComment">// the by-reference index is reset between values
+</span>            <span class="ActionScriptDefault_Text">bytesBuffer</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">bytesBuffer</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span>;
+            <span class="ActionScriptDefault_Text">bytesBuffer</span>.<span class="ActionScriptDefault_Text">writeObject</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">header</span>.<span class="ActionScriptDefault_Text">data</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">bytesBuffer</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeBytes</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bytesBuffer</span>, 0, <span class="ActionScriptDefault_Text">bytesBuffer</span>.<span class="ActionScriptDefault_Text">length</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">bytesBuffer</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+
+            <span class="ActionScriptComment">// Reset back to AMF 0 for next header 
+</span>            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF0</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptComment">// AMF Message Bodies
+</span>        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">messageCount</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">messages</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">?</span> 0 <span class="ActionScriptOperator">:</span> <span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">messages</span>.<span class="ActionScriptDefault_Text">length</span>;
+        <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeShort</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">messageCount</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptReserved">for</span> <span class="ActionScriptReserved">each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">message</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">AMFMessage</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">messages</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">message</span>.<span class="ActionScriptDefault_Text">targetURI</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeUTF</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&quot;null&quot;</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeUTF</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">message</span>.<span class="ActionScriptDefault_Text">targetURI</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">message</span>.<span class="ActionScriptDefault_Text">responseURI</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeUTF</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">&quot;null&quot;</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeUTF</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">message</span>.<span class="ActionScriptDefault_Text">responseURI</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeInt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">UNKNOWN_CONTENT_LENGTH</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptComment">// AMF 3 requires AMF 0 switch type marker
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">version</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF3</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeByte</span><span class="ActionScriptBracket/Brace">(A</span><span class="ActionScriptDefault_Text">VMPLUS_TYPE_MARKER</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">request</span>.<span class="ActionScriptDefault_Text">version</span>; 
+
+            <span class="ActionScriptComment">// Write the header value into a temporary buffer to ensure the
+</span>            <span class="ActionScriptComment">// the by-reference index is reset between values
+</span>            <span class="ActionScriptDefault_Text">bytesBuffer</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ByteArray</span><span class="ActionScriptBracket/Brace">()</span>;
+            <span class="ActionScriptDefault_Text">bytesBuffer</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span>;
+            <span class="ActionScriptDefault_Text">bytesBuffer</span>.<span class="ActionScriptDefault_Text">writeObject</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">message</span>.<span class="ActionScriptDefault_Text">body</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">bytesBuffer</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">writeBytes</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bytesBuffer</span>, 0, <span class="ActionScriptDefault_Text">bytesBuffer</span>.<span class="ActionScriptDefault_Text">length</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">bytesBuffer</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+
+            <span class="ActionScriptComment">// Reset back to AMF 0 for next message
+</span>            <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">objectEncoding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF0</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptDefault_Text">bytes</span>.<span class="ActionScriptDefault_Text">position</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">bytes</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptASDoc">/**
+     * A value is considered complex if it is not null, undefined, a String,
+     * a Boolean, a Number, an int, or a uint.
+     * 
+     * TODO: Use this to determine whether the switch to AMF 3 should occur
+     * before writing out the AVMPLUS_TYPE_MARKER for header and message
+     * bodies. 
+     */</span> 
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">isComplexType</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">:*</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">return</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">Boolean</span>
+            <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">)</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Private Variables
+</span>    <span class="ActionScriptComment">// 
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_amfHeaders</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span>; <span class="ActionScriptComment">// Array of AMFHeader
+</span>    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_client</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Object</span>;
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_connected</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span>;
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_objectEncoding</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">objectEncodingSet</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_url</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>;
+
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_defaultObjectEncoding</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ObjectEncoding</span>.<span class="ActionScriptDefault_Text">AMF3</span>;
+
+
+    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>    <span class="ActionScriptComment">//
+</span>    <span class="ActionScriptComment">// Constants
+</span>    <span class="ActionScriptComment">// 
+</span>    <span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">AMF_CONTENT_TYPE</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">&quot;application/x-amf&quot;</span>;
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">UNKNOWN_CONTENT_LENGTH</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">-</span>1;
+    <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">AVMPLUS_TYPE_MARKER</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 17;
+<span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span><span class="ActionScriptComment">//
+</span><span class="ActionScriptComment">// Private Inner Classes
+</span><span class="ActionScriptComment">// 
+</span><span class="ActionScriptComment">//--------------------------------------------------------------------------
+</span>
+<span class="ActionScriptASDoc">/**
+ * An AMFPacket represents a single AMF request made over an HTTP or 
+ * HTTPS connection. An AMFPacket can have multiple AMFHeaders followed by a 
+ * batch of multiple AMFMessages.
+ */</span> 
+<span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">AMFPacket</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">AMFPacket</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">version</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptOperator">=</span>0<span class="ActionScriptBracket/Brace">)</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">version</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">version</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">version</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">uint</span>;
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">headers</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">[]</span>; <span class="ActionScriptComment">// Array of AMFHeader
+</span>    <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">messages</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">[]</span>; <span class="ActionScriptComment">// Array of AMFMessage
+</span><span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptASDoc">/**
+ * An AMF packet level header. Request and response headers have an identical
+ * structure.
+ * 
+ * When making use of by-reference serialization, the reference tables are
+ * reset for each AMFHeader. Note that the header name String is never sent by
+ * reference and does not participate in by-reference serialization.
+ */</span>
+<span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">AMFHeader</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">AMFHeader</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>, <span class="ActionScriptDefault_Text">mustUnderstand</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptOperator">=</span><span class="ActionScriptReserved">false</span>, <span class="ActionScriptDefault_Text">data</span><span class="ActionScriptOperator">:*=</span><span class="ActionScriptReserved">undefined</span><span class="ActionScriptBracket/Brace">)</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">name</span>;
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">mustUnderstand</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">mustUnderstand</span>;
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">data</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">data</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>;
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">mustUnderstand</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">Boolean</span>;
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">data</span><span class="ActionScriptOperator">:*</span>;
+<span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptASDoc">/**
+ * An AMF packet level message. Request messages and response messages have the
+ * same general structure.
+ * 
+ * For requests, the targetURI specifies the location of the resource and the
+ * operation being invoked. The responseURI specifies the URI that the server
+ * must use in its response targetURI as this helps the client match it to the
+ * associated request message (and thus the correct message responder can be
+ * invoked).
+ * 
+ * For responses, the server uses the targetURI to identify to the client 
+ * which message this response is intended. The responseURI is ignored. 
+ * 
+ * When making use of by-reference serialization, the reference tables are
+ * reset for each AMFMessage. Note that targetURI and responseURI Strings are
+ * never sent by reference and do not participate in by-reference serialization.
+ */</span>
+<span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">AMFMessage</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">AMFMessage</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">targetURI</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">=</span><span class="ActionScriptReserved">null</span>, <span class="ActionScriptDefault_Text">responseURI</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">=</span><span class="ActionScriptReserved">null</span>, <span class="ActionScriptDefault_Text">body</span><span class="ActionScriptOperator">:*=</span><span class="ActionScriptReserved">undefined</span><span class="ActionScriptBracket/Brace">)</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">targetURI</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">targetURI</span>;
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">responseURI</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">responseURI</span>;
+        <span class="ActionScriptReserved">this</span>.<span class="ActionScriptDefault_Text">body</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">body</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">targetURI</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>;
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">responseURI</span><span class="ActionScriptOperator">:</span><span class="ActionScriptDefault_Text">String</span>;
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">body</span><span class="ActionScriptOperator">:*</span>;
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

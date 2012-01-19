@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of MobileCensus</title>
+	<nodes>
+		<node icon="classpathIcon" label="src" expanded="true">
+			<node icon="packageIcon" label="mx.controls.scrollClasses" expanded="true">
+				<node icon="actionScriptIcon" label="ScrollThumb.as" url="source/mx/controls/scrollClasses/ScrollThumb.as.html"/>
+			</node>
+			<node icon="mxmlAppIcon" selected="true" label="MobileCensus.mxml" url="source/MobileCensus.mxml.html"/>
+			<node icon="actionScriptIcon" label="WideScrollArrowSkin.as" url="source/WideScrollArrowSkin.as.html"/>
+			<node icon="actionScriptIcon" label="WideScrollThumbSkin.as" url="source/WideScrollThumbSkin.as.html"/>
+			<node icon="actionScriptIcon" label="WideScrollTrackSkin.as" url="source/WideScrollTrackSkin.as.html"/>
+		</node>
+	</nodes>
+</index>

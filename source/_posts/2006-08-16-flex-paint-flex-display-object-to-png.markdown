@@ -33,7 +33,7 @@ Then we copy canvas' pixels onto the BitmapData object:
 
 ```actionscript
 bd.draw(canvas);
-````
+```
 
 Now we convert the BitmapData object to a ByteArray encoded as a PNG:
 ```actionscript
