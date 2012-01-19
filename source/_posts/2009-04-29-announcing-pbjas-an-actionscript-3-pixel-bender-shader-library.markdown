@@ -169,25 +169,25 @@ You can see the full source code for this example in the [pbjas's TestShaderJob 
 
 The first demo creates a simple multiply Shader that then is just applied to an image.  The Shader is run when the slider value changes.
 
-
+<iframe src="/pbjas/demos/pbjASFilter/pbjASFilter.html" width="100%" height="550" style="border:0px"></iframe>
 
 ([view source](/pbjas/demos/pbjASFilter/srcview/index.html))
 
 This second demo compares the difference between calculating a bunch of square roots in AS3 and in Pixel Bender.  Pixel Bender does well but most of it's time is actually still being spent in AS3 code execution moving data around.  Since it's a really simple Pixel Bender filter this isn't a great example of just how fast Pixel Bender is but it still beats out AS3 for very large data sets.  Also in this demo I'm using a small library I started playing with that will slice up the input into multiple ShaderJobs.  The reason I do this is that the maximum theoretical input size for a Pixel Bender Shader is 16,777,216 items.  However due to [a bug](https://bugs.adobe.com/jira/browse/FP-1845) in Flash Player I consistently get crashes on data sets larger than about 2,000,000 items.  So with very large data sets it's nice to have some automatic slicing.  Also the maximum height or width of a Shader is 8,192.  So each Shader's height and width needs to be calculated to avoid hitting that limit.  This stuff is in the MathPBJ project.  Here is the sqrt demo:
 
-
+<iframe src="/pbjas/demos/pbjASSqrtTest/pbjASSqrtTest.html" width="100%" height="160" style="border:0px"></iframe>
 
 ([view source](/pbjas/demos/pbjASSqrtTest/srcview/index.html))
 
 The next demo shows that a more complex Shader can crunch numbers while not locking the UI:
 
-
+<iframe src="/pbjas/demos/pbjASLockingTest/pbjASLockingTest.html" width="100%" height="200" style="border:0px"></iframe>
 
 ([view source](/pbjas/demos/pbjASLockingTest/srcview/index.html))
 
 Finally this last demo isn't very exciting.  It's just the unit tests for the pbjAS library.  But if you want to better understand how to use the library the best place to learn is by looking at the unit tests.
 
-
+<iframe src="/pbjas/demos/pbjASTest/pbjASTest.html" width="100%" height="500" style="border:0px"></iframe>
 
 ([view source](/pbjas/demos/pbjASTest/srcview/index.html))
 

@@ -11,3 +11,4 @@ categories:
 
 Here's a special episode of [Drunk on Software](http://www.drunkonsoftware.com) from Adobe MAX 2009.  Enjoy!!
 
+<embed src="http://blip.tv/play/AYGs91QC" type="application/x-shockwave-flash" width="480" height="300" allowscriptaccess="always" allowfullscreen="true"></embed>

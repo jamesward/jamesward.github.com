@@ -11,10 +11,9 @@ categories:
 
 The new component / skin separation in Flex 4 (the Spark Architecture) is pretty nifty.  But if you want to add a configurable style to a skin then that style must be defined on the component.  For instance if you want to add a backgroundColor style to a Button skin then you need to first create a new Button component with the style on it:
 
-    
-    
-    package
-    {
+```actionscript
+package
+{
     import spark.components.Button;
     
     [Style(name="backgroundColor", type="uint", format="Color")]
@@ -22,63 +21,57 @@ The new component / skin separation in Flex 4 (the Spark Architecture) is pretty
     {
     
     }
-    }
-    
-
-
+}
+```
 
 Then create a new Button skin that uses the style:
 
-    
-    
-    
-    <s:sparkskin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark">
-    
-      <fx:script>
-        import mx.utils.ColorUtil;
-      </fx:script>
-    
-      <s:states>
-        <s:state name="up"></s:state>
-        <s:state name="over"></s:state>
-        <s:state name="down"></s:state>
-      </s:states>
-    
-      <s:rect width="100%" height="100%">
-        <s:fill>
-          <s:solidcolor color="{getStyle('backgroundColor')}" color.over="{ColorUtil.adjustBrightness2(getStyle('backgroundColor'), 64)}" color.down="{ColorUtil.adjustBrightness2(getStyle('backgroundColor'), -32)}"></s:solidcolor>
-        </s:fill>
-      </s:rect>
-    
-      <s:label paddingright="3" paddingbottom="3" paddingleft="3" id="labelDisplay" paddingtop="6"></s:label>
-    
-    </s:sparkskin>
-    
+```mxml
+<?xml version="1.0"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+  xmlns:s="library://ns.adobe.com/flex/spark">
 
+  <fx:Script>
+    import mx.utils.ColorUtil;
+  </fx:Script>
 
+  <s:states>
+    <s:State name="up"/>
+    <s:State name="over"/>
+    <s:State name="down"/>
+  </s:states>
+
+  <s:Rect width="100%" height="100%">
+    <s:fill>
+      <s:SolidColor color="{getStyle('backgroundColor')}"
+                    color.over="{ColorUtil.adjustBrightness2(getStyle('backgroundColor'), 64)}"
+                    color.down="{ColorUtil.adjustBrightness2(getStyle('backgroundColor'), -32)}"
+      />
+    </s:fill>
+  </s:Rect>
+
+  <s:Label id="labelDisplay" paddingBottom="3" paddingLeft="3" paddingRight="3" paddingTop="6"/>
+
+</s:SparkSkin>
+```
 
 Then you can use the new Button and skin:
 
+```mxml
+<SButton label="backgroundColor = #ff0000" backgroundColor="#ff0000" skinClass="SButtonSkin"/>
+<SButton label="backgroundColor = #0000ff" backgroundColor="#0000ff" skinClass="SButtonSkin"/>
+```
     
-    
-      <sbutton skinclass="SButtonSkin" backgroundcolor="#ff0000" label="backgroundColor = #ff0000"></sbutton>
-      <sbutton skinclass="SButtonSkin" backgroundcolor="#0000ff" label="backgroundColor = #0000ff"></sbutton>
-    
-
-
-
 The reason that we had to create a new base class just to hold the style is because there would be no other way to set the style in MXML.  We could have set the style via CSS or setStyle.  Button does not have a style named "backgroundColor" so if we hadn't created SButton and tried to just set a backgroundColor property on a Button instance via MXML, the compiler would have thrown an error.
 
 So I (with the help of [Ryan Frishberg](http://frishy.blogspot.com/) and [Mike Labriola](http://blogs.digitalprimates.net/codeslinger/)) came up with a nifty little way to set styles on skins without having to create new base classes to hold the styles.  The idea is that styles should be defined on the skins and you can use a property on the base components to set those styles via MXML.  To make it happen I had to Monkey Patch a property named "style" onto UIComponent.  In the setter for that style I just parse a string of HTML-ish styles and  call setStyle.  The cool thing is that I'm calling setStyle on the component but since skins inherit the styles of their host component the skin gets the styles.  This also means that the styles don't really need to be defined on the skins.  Just used in the skins.  Using the example above to set the backgroundColor on the Button I could just do:
 
-    
-    
-      <s:button skinclass="SButtonSkin" style="backgroundColor: #ff0000" label="backgroundColor = #ff0000"></s:button>
-    
-
-
+```mxml
+<s:Button label="backgroundColor = #ff0000" style="backgroundColor: #ff0000" skinClass="SButtonSkin"/>
+```
 
 I didn't need a new Button class just to set the backgroundColor style.  Here is a more complex example with more styles on the skin:
 
+<iframe src="/demos/Styles4Skins/Styles4Skins.html" width="100%" height="400" style="border: 1px #000000 solid"></iframe>
 
 All of those buttons are using the same skin and the base Spark Button!  The code for this example is [on github](http://github.com/jamesward/Styles4Skins).  So check it out, fork it, and have fun.  Let me know if you have any questions.

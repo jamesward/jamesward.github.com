@@ -15,8 +15,7 @@ I know -- you've heard it from me before -- [AMF rocks!](http://www.jamesward.co
 
 There is a new collection wrapper class in Flex 4 called "[AsyncListView](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/mx/collections/AsyncListView.html)".  The UI data controls in Flex 4 know how to handle an AsyncListView as a dataProvider.  The purpose of the AsyncListView is to give you a callback when the underlying list throws an [ItemPendingError](http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/mx/collections/errors/ItemPendingError.html).  The ItemPendingError indicates that an item that the list thinks it has isn't really there yet.  This allows you to then load the data and update the list.  In order to throw an ItemPendingError you need to keep track of which items haven't been loaded and then, when an item is requested that isn't really there, throw the ItemPendingError.  Here is some code from my [PagedList](http://github.com/jamesward/DataPaging/blob/master/src/PagedList.as) implementation:
 
-    
-    
+```actionscript
     public function getItemAt(index:int, prefetch:int = 0):Object
     {
         if (fetchedItems[index] == undefined)
@@ -26,24 +25,18 @@ There is a new collection wrapper class in Flex 4 called "[AsyncListView](http:/
     
         return _list.getItemAt(index, prefetch);
     }
-    
-
-
+```
 
 In my main application I just create a PagedList, set its length (which should really be done by a remote call instead of manually), and then assign the instance of PagedList to the list property on my instance of AsyncListView.  With MXML this looks like:
 
-    
-    
-    <local:pagedlist length="100000" id="items"></local:pagedlist>
-    <s:asynclistview creatependingitemfunction="handleCreatePendingItemFunction" list="{items}" id="asyncListView"></s:asynclistview>
-    
-
-
+```mxml
+<local:PagedList id="items" length="100000"/>
+<s:AsyncListView id="asyncListView" list="{items}" createPendingItemFunction="handleCreatePendingItemFunction"/>
+```
 
 When the ItemPendingError is thrown, the handleCreatePendingItemFunction is called.  Now I just figure out what page of data is needed, make sure that there isn't already a pending request for that page, and then make the request.  When the response comes back I simply update the underlying collection.  Here is the code that does that:
 
-    
-    
+```actionscript
     private function handleCreatePendingItemFunction(index:int, ipe:ItemPendingError):Object
     {
       var page:uint = Math.floor(index / pageSize);
@@ -68,14 +61,13 @@ When the ItemPendingError is thrown, the handleCreatePendingItemFunction is call
       }
       return null;
     }
-    
-
-
+```
 
 In this example I'm using RemoteObject (AMF) but this could be anything (HTTPService, WebService, etc.) as long as there is a method on the back end that lets me set the starting location and the page size.
 
 Here is a simple demo of data paging using the new Spark DataGrid in Flex Hero.  The page size is 100 and there are 100,000 total items.
 
+<iframe src="http://www.jamesward.com/demos/DataPaging/DataPaging.html" width="100%" height="400"></iframe>
 
 [Fork or view the code](http://github.com/jamesward/DataPaging) for this example on [github.com](http://github.com).
 

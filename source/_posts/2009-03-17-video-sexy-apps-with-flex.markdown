@@ -15,4 +15,4 @@ First I showed the [Tour de Flex](http://flex.org/tour) application to encourage
 
 At the end I really wanted to WOW everyone so I showed some of the [FLARToolkit](http://www.libspark.org/wiki/saqoosha/FLARToolKit/en) [demos](http://flash.tarotaro.org/blog/) followed by a custom application that I built using the FLARToolkit.  The application I built scrolls up and down in a datagrid using the position of a marker which is being captured by the web cam.  It's hard to explain so you will just have to check out the video.  Let me know what you think.
 
-
+<object width="640" height="385"><param name="movie" value="http://www.youtube-nocookie.com/v/dBGksVWPksY&hl=en&fs=1&rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube-nocookie.com/v/dBGksVWPksY&hl=en&fs=1&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="385"></embed></object>

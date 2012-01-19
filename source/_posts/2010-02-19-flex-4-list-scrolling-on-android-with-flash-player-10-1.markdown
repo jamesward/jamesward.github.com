@@ -17,6 +17,6 @@ One of the challenges of running existing web content on mobile devices is that 
 
 In Flash Player 10.1 there are APIs for gestures and multitouch events.  I thought it would be fun to hook up the list scrolling on a Flex 4 List to the [TouchEvent](http://help.adobe.com/en_US/FlashPlatform/beta/reference/actionscript/3/flash/events/TouchEvent.html#TOUCH_MOVE) on my Nexus One.  Check out the video:
 
-
+<object width="560" height="340"><param name="movie" value="http://www.youtube.com/v/QOJz1BnHCW0&hl=en_US&fs=1&rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/QOJz1BnHCW0&hl=en_US&fs=1&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="560" height="340"></embed></object>
 
 If you want to see how I created this [simple demo](http://www.jamesward.com/demos/MobileListSwipe/MobileListSwipe.html), check out the [source code](http://www.jamesward.com/demos/MobileListSwipe/srcview/).  Let me know if you have any questions.

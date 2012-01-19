@@ -56,18 +56,17 @@ Download the [source code](/downloads/portable_rias.zip) for tutorial.
 The application needs some data so I created a JSP that generates some fake and random sales data. This data is returned from the server in XML format. One challenge in building this was that Reader needs a "*" crossdomain.xml policy file on the server that offers the data. Having a "*" policy can be a security risk, especially when the data is on an internal server or on a server which uses cookies for authentication. In my production demo I didn’t want to put a "*" policy file on my demo server so I serve the data from a different server. Because of this I ended up using PHP for my public demo. However, for the purposes of this tutorial I will just use a simple JSP file. Here is the file, data.jsp:
 
 
-    
-    
-    <% response.setContentType("text/xml"); %>
-    
-    <list> 
-    <% 
-    String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"}; 
-    
-    for (int i = 6; i < 8; i++) 
+```jsp
+<% response.setContentType("text/xml"); %>
+<?xml version="1.0" encoding="utf-8"?>
+<list>
+<%
+String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"};
+
+for (int i = 6; i < 8; i++)
+{
+    for (int j = 0; j < months.length; j++) 
     { 
-      for (int j = 0; j < months.length; j++) 
-      { 
         String month = months[j] + "-0" + i; 
         int apacRev = (int)(Math.random() * 60000); 
         int europeRev = (int)(Math.random() * 80000); 
@@ -76,35 +75,29 @@ The application needs some data so I created a JSP that generates some fake and 
         int northAmRev = (int)(Math.random() * 100000); 
         int totalRev = apacRev + europeRev + japanRev + latinAmRev + northAmRev; 
         int averageRev = totalRev / 6; 
-    %> 
-        <month average="<%=averageRev%>" name="<%=month%>" revenue="<%=totalRev%>"> 
-            <region name="APAC" revenue="<%=apacRev%>"></region> 
-            <region name="Europe" revenue="<%=europeRev%>"></region> 
-            <region name="Japan" revenue="<%=japanRev%>"></region> 
-            <region name="Latin America" revenue="<%=latinAmRev%>"></region> 
-            <region name="North America" revenue="<%=northAmRev%>"></region> 
-        </month> 
-    <% 
-      } 
+%>
+    <month average="<%=averageRev%>" name="<%=month%>" revenue="<%=totalRev%>"> 
+        <region name="APAC" revenue="<%=apacRev%>"></region> 
+        <region name="Europe" revenue="<%=europeRev%>"></region> 
+        <region name="Japan" revenue="<%=japanRev%>"></region> 
+        <region name="Latin America" revenue="<%=latinAmRev%>"></region> 
+        <region name="North America" revenue="<%=northAmRev%>"></region> 
+    </month> 
+<%
     } 
-    %> 
-    </list>
-    
-
-
+} 
+%> 
+</list>
+```
 
 You will also need to add a crossdomain.xml policy file to your root web containing the following:
 
-
-    
-    
-    <cross-domain-policy>
-    	<site-control permitted-cross-domain-policies="master-only"></site-control>
-    	<allow-access-from domain="*"></allow-access-from>
-    </cross-domain-policy>
-    
-
-
+```xml
+<cross-domain-policy>
+    <site-control permitted-cross-domain-policies="master-only"></site-control>
+    <allow-access-from domain="*"></allow-access-from>
+</cross-domain-policy>
+```    
 
 Make sure that you do not use this policy file in production, as you should never have a "*" policy on an internal server or on a domain which uses cookies for authentication.  For more information on secure cross-domain communication in Flash Player see:
 [http://www.adobe.com/devnet/flashplayer/articles/secure_swf_apps.html](http://www.adobe.com/devnet/flashplayer/articles/secure_swf_apps.html)
@@ -113,193 +106,174 @@ Make sure that you do not use this policy file in production, as you should neve
 
 Before I could use the typical sales dashboard in the demo, I first had to create that dashboard in Flex. Luckily this was easy since one of the out-of-the-box LiveCycle Data Services samples has a dashboard. I made a few modifications to the dashboard and then added it to my Flex application. You can test the dashboard by creating a HTTPService and attaching the data to the Dashboard. Here is my application (you will need the Dashboard source code from the LiveCycle Data Services sample application for this to compile):
 
-
-    
-    
-    
-    <mx:application xmlns:local="*" applicationcomplete="srv.send()" xmlns:mx="http://www.adobe.com/2006/mxml">
-      
-      <mx:httpservice url="http://localhost:8080/data.jsp" id="srv"></mx:httpservice>
-      
-      <local:dashboard width="100%" dataprovider="{srv.lastResult.list.month}" height="100%"></local:dashboard>
-      
-    </mx:application>
-    
-
-
+```mxml
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:local="*"
+  applicationComplete="srv.send()">
+  
+  <mx:HTTPService id="srv" url="http://localhost:8080/data.jsp"/>
+  
+  <local:Dashboard width="100%" height="100%" dataProvider="{srv.lastResult.list.month}"/>
+  
+</mx:Application>
+```
 
 **Step 3: Creating a back-end PDF generation service**
 I used LiveCycle Data Services to handle generating the PDF for the user. To set up this service I copied the WEB-INF/flex and WEB-INF/lib directories from the flex.war file included with LiveCycle Data Services to my root web application. I then added some necessary configuration code to my web.xml file:
 
+```xml
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app> 
+    <display-name>Portable RIAs Demo</display-name> 
+    <description>Portable RIAs Demo</description> 
 
-    
-    
-     
-    
-    <web-app> 
-        <display-name>Portable RIAs Demo</display-name> 
-        <description>Portable RIAs Demo</description> 
-    
-        <listener> 
-            <listener-class>flex.messaging.HttpFlexSession</listener-class> 
-        </listener> 
-    
-        <servlet> 
-            <servlet-name>MessageBrokerServlet</servlet-name> 
-            <display-name>MessageBrokerServlet</display-name> 
-            <servlet-class>flex.messaging.MessageBrokerServlet</servlet-class> 
-            <init-param> 
-                <param-name>services.configuration.file</param-name> 
-                <param-value>/WEB-INF/flex/services-config.xml</param-value> 
-            </init-param> 
-            <load-on-startup>1</load-on-startup> 
-        </servlet> 
-    
-        <servlet> 
-            <servlet-name>PDFResourceServlet</servlet-name> 
-            <display-name>Helper for retrieving dynamically generated PDF documents.</display-name> 
-            <servlet-class>com.jamesward.portablerias.PDFResourceServlet</servlet-class> 
-        </servlet> 
-        
-        <servlet-mapping> 
-            <servlet-name>MessageBrokerServlet</servlet-name> 
-            <url-pattern>/messagebroker/*</url-pattern> 
-        </servlet-mapping> 
-    
-        <servlet-mapping> 
-            <servlet-name>PDFResourceServlet</servlet-name> 
-            <url-pattern>/dynamic-pdf/*</url-pattern> 
-        </servlet-mapping> 
-    
-    </web-app> 
-    
+    <listener> 
+        <listener-class>flex.messaging.HttpFlexSession</listener-class> 
+    </listener> 
 
+    <servlet> 
+        <servlet-name>MessageBrokerServlet</servlet-name> 
+        <display-name>MessageBrokerServlet</display-name> 
+        <servlet-class>flex.messaging.MessageBrokerServlet</servlet-class> 
+        <init-param> 
+            <param-name>services.configuration.file</param-name> 
+            <param-value>/WEB-INF/flex/services-config.xml</param-value> 
+        </init-param> 
+        <load-on-startup>1</load-on-startup> 
+    </servlet> 
+
+    <servlet> 
+        <servlet-name>PDFResourceServlet</servlet-name> 
+        <display-name>Helper for retrieving dynamically generated PDF documents.</display-name> 
+        <servlet-class>com.jamesward.portablerias.PDFResourceServlet</servlet-class> 
+    </servlet> 
+    
+    <servlet-mapping> 
+        <servlet-name>MessageBrokerServlet</servlet-name> 
+        <url-pattern>/messagebroker/*</url-pattern> 
+    </servlet-mapping> 
+
+    <servlet-mapping> 
+        <servlet-name>PDFResourceServlet</servlet-name> 
+        <url-pattern>/dynamic-pdf/*</url-pattern> 
+    </servlet-mapping> 
+
+</web-app> 
+```
 
 
 The PDFResourceServlet is a custom class that returns the generated PDF to the user. I also created a class named PDFService that actually generates the PDF. Both of these classes are derived from the PDF samples in LiveCycle Data Services. To create these classes I first set up a new Java project in Eclipse. I named the project "portablerias_server" and pointed its root directory to the WEB-INF directory, its src directory to the WEB-INF/src directory (which you need to create), and its output directory to the WEB-INF/classes directory. I then created a new Java class called "com.jamesward.portablerias.PDFService" containing the following:
 
+```java
+package com.jamesward.portablerias; 
 
-    
-    
-    package com.jamesward.portablerias; 
-    
-    import java.io.IOException; 
-    
-    import javax.servlet.http.HttpServletRequest; 
-    
-    import org.w3c.dom.Document; 
-    
-    import flex.acrobat.pdf.XFAHelper; 
-    import flex.messaging.FlexContext; 
-    import flex.messaging.FlexSession; 
-    import flex.messaging.util.UUIDUtils; 
-    
-    public class PDFService 
+import java.io.IOException; 
+
+import javax.servlet.http.HttpServletRequest; 
+
+import org.w3c.dom.Document; 
+
+import flex.acrobat.pdf.XFAHelper; 
+import flex.messaging.FlexContext; 
+import flex.messaging.FlexSession; 
+import flex.messaging.util.UUIDUtils; 
+
+public class PDFService 
+{ 
+
+    public Object generatePDF(Document dataset) throws IOException 
     { 
-    
-        public Object generatePDF(Document dataset) throws IOException 
-        { 
-            String source =
-                FlexContext.getServletContext().getRealPath("/WEB-INF/pdfgen/dashboard.pdf"); 
-            XFAHelper helper = new XFAHelper(); 
-            helper.open(source); 
-    
-            helper.importDataset(dataset); 
-    
-            byte[] bytes = helper.saveToByteArray(); 
-            String uuid = UUIDUtils.createUUID(); 
-            FlexSession session = FlexContext.getFlexSession(); 
-            session.setAttribute(uuid, bytes); 
-    
-            helper.close(); 
-    
-            HttpServletRequest req = FlexContext.getHttpRequest(); 
-            String contextRoot = "/"; 
-            if (req != null) 
-                contextRoot = req.getContextPath(); 
-    
-            String r = contextRoot + "/dynamic-pdf?id=" + uuid + "&;jsessionid=" + session.getId(); 
-            return r; 
-        } 
-    
-    }
-    
+        String source =
+            FlexContext.getServletContext().getRealPath("/WEB-INF/pdfgen/dashboard.pdf"); 
+        XFAHelper helper = new XFAHelper(); 
+        helper.open(source); 
 
+        helper.importDataset(dataset); 
 
+        byte[] bytes = helper.saveToByteArray(); 
+        String uuid = UUIDUtils.createUUID(); 
+        FlexSession session = FlexContext.getFlexSession(); 
+        session.setAttribute(uuid, bytes); 
+
+        helper.close(); 
+
+        HttpServletRequest req = FlexContext.getHttpRequest(); 
+        String contextRoot = "/"; 
+        if (req != null) 
+            contextRoot = req.getContextPath(); 
+
+        String r = contextRoot + "/dynamic-pdf?id=" + uuid + "&;jsessionid=" + session.getId(); 
+        return r; 
+    } 
+
+}
+```
 
 Notice that this class references a PDF file, dashboard.pdf, that I have not yet created. This is the PDF template that will be created in Step 7.
 
 I then created a new class called "com.jamesward.portablerias.PDFResourceServlet" containing the following code:
 
+```java
+package com.jamesward.portablerias; 
 
-    
-    
-    package com.jamesward.portablerias; 
-    
-    import java.io.IOException; 
-    
-    import javax.servlet.ServletException; 
-    import javax.servlet.http.HttpServlet; 
-    import javax.servlet.http.HttpServletRequest; 
-    import javax.servlet.http.HttpServletResponse; 
-    import javax.servlet.http.HttpSession; 
-    
-    public class PDFResourceServlet extends HttpServlet 
+import java.io.IOException; 
+
+import javax.servlet.ServletException; 
+import javax.servlet.http.HttpServlet; 
+import javax.servlet.http.HttpServletRequest; 
+import javax.servlet.http.HttpServletResponse; 
+import javax.servlet.http.HttpSession; 
+
+public class PDFResourceServlet extends HttpServlet 
+{ 
+    private static final long serialVersionUID = 8178787853519803189L; 
+
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException 
     { 
-        private static final long serialVersionUID = 8178787853519803189L; 
-    
-        protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException 
+        doPost(req, res); 
+    } 
+
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException 
+    { 
+        String id = (String)req.getParameter("id"); 
+        if (id != null) 
         { 
-            doPost(req, res); 
-        } 
-    
-        protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException 
-        { 
-            String id = (String)req.getParameter("id"); 
-            if (id != null) 
+            HttpSession session = req.getSession(true); 
+            try 
             { 
-                HttpSession session = req.getSession(true); 
-                try 
+                byte[] bytes = (byte[])session.getAttribute(id); 
+
+                if (bytes != null) 
                 { 
-                    byte[] bytes = (byte[])session.getAttribute(id); 
-    
-                    if (bytes != null) 
-                    { 
-                        res.setContentType("application/pdf"); 
-                        res.setContentLength(bytes.length); 
-                        res.getOutputStream().write(bytes); 
-                    } 
-                    else 
-                    { 
-                        res.setStatus(404); 
-                    } 
+                    res.setContentType("application/pdf"); 
+                    res.setContentLength(bytes.length); 
+                    res.getOutputStream().write(bytes); 
                 } 
-                catch (Throwable t) 
+                else 
                 { 
-                    System.err.println(t.getMessage()); 
+                    res.setStatus(404); 
                 } 
             } 
+            catch (Throwable t) 
+            { 
+                System.err.println(t.getMessage()); 
+            } 
         } 
-    }
-    
-
-
+    } 
+}
+```
 
 This class reads the PDF byte array from the session and returns it to the user as a file. Now that Flash Player 10 is available a better approach would be to just have the PDFService return the byte array and then use the new FileReference API to initiate a file download of those bytes. Storing the PDF in the user session as this demo does is certainly not a scalable approach, and therefore it should not be used in production. Alternatively you could write the PDF files to disk in the PDFService class and then read them from disk in the PDFResourceServlet class.
 
 You need one last configuration step to allow Flex to make requests to the PDFService class. Add the following lines to the WEB-INF/flex/remoting-config.xml file:
 
-
-    
-    
-        <destination channels="my-amf" id="PDFService">
-            <properties>
-                <source>com.jamesward.portablerias.PDFService</source>
-            </properties>
-        </destination>
-    
-
-
+```xml
+    <destination channels="my-amf" id="PDFService">
+        <properties>
+            <source>com.jamesward.portablerias.PDFService</source>
+        </properties>
+    </destination>
+```
 
 Now your back end is set up! Start (or restart) your app server and verify that there are no errors on the console.
 
@@ -309,22 +283,18 @@ Now you need to create a PDF template that will hold the form fields in which Li
 
 First create a new blank PDF in Acrobat and save it.  Then open that PDF in LiveCycle Designer and add a form named "PortableRIAs". Add a page named "Page1" and then add a TextField named "Data" to the page. Then add a script called "dataScript" containing:
 
+```javascript
+function getData()
+{
+    var data = xfa.form.PortableRIAs.Page1.Data.rawValue;
+    return data;
+}
 
-    
-    
-    function getData()
-    {
-        var data = xfa.form.PortableRIAs.Page1.Data.rawValue;
-        return data;
-    }
-    
-    function setData(dataString)
-    {
-        xfa.form.PortableRIAs.Page1.Data.rawValue = dataString;
-    }
-    
-
-
+function setData(dataString)
+{
+    xfa.form.PortableRIAs.Page1.Data.rawValue = dataString;
+}
+```
 
 The final PDF in Designer should look like:
 
@@ -337,10 +307,9 @@ In step 7 you will merge the Flex application into this file using Acrobat.
 When your Flex application runs in the browser you want it to get the live data from the web. When it runs in a PDF you want it to use the data inside the PDF. This allows the application to work when the user is disconnected. For bonus points I also added the ability for users to refresh the data in the PDF when they want to. To manage this I created a class called "com.jamesward.portablerias.PDFCacheManager" containing the following code:
 
 
-    
-    
-    package com.jamesward.portablerias
-    {
+```actionscript
+package com.jamesward.portablerias
+{
     import flash.external.ExternalInterface;
     import flash.xml.XMLDocument;
     import flash.xml.XMLNode;
@@ -470,51 +439,37 @@ When your Flex application runs in the browser you want it to get the live data 
       }
     
     }
-    }
-    
-
-
+}
+```    
 
 When this class is instantiated it checks to see if the application is running inside a PDF Reader. It also checks to make sure it’s at least Reader 9. If it is running in Reader >= 9 then it sets up a few function calls that will be used to read and write data to the hidden form field. The class stores a copy of the XML text it retrieves from the server so that when the PDF is created in the browser, it doesn’t have to retrieve the data again. Also if the user updates the data while in the PDF then the local form field is updated but the user would need to save the PDF for the data to be persisted for the next time the PDF is opened.
 
 To use the PDFCacheManager class simply create an instance of it and specify the id, url, and optionally a fault handler:
 
-
-    
-    
-    <portablerias:pdfcachemanager url="http://ws.jamesward.com/data.php" fault="mx.controls.Alert.show(event.fault.message)" id="pdfCacheManager"></portablerias:pdfcachemanager>
-    
-
-
+```mxml
+<portablerias:PDFCacheManager id="pdfCacheManager" url="http://ws.jamesward.com/data.php" fault="mx.controls.Alert.show(event.fault.message)"/>
+```
 
 When the Flex application has fully initialized I ask the PDFCacheManager to get the data either from within the PDF if the application is running inside Reader or from the network if the application is running in the browser:
 
-
-    
-    
-      <mx:applicationcomplete>
-      if (pdfCacheManager.inPDF)
-      {
-        pdfCacheManager.getDataFromCache();
-      }
-      else
-      {
-        pdfCacheManager.getDataFromServer();
-      }
-      </mx:applicationcomplete>
-    
-
-
+```mxml
+<mx:applicationComplete>
+if (pdfCacheManager.inPDF)
+{
+    pdfCacheManager.getDataFromCache();
+}
+else
+{
+    pdfCacheManager.getDataFromServer();
+}
+</mx:applicationComplete>
+```
 
 In the Dashboard you can now bind to the data in the pdfCacheManager:
 
-
-    
-    
-    <local:dashboard width="100%" dataprovider="{pdfCacheManager.lastResult.list.month as mx.collections.ArrayCollection}" height="100%"></local:dashboard>
-    
-
-
+```mxml
+<local:Dashboard width="100%" height="100%" dataProvider="{pdfCacheManager.lastResult.list.month as mx.collections.ArrayCollection}"/>
+```
 
 Now your Flex application will display data whether it is running on the web or inside a PDF!
 
@@ -522,11 +477,9 @@ Now your Flex application will display data whether it is running on the web or 
 
 Next you’ll want to modify the Flex application so that a user can initiate the PDF generation. To do this I created a simple ActionScript class called "com.jamesward.portablerias.CreatePDFService" which will pass the data in the Flex application to the back-end PDFService. Here is the code for that class:
 
-
-    
-    
-    package com.jamesward.portablerias
-    {
+```actionscript
+package com.jamesward.portablerias
+{
       import flash.net.URLRequest;
       import flash.net.navigateToURL;
       
@@ -558,9 +511,8 @@ Next you’ll want to modify the Flex application so that a user can initiate th
         }
     
       }
-    }
-    
-
+}
+```
 
 When the PDFService is called it is passed an XML block containing the XML data that the Flex application loaded from the server. Although you could use alternative serialization methods instead of XML, for simplicity this demo uses XML. Notice that the data is wrapped in the <PortableRIAs> and <Data> XML tags. These must match the PDF form name and form field name used in the PDF template.
 
@@ -568,27 +520,19 @@ When the result is returned by the server the client opens a new browser window 
 
 To use this class in the main Flex application simply create an instance of the CreatePDFService:
 
-
-    
-    
-    <portablerias:createpdfservice id="createPDFService"></portablerias:createpdfservice>
-    
-
-
+```mxml
+<portablerias:CreatePDFService id="createPDFService"/>
+```
 
 Then add a button for the user to click to initiate the PDF generation:
 
-
-    
-    
-        <mx:button visible="{!pdfCacheManager.inPDF}" includeinlayout="{!pdfCacheManager.inPDF}" label="Create PDF">
-          <mx:click>
-          createPDFService.generatePDF(pdfCacheManager.lastXMLResult);
-          </mx:click>
-        </mx:button>
-    
-
-
+```mxml
+<mx:Button label="Create PDF" visible="{!pdfCacheManager.inPDF}" includeInLayout="{!pdfCacheManager.inPDF}">
+    <mx:click>
+        createPDFService.generatePDF(pdfCacheManager.lastXMLResult);
+    </mx:click>
+</mx:Button>
+```
 
 Notice that the data passed to the generatePDF method is pulled out of the pdfCacheManager that was created in the previous step. Also the button is only made visible when the Flex application is not running inside a PDF.
 

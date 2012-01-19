@@ -16,6 +16,8 @@ This week at the Google I/O conference Adobe announced that a Flash Player 10.1 
 
 Take a look a some of the quick demos I've built with Flex running on Android in Flash Player and AIR:
 
+<object width="640" height="385"><param name="movie" value="http://www.youtube.com/v/Zp7leMUo2NY&hl=en_US&fs=1&rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/Zp7leMUo2NY&hl=en_US&fs=1&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="385"></embed></object>
+
 You can get the source code for all of these demos from [github](http://github.com/jamesward).
 
 Also [Christophe Coenraets](http://coenraets.org) has posted some great Flex mobile demos.  Check out his [Employee Directory](http://coenraets.org/blog/2010/05/sample-application-using-flex-and-air-for-android/) and [Stock Trader](http://coenraets.org/blog/2010/05/android-trader-application-with-flex-4-and-air/) demos.

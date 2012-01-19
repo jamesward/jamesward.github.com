@@ -11,6 +11,8 @@ categories:
 
 Back in August at the [Flex Jam in Orlando](http://www.codetown.us/profiles/blogs/flex-jam-in-orlando-with-james) one of the projects we worked on was Text to Speech in Flex.  We didn't finish the project at the Jam so I wanted to post the final version here.  Check it out:
 
+<iframe src="http://www.jamesward.com/demos/iSpeechDemo/iSpeechDemo.html" width="400" height="250"></iframe>
+
 ([source code](http://www.jamesward.com/demos/iSpeechDemo/srcview/index.html))
 
 I used the [iSpeech.org API](http://www.ispeech.org/api) to convert the text to speech.  It was pretty easy to build this demo but a production version would need to use a proxy so that the username and password can't be discovered.

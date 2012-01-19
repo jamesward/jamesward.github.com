@@ -11,4 +11,4 @@ categories:
 
 [Episode 22](http://www.drunkonsoftware.com/2009/12/20/episode-22-sleeping-on-the-couch/) of [Drunk on Software](http://www.drunkonsoftware.com) is certainly one of my favorites.  [Jon](http://ectropic.com/) and [Chet](http://graphics-geek.blogspot.com/) seem to think I fell asleep during the episode.  Personally I think that I was temporarily abducted by some angry aliens that don't like humans who wear bear hats.  Hmmm..  Like the episode that makes no sense.  So grab your favorite adult beverage (if you are of legal age) and enjoy!
 
-
+<embed src="http://blip.tv/play/AYGn3FsA" type="application/x-shockwave-flash" width="640" height="390" allowscriptaccess="always" allowfullscreen="true"></embed>

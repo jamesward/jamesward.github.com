@@ -24,7 +24,7 @@ The division of work between Dick and I worked really well.  Dick worked on the 
 
 The back-end Python code is really simple.  Here is the method that is called from the client (trimmed down a bit):
 
-    
+```python
     def fiximage(data):
     
       image_in = Image(str(data))
@@ -34,8 +34,7 @@ The back-end Python code is really simple.  Here is the method that is called fr
       image_out.write(image_in.execute_transforms())
     
       return image_out
-
-
+```
 
 In this code, the data which is passed to the method is just a ByteArray containing the image.  The data is turned into an Image, the im_feeling_lucky transform is specified, then run - taking the bytes and sending them back to the client.
 
@@ -43,21 +42,19 @@ The front-end Flex code that sends the image to the back-end is also really simp
 
 The RemoteObject (AMF networking API in Flex) is defined as:
 
-    
-    <mx:remoteobject destination="image" endpoint="http://airquickfix.appspot.com/image/" id="ro">
-
-
+```mxml
+<mx:RemoteObject id="ro" destination="image" endpoint="http://airquickfix.appspot.com/image/">
+```
 
 The function which actually makes the request to the back-end is:
 
-    
+```actionscript    
     var stream:FileStream = new FileStream();
     stream.open(startFile, FileMode.READ);
     var imageData:ByteArray = new ByteArray();
     stream.readBytes(imageData);
     ro.fiximage(imageData);
-
-
+```
 
 In this Flex code the image file is opened, read into a ByteArray, then sent to the fiximage method on the back-end.
 

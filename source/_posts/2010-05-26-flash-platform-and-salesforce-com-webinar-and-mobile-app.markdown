@@ -15,6 +15,7 @@ Client + Cloud technologies have been quickly evolving and maturing.  The combin
 
 Last week I was able to spend a few hours with [Model Metrics](http://www.modelmetrics.com) porting their [Pharma2GO Adobe AIR app](http://www.modelmetrics.com/solutions/2go-mobile-cloud-platform/) to run on an Android Mobile device.  Using the [AIR for Android Prerelease](http://labs.adobe.com/technologies/air2/android/) we quickly created a mobile friendly UI with Flex and reused the same data sync code from the desktop app.  Check out the end result:
 
+<object width="640" height="385"><param name="movie" value="http://www.youtube.com/v/Lle24eGjNBs&hl=en_US&fs=1&rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/Lle24eGjNBs&hl=en_US&fs=1&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="385"></embed></object>
 
 Listen to what Model Metrics had to say about this in their blog "[HTML 5 – Ready for Primetime in the Enterprise?](http://www.modelmetrics.com/general/html-5-%E2%80%93-ready-for-primetime-in-the-enterprise/)":
 

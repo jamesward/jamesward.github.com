@@ -16,6 +16,7 @@ Some believe that the "Internet" in "rich Internet application" (RIA) means that
 
 I wanted to build an application in Flex that shows how applications can have a high degree of reuse between the web, the desktop, and in a PDF.  I decided to build a Mortgage Calculator to illustrate this.  Here is the web widget:
 
+<iframe src="/mortgageCalc/mortgageCalcWeb.html" width="100%" height="540"></iframe>
 
 From within the web widget you can install the desktop widget or email yourself a PDF containing the widget.  Since this application is a small, self contained application (i.e. a widget) the functionality between the different mediums is very similar.  In this case I was able to reuse about 99% of the code between the different versions.  However, sometimes achieving that level of reuse is not possible due to the differences in client capabilities and the end user needs.  This is the case with the Flex and Adobe AIR based [Oracle CRM Gadgets](http://www.oracle.com/applications/crm/siebel/crm-gadgets.html), which are for different use cases than the primary Siebel UI.
 

@@ -11,4 +11,6 @@ categories:
 
 One of my [most viewed blogs](http://www.jamesward.com/2009/04/16/flex-paint-2/) is one of the most simple demo apps I've built.  It's a simple Flex app that lets the user draw with their mouse and then lets them save their drawing.  I've updated the Flex Paint demo to Flex 4.  Check it out:
 
+<iframe src="/demos/FlexPaint4/FlexPaint4.html" width="440" height="440" style="border:0px"></iframe>
+
 ([View the source code](/demos/FlexPaint4/srcview/index.html))

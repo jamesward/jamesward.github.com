@@ -15,7 +15,6 @@ Huge thanks to Latha for updating my old Flex 1.5 TreeGrid code to Flex 2:
 [http://codercentral.blogspot.com/2006/10/using-treegrid-in-flex-20.html](http://codercentral.blogspot.com/2006/10/using-treegrid-in-flex-20.html)
 
 Check out a demo of Latha's work:
-
-
+<iframe src="/demos/treegrid_flex2/treegridTest1.html" width="100%" height="300"></iframe>
 
 Looks like I'm off the hook!  :)  Thanks Latha!

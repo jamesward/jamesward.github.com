@@ -10,12 +10,15 @@ categories:
 ---
 
 Development of the next version of Flex, codenamed Gumbo, is well underway.  I'd really encourage everyone to go [grab a build](http://opensource.adobe.com/wiki/display/flexsdk/Download+Flex+4) and give it a whirl.  I did because I wanted to see how I could take [a sample](http://www.jamesward.com/blog/2008/04/15/flex-3-skin-transitions-with-degrafa-and-animatecolor/) I built with Flex 3, Degrafa, and AnimateColor and build the same thing with Flex Gumbo.  Here's that version:
+<iframe src="/demos/SkinTransitions/SkinTransitions.html" width="400" height="100" frameborder="0"></iframe>
 
 
 And here is the new version built with Gumbo and FXG (requires Flash Player 10):
+<iframe src="/demos/PrettyButton/PrettyButton.html" width="400" height="100" frameborder="0"></iframe>
 
 
 The code for this new version is pretty elegant.  The interesting part is the custom skin:
+<iframe src="/demos/PrettyButton/srcview/source/PrettyButtonSkin.mxml.html" width="99%" height="750" style="border:1px #cccccc solid;"></iframe>
 
 
 I had to write the FXG by hand which really wasn't very hard but ideally in the future a designer can just give me the FXG code, exported from their design tools.

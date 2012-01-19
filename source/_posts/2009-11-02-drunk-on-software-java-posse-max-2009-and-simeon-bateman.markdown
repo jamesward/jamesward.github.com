@@ -12,10 +12,10 @@ categories:
 We've recently posted three great episodes of [Drunk on Software](http://www.drunkonsoftware.com) - the video podcast for those who like booze and bits.  So grab your favorite adult beverage (if you are of legal age), sit back, and enjoy getting Drunk on Software!
 
 [Episode 17: Half of the Java Posse](http://www.drunkonsoftware.com/2009/09/29/episode-17-half-of-the-java-posse/)
-
+<embed src="http://blip.tv/play/AYGhqCIC" type="application/x-shockwave-flash" width="480" height="300" allowscriptaccess="always" allowfullscreen="true"></embed>
 
 [Episode 18: MAX 2009 Deep Thoughts](http://www.drunkonsoftware.com/2009/10/20/episode-18-max-2009-deep-thoughts/)
-
+<embed src="http://blip.tv/play/AYGn20IC" type="application/x-shockwave-flash" width="480" height="300" allowscriptaccess="always" allowfullscreen="true"></embed>
 
 [Episode 19: Simeon Bateman MAX 2009 Wrap-up](http://www.drunkonsoftware.com/2009/10/25/episode-19-simeon-bateman-max-2009-wrap-up/)
-
+<embed src="http://blip.tv/play/AYGn20wC" type="application/x-shockwave-flash" width="480" height="300" allowscriptaccess="always" allowfullscreen="true"></embed>

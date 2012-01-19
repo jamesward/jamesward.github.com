@@ -12,4 +12,4 @@ categories:
 
 Getting Flash Player working on 64-bit Linux systems has been a challenge.  But not anymore!  Today Adobe Systems [released a beta](http://labs.adobe.com/technologies/flashplayer10/) of native Flash Player 10 for 64-bit Linux!  Check it out and report bugs to the [open Flash Player bug database](https://bugs.adobe.com/flashplayer/).  Here is a short video I shot of me testing the new Flash Player 10 plugin for 64-bit Ubuntu Linux.  Let me know what you think!
 
-
+<object width="425" height="344"><param name="movie" value="http://www.youtube.com/v/rqnQRCLmdOQ&hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/rqnQRCLmdOQ&hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></embed></object>

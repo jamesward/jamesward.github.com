@@ -15,7 +15,7 @@ Whether or not you use a tool to test your Flex apps, you are repeatedly testing
 
 Jon and I have created some resources to help get you started using FlexMonkey.  Start by reading the [Introduction to Flex and AIR Testing with FlexMonkey](http://www.artima.com/articles/intro_to_flex_monkey.html).  Then check out a short screencast I did that walks through the FlexMonkey basics:
 
-  
+<iframe title="YouTube video player" width="640" height="390" src="http://www.youtube.com/embed/2TOSYw1531E?rel=0&amp;hd=1" frameborder="0" allowfullscreen></iframe>  
 
 To continue learning check out a series of videos from Jon that will give you a more in-depth look at each piece of FlexMonkey:
 

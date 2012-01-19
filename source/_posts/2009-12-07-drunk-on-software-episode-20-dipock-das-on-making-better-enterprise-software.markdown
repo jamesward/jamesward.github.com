@@ -11,6 +11,6 @@ categories:
 
 Here is another new episode of [Drunk on Software](http://www.drunkonsoftware.com)!
 
-
+<embed src="http://blip.tv/play/AYGn3jMA" type="application/x-shockwave-flash" width="640" height="390" allowscriptaccess="always" allowfullscreen="true"></embed>
 
 Let me know what you think!

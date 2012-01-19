@@ -89,41 +89,36 @@ In order to connect to Force.com we need to download the [Force.com Toolkit for 
 
 Start by creating a new Flex Project in Flex Builder.  Then copy the force-flex.swc file from the Toolkit into the project's libs folder.  In your application start with something simple like:
 
+```mxml
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:salesforce="http://www.salesforce.com/">
 
-    
-    
-    
-    <mx:application xmlns:salesforce="http://www.salesforce.com/" xmlns:mx="http://www.adobe.com/2006/mxml">
-    
-      <mx:script>
-        import com.salesforce.AsyncResponder;
-        import com.salesforce.objects.LoginRequest;
-        import com.salesforce.results.LoginResult;
-        import com.salesforce.results.QueryResult;
-      </mx:script>
-    
-      <mx:applicationcomplete>
-        var lr:LoginRequest = new LoginRequest();
-          lr.username = "YOUR USER NAME";
-          lr.password = "YOUR PASSWORD";
-          lr.callback = new AsyncResponder(
-            function(result:LoginResult):void {
-              conn.query("Select Id, IncidentX__c, IncidentY__c, Date_of_Accident__c from AccidentReport__c",
-                new AsyncResponder(function(result:QueryResult):void {
-                  dg.dataProvider = result.records;
-                }));
-          });
-          conn.login(lr);
-      </mx:applicationcomplete>
-    
-      <salesforce:connection id="conn"></salesforce:connection>
-    
-      <mx:datagrid id="dg"></mx:datagrid>
-    
-    </mx:application>
-    
+  <mx:Script>
+    import com.salesforce.AsyncResponder;
+    import com.salesforce.objects.LoginRequest;
+    import com.salesforce.results.LoginResult;
+    import com.salesforce.results.QueryResult;
+  </mx:Script>
 
+  <mx:applicationComplete>
+    var lr:LoginRequest = new LoginRequest();
+      lr.username = "YOUR USER NAME";
+      lr.password = "YOUR PASSWORD";
+      lr.callback = new AsyncResponder(
+        function(result:LoginResult):void {
+          conn.query("Select Id, IncidentX__c, IncidentY__c, Date_of_Accident__c from AccidentReport__c",
+            new AsyncResponder(function(result:QueryResult):void {
+              dg.dataProvider = result.records;
+            }));
+      });
+      conn.login(lr);
+  </mx:applicationComplete>
 
+  <salesforce:Connection id="conn"/>
+
+  <mx:DataGrid id="dg"/>
+
+</mx:Application>
+```
 
 Give it a try by running the application.  This simply logs in, fetches the AccidentReports and displays them in a DataGrid.  Make sure that you have some sample data on Force.com before you run this.  Otherwise you will get an error.  That is a simple read-only view of some data on the Force.com cloud!  However the full Car Incident application requires quite a bit more code.  You can [download the code](/demos/CarIncident.zip) and then copy and paste the files into your project.
 
@@ -153,9 +148,7 @@ Let's walk through the application requirements:
 
 When we started building our back-end we modeled the data in Force.com.  Now we need a client-side model of the data.  The two value objects for this purpose are AccidentReport.as and Car.as.  Those two value objects contains public properties corresponding to the values we need to hold once we get data back from Force.com.  They also have a constructor that can map the data format from Force.com to the value object's properties.  For instance the Car value object's constructor does the following:
 
-
-    
-    
+```actionscript
         public function Car(o:Object=null)
         {
           if (o != null)
@@ -167,9 +160,7 @@ When we started building our back-end we modeled the data in Force.com.  Now we 
             endY = o.EndY__c;
           }
         }
-    
-
-
+```
 
 This simply sets the properties on an instance of Car to the data values retrieved from Force.com.  Later on you will see where those values come from and how we create new Car value objects.
 
@@ -212,8 +203,7 @@ Next we will setup a Controller that manages the communication to Force.com and 
 
 All network requests in Flex happen asynchronously.  This means that all requests to Force.com also happen asynchronously; so while the methods listed above can make the request, other private functions are used to actually handle the server response and then update the Model.  For instance when the response from the query in getAccidentReports returns, the model is updated in the following way:
 
-    
-    
+```actionscript
         private function getAccidentReportsResult(qr:QueryResult):void
         {
           model.accidentReports = new ArrayCollection();
@@ -224,9 +214,7 @@ All network requests in Flex happen asynchronously.  This means that all request
             model.accidentReports.addItem(new AccidentReport(o));
           }
         }
-    
-
-
+```
 
 Notice that the records returned from the server are typed as Objects.  In the for loop we use the mapping in AccidentReport's constructor to convert the Object to a typed AccidentReport.
 
@@ -253,30 +241,24 @@ Now that the Model and Controller are setup the next task is to build the UI.  T
 
 Describing how the custom UI components work is beyond the scope of this article.  However it's important to describe how the Model, View, and Controller interact.  In the AccidentReportView the Accident uses data binding to setup an observer on the model.  When the observer observes a change it lets the view know so that it can refresh its view of the model.  The instance of the Accident uses data binding for two things:
 
-    
-    
-    <cars:accident visible="{Model.getInstance().selectedAccidentReport != null}" accidentreport="{Model.getInstance().selectedAccidentReport}" id="accident"></cars:accident>
-    
-
-
+```mxml
+<cars:Accident id="accident" accidentReport="{Model.getInstance().selectedAccidentReport}" visible="{Model.getInstance().selectedAccidentReport != null}"/>
+```    
 
 First the accidentReport value object of the Accident is set to data bind to the Model's selectedAccidentReport.  When that value changes the data binding observer will notify the Accident about the change.  Second, the Accident is only visible when the Model's selectedAccidentReport is not null.
 
 The AccidentReportView also interacts with the controller by calling its public methods.  Here's an example:
 
-    
-    
-            <mx:button label="Save">
-              <mx:click>
-                controller.saveAccidentReport(accident.accidentReport);
-    
-                accidentReportDataGrid.selectedItem = null;
-                Model.getInstance().selectedAccidentReport = null;
-              </mx:click>
-            </mx:button>
-    
+```mxml    
+        <mx:Button label="Save">
+          <mx:click>
+            controller.saveAccidentReport(accident.accidentReport);
 
-
+            accidentReportDataGrid.selectedItem = null;
+            Model.getInstance().selectedAccidentReport = null;
+          </mx:click>
+        </mx:Button>
+```
 
 When the user clicks the save button, the event handler calls the Controller's saveAccidentReport method passing it the currently selected AccidentReport.  Since the components internally have made changes to the AccidentReport those changes are then propagated to Force.com by calling the Connection's update method.  The save button's event handler also deselects the currently selected item in the DataGrid and sets the selectedAccidentReport on the Model to null.
 
@@ -287,8 +269,7 @@ Now that you have a fully functional Rich Cloud Application built with Force.com
 
 When in the development phase it may be convenient to hard code your username and password into the application like we did in the simple example above.  However, you should never do that in a production application.  If you are deploying on a Force.com page then you can use the session_id.  Here is an example:
 
-    
-    
+```actionscript
           conn.serverUrl = parameters.server_url;
     
           var lr:LoginRequest = new LoginRequest();
@@ -296,9 +277,7 @@ When in the development phase it may be convenient to hard code your username an
           lr.server_url = parameters.server_url;
           lr.callback = new AsyncResponder(loginResult, loginFault);
           conn.login(lr);
-    
-
-
+```
 
 The parameters are available on the main Application and are passed into the application using the apex:flash VisualForce tag, which we will setup later.
 
@@ -306,16 +285,13 @@ Once your application is set up to use the session_id then you will need to crea
 
 To deploy the application go into the Force.com Setup mode, click on Develop under App Setup, and then click on Static Resources.  Create a new resource called "CarIncident" and upload the application's SWF file found in the bin-release folder under the project.  Then under Develop, click Pages and add a new Page called "AccidentReport".  Put the following code in the page:
 
-    
-    
-    <apex:page>
-        <apex:pageblock>
-            <apex:flash src="{!$Resource.CarIncident}" height="500" flashvars="session_id={!$Api.Session_ID}&server_url={!$Api.Partner_Server_URL_150}" width="500"></apex:flash>
-        </apex:pageblock>
-    </apex:page>
-    
-
-
+```xml    
+<apex:page>
+    <apex:pageBlock>
+        <apex:flash src="{!$Resource.CarIncident}" width="500" height="500" flashvars="session_id={!$Api.Session_ID}&server_url={!$Api.Partner_Server_URL_150}"/>
+    </apex:pageBlock>
+</apex:page>
+```
 
 Save the page and then you should be able to access it by going to:
 [https://na1.salesforce.com/apex/AccidentReport](https://na1.salesforce.com/apex/AccidentReport)

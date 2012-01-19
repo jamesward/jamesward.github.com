@@ -14,5 +14,6 @@ It's kinda hard to believe that I've been doing Flex development on Linux for ov
 
 Here is a quick video I recorded to show the basics of using IntelliJ IDEA for Flex development on Linux:
 
+<object width="640" height="505"><param name="movie" value="http://www.youtube.com/v/bOlV2qwvDdM?fs=1&amp;hl=en_US&amp;rel=0&amp;hd=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/bOlV2qwvDdM?fs=1&amp;hl=en_US&amp;rel=0&amp;hd=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="505"></embed></object>
 
 To get started download either the [latest prerelease of IntelliJ IDEA](http://confluence.jetbrains.net/display/IDEADEV/IDEA+X+EAP) or their [current production version](http://www.jetbrains.com/idea/download/index.html).  Flex development is only available in their Ultimate Edition but they do provide a free 30 day trial.  Let me know what you think.

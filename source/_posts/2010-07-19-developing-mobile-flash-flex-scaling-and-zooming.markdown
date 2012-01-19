@@ -16,10 +16,9 @@ Mobile development with Flash and Flex is a new frontier, full of new adventures
 
 Strange!  The width and height are larger than the screen resolution.  You can fix this by adding the following to the HTML page:
 
-    
-    <meta content="target-densityDpi=device-dpi; user-scalable=0;" name="viewport"></meta>
-
-
+```html
+<meta name="viewport" content="target-densityDpi=device-dpi; user-scalable=0;" />
+```
 
 And now it will look like:
 ![](http://www.jamesward.com/wp/uploads/2010/07/mobile_flash-noscale.png)

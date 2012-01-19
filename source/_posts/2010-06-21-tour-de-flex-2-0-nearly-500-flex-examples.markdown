@@ -51,3 +51,4 @@ Those are some great examples but my favorite is still [Doug McCune's](http://do
 
 If you already have Tour de Flex installed then it should auto update to the latest version when you launch it.  Otherwise install it now using the badge installer below.
 
+<iframe width="216" height="182" frameborder=0 scrolling="no" src="http://tourdeflex.adobe.com/badge/"></iframe>

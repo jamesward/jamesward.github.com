@@ -26,11 +26,10 @@ To create a pure JavaScript AMF library the first thing that is needed is a pure
 
 Using the AMF specs and code from BlazeDS & pyamf as a reference I was able to add the other functions to the ByteArray.  But there was a problem.  Using XMLHttpRequest as the method of getting the AMF was not working right.  Some bytes were incorrect.  It turns out XMLHttpRequest uses UTF-8 and that screws up some of the bytes above 128.  I tried other charsets and each one would change some range of bytes.  That is not good because I need the bytes to be exactly what the server sent.  Then I came across [this gem](http://web.archive.org/web/20061114143134/http://mgran.blogspot.com/2006/08/downloading-binary-streams-with.html):
 
-    
+```javascript
     //XHR binary charset opt by Marcus Granado 2006 [http://mgran.blogspot.com]
     req.overrideMimeType('text/plain; charset=x-user-defined');
-
-
+```
 
 Using the "x-user-defined" charset left the bytes alone.  Perfect!  Except that IE doesn't support the req.overrideMimeType function.  But IE does actually have a real ByteArray available in req.responseBody via VBScript.  For now in IE I just change the ByteArray into a string (like req.responseText in the other browsers) although a lot of optimization could be done to just use the VBScript ByteArray directly.
 
@@ -38,8 +37,7 @@ Right now amf.js is just a basic JavaScript library for reading AMF data.  It do
 
 To use amf.js start by dumping some AMF into an HTTP response.  In Java with BlazeDS I did this:
 
-    
-    
+```java
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         response.setHeader("Content-Type", "application/x-amf;charset=x-user-defined");
@@ -53,23 +51,17 @@ To use amf.js start by dumping some AMF into an HTTP response.  In Java with Bla
         amfMessageSerializer.writeMessage(requestMessage);
         out.close();
     }
-    
-
-
+```
 
 In a HTML web page add the amf.js script:
 
-    
-    
+```html
     <script src="amf.js" type="text/javascript"></script>
-    
-
-
+```
 
 In JavaScript make a XHR request for some data:
 
-    
-    
+```javascript
     var url = "TestServlet";
     var req;
     
@@ -89,14 +81,11 @@ In JavaScript make a XHR request for some data:
         req.open("GET", url, true);
         req.send(null);
     }
-    
-
-
+```
 
 And when the response comes back decode the AMF:
 
-    
-    
+```javascript
     function processReqChange()
     {
         if (req.readyState == 4)
@@ -111,9 +100,7 @@ And when the response comes back decode the AMF:
             }
         }
     }
-    
-
-
+```
 
 For details on how to support IE, check out the source code for [censusTest.html](http://www.jamesward.com/demos/JSAMF/censusTest.html).
 

@@ -11,21 +11,18 @@ categories:
 
 This year at [360|Flex](http://www.360flex.com/) in Denver I'll be co-presenting a session with [Mike Labriola](http://www.digitalprimates.net/author/codeslinger/) called "[Planet of the AOPs](http://www.360flex.com/schedule/)".  What is the Planet of the AOPs?  Let me give you a little hint...
 
-    
+```actionscript
     public class Foo {
       private function getPrivateBar():String {
         return "private bar";
       }
     }
+```
 
-
-
-
-    
+```actionscript
     var foo:Foo = new Foo();
     foo['getPrivateBar']();
-
-
+```
 
 Yup!  It's gonna be fun!  The session will be on Tuesday April 12th at 2:50pm.  Hope to see you there!
 

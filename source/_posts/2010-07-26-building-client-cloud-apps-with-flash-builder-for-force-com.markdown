@@ -23,7 +23,7 @@ Applications created with Flash Builder for Force.com can be run in the browser,
 
 Check out this video to see how to use Flash Builder for Force.com to build a simple app:
 
-
+<object width="640" height="385"><param name="movie" value="http://images.tv.adobe.com/swf/player.swf"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><param name="FlashVars" value="fileID=7230&context=64&embeded=true&environment=production"></param><embed src="http://images.tv.adobe.com/swf/player.swf" flashvars="fileID=7230&context=64&embeded=true&environment=production" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="385"></embed></object>
 
 As you can see, it's very easy to get started.  But I wanted to go a step further and try to build something real--something that shows a genuine use case for extending beyond the out-of-the-box Salesforce.com UI.  I wanted to keep it really simple so that I could post the code here.  What I came up with is this (in user story form):
 
@@ -39,7 +39,7 @@ As you can see, it's very easy to get started.  But I wanted to go a step furthe
 
 Simple enough.  So here is what I came up with:
 
-
+<object width="640" height="505"><param name="movie" value="http://www.youtube.com/v/RIUwh6wk8cY&amp;hl=en_US&amp;fs=1?rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/RIUwh6wk8cY&amp;hl=en_US&amp;fs=1?rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="505"></embed></object>
 
 To build these two apps I first downloaded and installed [Flash Builder for Force.com](https://www.developerforce.com/events/flashbuilder/registration.php).  I used the [Adobe AIR for Android prerelease](http://www.adobe.com/go/airbetasignup) to build the mobile app.  Here is how I created these apps.
 
@@ -51,8 +51,7 @@ Now in Flash Builder for Force.com I created a new Force.com Flex Project for th
 
 Using the Data/Services wizard I connected to Salesforce.com using my enterprise.wsdl file.  After the services and value objects have been generated I modified the Contact object and added a Bindable account property.  The generated application already included the F3DesktopApplication Declaration used to connect to Salesforce.  Due to an incompatibility with that API and AIR for Android I switched it to use F3WebApplication.  In F3WebApplication's loginComplete event handler I query Salesforce.com for Accounts and then Contacts, associate contacts with their account, and then store the contacts:
 
-    
-    
+```actionscript    
     app.wrapper.query("select Id, Name from Account", new AsyncResponder(function(data:ArrayCollection, token:Object):void {
         accounts = data;
         app.wrapper.query("select Id, AccountId, FirstName, LastName, Phone, MobilePhone, Email, Title, Department, MailingCity, photoData__c from Contact", new AsyncResponder(function(data:ArrayCollection, token:Object):void {
@@ -69,58 +68,49 @@ Using the Data/Services wizard I connected to Salesforce.com using my enterprise
             contacts = data;
         }, handleError));
     }, handleError));
-    
-
-
+```
 
 Notice in the query that I'm fetching photoData__c, which is the custom field I created on Contact to store the photo.
 
 In the renderer for a contact I need to either display the photo if there is one or let the user add one.  Here is the simple UI code to handle that:
 
-    
-    
-    <s:group width="92" top="8" right="8" height="92">
-        <s:rect width="92" height="92">
-            <s:fill>
-                <s:solidcolor color="#cccccc"></s:solidcolor>
-            </s:fill>
-        </s:rect>
-        <s:label verticalalign="middle" text="Add a photo" height="92" width="92" textalign="center" id="addPhoto"></s:label>
-        <s:bitmapimage width="92" id="photo" height="92"></s:bitmapimage>
-    </s:group>
-    
-
-
+```mxml
+<s:Group width="92" height="92" top="8" right="8">
+    <s:Rect width="92" height="92">
+        <s:fill>
+            <s:SolidColor color="#cccccc"/>
+        </s:fill>
+    </s:Rect>
+    <s:Label id="addPhoto" text="Add a photo" width="92" height="92" verticalAlign="middle" textAlign="center"/>
+    <s:BitmapImage id="photo" width="92" height="92"/>
+</s:Group>
+```
 
 When the contact is set I check to see if there is a photo and if so display it:
 
-    
-    
-    if (contact.photoData__c == null)
-    {
-        photo.visible = false;
-        return;
-    }
-    
-    var decoder:Base64Decoder = new Base64Decoder();
-    decoder.decode(contact.photoData__c);
-    				
-    var loader:Loader = new Loader();
-    loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
-        photo.source = event.target.content;
-        photo.visible = true;
-    });
-    loader.loadBytes(decoder.toByteArray());
-    
+```actionscript    
+if (contact.photoData__c == null)
+{
+    photo.visible = false;
+    return;
+}
 
-
+var decoder:Base64Decoder = new Base64Decoder();
+decoder.decode(contact.photoData__c);
+                                
+var loader:Loader = new Loader();
+loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
+    photo.source = event.target.content;
+    photo.visible = true;
+});
+loader.loadBytes(decoder.toByteArray());
+```
 
 The data from the photoData__c field is Base64 decoded and then displayed using the Flex BitmapImage component.
 
 Now when the user clicks on the photo or empty photo box I use the AIR for Android CameraUI to grab a photo, resize it, covert it to a PNG, Base64 encode it, set it on the contact, and then save the contact to Salesforce.com:
 
-    
-    
+```actionscript    
     if (CameraUI.isSupported)
     {
         cameraUI = new CameraUI();
@@ -155,94 +145,86 @@ Now when the user clicks on the photo or empty photo box I use the AIR for Andro
         });
         cameraUI.launch(MediaType.IMAGE);
     }
-    
-
-
+```
 
 That's it for the mobile app!  I compiled it, exported it to an Android app, and then copied it to my phone.  Pretty simple and as you can see it works!  One limitation with my approach is the 32k limit of the photoData__c field.  However, I think I could easily get around that by striping the Base64 encoded data across multiple fields.  It's not ideal but it would work.
 
 To display the photo when I view a contact on Salesforce.com I created a very simple Flex app using another Force.com Flex Project.  I could have also added photo upload to this application but chose to keep it simple.  All it does is display the selected contact's photo.  Here is the complete code (after generating the required services in Flash Builder):
 
-    
-    
-    
-    <s:application xmlns:flexforforce="http://flexforforce.salesforce.com" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx">
-    
-        <fx:script>		
-        import mx.rpc.AsyncResponder;
-        import mx.utils.Base64Decoder;
-        </fx:script>
-    
-        <fx:declarations>
-            <flexforforce:f3webapplication id="app" requiredtypes="Contact">
-                <flexforforce:logincomplete>
-                    app.wrapper.query("select photoData__c from Contact where Id = '" + this.parameters.contactId + "'", new AsyncResponder(function(data:Object, token:Object):void {
-                        if (data.length == 1)
+```mxml
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:s="library://ns.adobe.com/flex/spark"
+    xmlns:mx="library://ns.adobe.com/flex/mx"
+    xmlns:flexforforce="http://flexforforce.salesforce.com">
+
+    <fx:Script>         
+    import mx.rpc.AsyncResponder;
+    import mx.utils.Base64Decoder;
+    </fx:Script>
+
+    <fx:Declarations>
+        <flexforforce:F3WebApplication id="app" requiredTypes="Contact">
+            <flexforforce:loginComplete>
+                app.wrapper.query("select photoData__c from Contact where Id = '" + this.parameters.contactId + "'", new AsyncResponder(function(data:Object, token:Object):void {
+                    if (data.length == 1)
+                    {
+                        if (data[0].photoData__c == null)
                         {
-                            if (data[0].photoData__c == null)
-                            {
-                                photo.visible = false;
-                                noPhoto.visible = true;
-                                return;
-                            }
-    				
-                            var decoder:Base64Decoder = new Base64Decoder();
-                            decoder.decode(data[0].photoData__c);
-    						
-                            var loader:Loader = new Loader();
-                            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
-                                photo.source = event.target.content;
-                                photo.visible = true;
-                            });
-                            loader.loadBytes(decoder.toByteArray());
+                            photo.visible = false;
+                            noPhoto.visible = true;
+                            return;
                         }
-                    }, function(fault:Object):void {
-                        // ignored
-                    }));
-                </flexforforce:logincomplete>
-            </flexforforce:f3webapplication>
-        </fx:declarations>
-    
-        <s:applicationcomplete>
-            app.serverUrl = this.parameters.serverUrl;
-            app.loginBySessionId(this.parameters.sessionId);
-        </s:applicationcomplete>
-    	
-        <s:rect width="92" height="92">
-            <s:fill>
-                <s:solidcolor color="#cccccc"></s:solidcolor>
-            </s:fill>
-        </s:rect>
-    	
-        <s:label verticalalign="middle" visible="false" text="No Photo" height="92" width="92" textalign="center" id="noPhoto"></s:label>
-    	
-        <s:bitmapimage width="92" id="photo" height="92"></s:bitmapimage>
-    
-    </s:application>
-    
+                                
+                        var decoder:Base64Decoder = new Base64Decoder();
+                        decoder.decode(data[0].photoData__c);
+                                                
+                        var loader:Loader = new Loader();
+                        loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(event:Event):void {
+                            photo.source = event.target.content;
+                            photo.visible = true;
+                        });
+                        loader.loadBytes(decoder.toByteArray());
+                    }
+                }, function(fault:Object):void {
+                    // ignored
+                }));
+            </flexforforce:loginComplete>
+        </flexforforce:F3WebApplication>
+    </fx:Declarations>
 
+    <s:applicationComplete>
+        app.serverUrl = this.parameters.serverUrl;
+        app.loginBySessionId(this.parameters.sessionId);
+    </s:applicationComplete>
+        
+    <s:Rect width="92" height="92">
+        <s:fill>
+            <s:SolidColor color="#cccccc"/>
+        </s:fill>
+    </s:Rect>
 
+    <s:Label id="noPhoto" text="No Photo" width="92" height="92" textAlign="center" verticalAlign="middle" visible="false"/>
+        
+    <s:BitmapImage id="photo" width="92" height="92"/>
+
+</s:Application>
+```
 
 Finally I created a custom S-Control to run the Flex app:
 
-    
-    
+```html
     <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="92" codebase="https://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab" id="ContactPhoto" height="92"> 
         <param name="movie" value="{!Scontrol.JavaArchive}"></param> 
         <param name="flashvars" value="sessionId={!API.Session_ID}&serverUrl={!API.Partner_Server_URL_90}&contactId={!Contact.Id}"></param> 
         <embed src="{!Scontrol.JavaArchive}" pluginspage="http://www.adobe.com/go/getflashplayer" name="ContactPhoto" height="92" width="92" type="application/x-shockwave-flash" flashvars="sessionId={!API.Session_ID}&serverUrl={!API.Partner_Server_URL_90}&contactId={!Contact.Id}"> 
         </embed> 
     </object>
-    
-
-
+```
 
 I uploaded the compiled Flex app to the S-Control and added it to the Contact page.  And that's it!  In just a few hours I extended Force.com and built a cool mobile app.  I could also have easily created a desktop widget for browsing contacts and adding photos.  If you are looking for a fun project to use as a way to learn this stuff that would be a good one!  :)
 
 Here are some resources to help you get started with Flash Builder for Force.com:
-
-
-
 
   * [Force.com Flex Quick Start Tutorial](http://wiki.developerforce.com/index.php/Force.com_Flex_Quick_Start_Tutorial)
 

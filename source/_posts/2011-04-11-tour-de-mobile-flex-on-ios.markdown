@@ -15,4 +15,6 @@ tags:
 
 Flex support for iOS apps is [coming in June 2011](http://eon.businesswire.com/news/eon/20110410005103/en/Flash-Platform/Flex/Flash-Builder)!!!  Here's a little sneak peak of the [Tour de Mobile Flex app](http://flex.org/tourmobile) running on iOS:
 
+<iframe title="YouTube video player" width="640" height="390" src="http://www.youtube.com/embed/F3WvnRRFT5E?rel=0&amp;hd=1" frameborder="0" allowfullscreen></iframe>
+
 These are exciting times for developers!  With Flex we will be able to use one technology and one code base to build apps for iOS, Android, Playbook, Windows, Mac, Linux, IE, Firefox, Chrome, Safari, etc!  Fun times!

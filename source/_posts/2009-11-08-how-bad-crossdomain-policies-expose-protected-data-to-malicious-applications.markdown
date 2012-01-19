@@ -23,15 +23,12 @@ To illustrate the problem I've create a few demos.  Let's say that I'm building 
 
 The application correctly pulled the data from the [www.firststepsinflex.com](http://www.firststepsinflex.com) site but in order to allow the request I blindly put a [crossdomain.xml policy file](http://www.firststepsinflex.com/crossdomain.xml) on www.firststepsinflex.com that looks like this:
 
-    
-    
-    
-    <cross-domain-policy>
-        <site-control permitted-cross-domain-policies="master-only"></site-control>
-        <allow-access-from domain="*"></allow-access-from>
-    </cross-domain-policy>
-
-
+```xml
+<cross-domain-policy>
+    <site-control permitted-cross-domain-policies="master-only"/>
+    <allow-access-from domain="*"/>
+</cross-domain-policy>
+```
 
 What this policy file does is instruct Flash Player to allow requests from any website to get around the same-origin policy and make requests to www.firststepsinflex.com - on behalf of the user.  Sounds harmless, right?  At this point it is, as long as all of the data on www.firststepsinflex.com is publicly available data.  But let's suppose that not all of the data should be publicly available.  Perhaps I'm protecting access to some data though cookie authentication or HTTP basic authentication.  In this case I am (for the purpose of the demo).
 
@@ -49,12 +46,11 @@ There are also some great uses of crossdomain policy files.  For instance, api.f
 
 I often hear from Flex / Flash developers that when they run into security sandbox issues the first thing they try is to open things up with a global (i.e. "*") policy file.  I hope this article discourages that practice.  Developers should understand why the security error is happening and consider alternatives before blindly opening up their website to the possible attacks.  One alternative is to leverage a server proxy.  A server proxy can be configured so that an application doesn't violate the same-origin policy.  For instance, if an application on foo.com needs data from bar.com then a proxy can be configured such that requests to foo.com/bar are forwarded on the server to the bar.com site.  This helps avoid attacks because users' cookies (or basic auth tokens) will not be sent to bar.com since all requests are actually being made to the foo.com site.  But be careful not to expose intranet servers through proxies.  Here is a sample Apache config for setting up a forward proxy:
 
-    
+```
       ProxyRemote  /bar/*  http://bar.com/
       ProxyPass /bar http://bar.com
       ProxyPassReverse /bar http://bar.com
-
-
+```
 
 [BlazeDS](http://opensource.adobe.com/blazeds) also includes a proxy service.
 

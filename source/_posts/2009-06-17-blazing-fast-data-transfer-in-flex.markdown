@@ -14,4 +14,4 @@ A while back I created the [Census RIA Benchmark](/census/) to illustrate the be
 
 Note: If you run Census in Firefox 3 there is a bug with iframes causing the tests to not run until you click on the results panel on the right.
 
-
+<embed src="http://tv.adobe.com/Embed.swf" quality="high" bgcolor="#000000" width="600" height="385" name="AdobeTVPlayer" play="true" loop="false" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" pluginspage="http://www.adobe.com/go/getflashplayer" flashVars="v=~b64~aHR0cDovL2Fkb2JlLmVkZ2Vib3NzLm5ldC9mbGFzaC9hZG9iZS9hZG9iZXR2Mi9hZGNfcHJlc2VudHMvNjRfYWRjXzE1Mi5mbHY/cnNzX2ZlZWRpZD0xNDcyJnhtbHZlcnM9Mg==&w=600&t=http://tv.adobe.com/vi+f1472v1116&h=385"></embed>

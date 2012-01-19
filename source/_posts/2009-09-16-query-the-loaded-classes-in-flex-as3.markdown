@@ -24,7 +24,7 @@ One of the things I love most about programming is running into walls and then f
 
 A Flex application (using the Flex framework or AS3 only) can use getDefinitionNames to query any loaded SWF file (Application, Module, etc) for its class definitions.  The getDefinitionNames utility just parses through the loaded bytecode and finds the class definitions.  Then the as3-commons-reflect library can help determine which of those classes implement a given interface or have specific metadata on them.  Here is an example:
 
-
+<iframe src="/demos/GetClasses/GetClasses.html" width="100%" height="400"></iframe>
 
 [(source code)](/demos/GetClasses/srcview/index.html)
 
