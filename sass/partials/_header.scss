@@ -1,5 +1,11 @@
 body > header {
-  background: $header-bg;
+  background: {
+    color: #0e0c11;
+    image: image-url("/images/james_profile_2011.jpg");
+    repeat: no-repeat;
+    position: top right;
+  }
+  @include background-size(auto 100%);
   h1 {
     display: inline-block;
     margin: 0;

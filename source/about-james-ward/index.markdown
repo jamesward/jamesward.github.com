@@ -28,8 +28,38 @@ Social Profiles
 ---------------
 [![View James Ward's profile on LinkedIn](http://www.linkedin.com/img/webpromo/btn_viewmy_160x33.gif)](http://www.linkedin.com/in/jamesward)
 
-[James Ward on Google+](https://plus.google.com/101156657838073927919)
-[@_JamesWard on Twitter](https://twitter.com/_JamesWard)
+<a href="https://plus.google.com/101156657838073927919?prsrc=3" style="cursor:pointer;display:inline-block;text-decoration:none;color:#333;font:13px/16px arial,sans-serif;"><span style="display:inline-block;font-weight:bold;vertical-align:top;margin-right:5px;margin-top:8px;">James Ward</span><span style="display:inline-block;vertical-align:top;margin-right:15px;margin-top:8px;">on</span><img src="https://ssl.gstatic.com/images/icons/gplus-32.png" alt="" style="border:0;width:32px;height:32px;"/></a>
+
+<script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
+<script>
+new TWTR.Widget({
+  version: 2,
+  type: 'profile',
+  rpp: 1,
+  interval: 30000,
+  width: 'auto',
+  height: 300,
+  theme: {
+    shell: {
+      background: '#333333',
+      color: '#ffffff'
+    },
+    tweets: {
+      background: '#000000',
+      color: '#ffffff',
+      links: '#4aed05'
+    }
+  },
+  features: {
+    scrollbar: false,
+    loop: false,
+    live: false,
+    behavior: 'all'
+  }
+}).render().setUser('_JamesWard').start();
+</script>
+
+<br/>
 
 My Stack Overflow Profile
 -------------------------
